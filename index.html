@@ -4,7 +4,16 @@ title: Home
 ---
 
 <div class="container">
-  <p v-text="hello"></p>
+  <button class="btn btn-default" v-on="click: authorize">Authorize Gist access</button>
+
+  <div class="list-group">
+    <a href="#" class="list-group-item" v-repeat="gists">
+      <h4 class="list-group-item-heading" v-text="description"></h4>
+      <p class="list-group-item-text">
+        <span v-text="updated_at"></span>
+      </p>
+    </a>
+  </div>
 </div>
 
 <script src="//code.jquery.com/jquery-2.1.0.min.js"></script>
