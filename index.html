@@ -2,20 +2,78 @@
 layout: default
 title: Home
 ---
+{% raw %}
 
-<div class="container">
-  <button class="btn btn-default" v-on="click: authorize">Authorize Gist access</button>
-
-  <div class="list-group">
-    <a href="#" class="list-group-item" v-repeat="gists">
-      <h4 class="list-group-item-heading" v-text="description"></h4>
-      <p class="list-group-item-text">
-        <span v-text="updated_at"></span>
-      </p>
-    </a>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 gn-gists-list">
+      <nav class="navbar navbar-default">
+        <div class="container-fluid">
+          <div class="navbar-header">
+            <a class="navbar-brand" href="/">GistNote</a>
+          </div>
+        </div>
+      </nav>
+      <div class="list-group">
+        <a href="/{{id}}" class="list-group-item" v-repeat="gists" v-class="'gn-active': id == gist.meta.id">
+          {{description}}
+        </a>
+      </div>
+    </div>
+    <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2"></div>
+    <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10 gn-gist">
+      <div class="pull-right">
+        <div class="dropdown" v-if="authorized">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+            {{user.name}}
+            <img class="gn-user-avatar" v-attr="src: user.avatar_url"/>
+          </a>
+          <ul class="dropdown-menu" role="menu">
+            <li><a href="/logout">Logout</a></li>
+          </ul>
+        </div>
+        <div v-if="!authorized"><a href="/authorize">Log in with GitHub Account</a></div>
+      </div>
+      <div v-if="gist.meta.id">
+        <div class="page-header">
+          <h2>{{gist.meta.description}}</h2>
+        </div>
+        <div class="pull-right">
+          <ul class="list-inline">
+            <li><span class="glyphicon glyphicon-new-window"></span> <a href="{{gist.meta.html_url}}" target="_blank">Open in Gist</a></li>
+          <ul>
+        </div>
+        <ul class="list-inline">
+          <li><span class="glyphicon glyphicon-user"></span> {{gist.meta.owner.login}}</li>
+          <li><span class="glyphicon glyphicon-time"></span> Created at {{gist.meta.created_at}}</li>
+          <li><span class="glyphicon glyphicon-time"></span> Updated at {{gist.meta.updated_at}}</li>
+          <li class="text-danger" v-if="!gist.meta.public">Private</li>
+        </ul>
+        <div v-repeat="gist.files">
+          <div class="panel panel-default" v-if="meta.language == 'Markdown'">
+            <div class="panel-heading">
+              <span class="label label-primary pull-right">{{meta.language}}</span>
+              <h3 class="panel-title">{{meta.filename}}</h3>
+            </div>
+            <div class="panel-body" v-html="content | marked"></div>
+          </div>
+          <div v-if="meta.language != 'Markdown'">
+            <h3>{{meta.filename}}</h3>
+            <span class="label label-primary">{{meta.language}}</span>
+            <pre><code v-html="content | highlight"></code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
 <script src="//code.jquery.com/jquery-2.1.0.min.js"></script>
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/vue/0.11.0/vue.min.js"></script>
+<script src="//cdn.rawgit.com/visionmedia/page.js/master/page.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
+<script src="//cdn.rawgit.com/chjj/marked/v0.3.2/lib/marked.js"></script>
 <script src="/public/index.js"></script>
+
+{% endraw %}

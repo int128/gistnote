@@ -10,6 +10,9 @@ if m = location.search.match(/\?code=(.+)&state=(.+)/)
       delete sessionStorage.state
       location.replace '/'
     .fail (e) ->
-      console.error e
+      $ ->
+        $('#authorization-error').show()
   else
-    console.error 'state did not match'
+    location.replace '/'
+else
+  location.replace '/'

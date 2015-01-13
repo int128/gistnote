@@ -1,0 +1,30 @@
+
+.navbar {
+  margin-bottom: 0;
+}
+
+.gn-user-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 16px;
+  margin-left: .5em;
+}
+
+.gn-gists-list {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  overflow-y: auto;
+}
+
+.gn-gist {
+}
+
+.gn-active {
+  font-weight: bold;
+  background-color: #eee;
+}
+
+.gn-active h4 {
+  font-weight: bold;
+}
