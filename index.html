@@ -27,16 +27,22 @@ title: Home
     <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10" style="display: none" v-show="1">
 
       <div class="pull-right">
-        <div class="dropdown" v-if="user">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-            {{user.name}}
-            <img class="gn-user-avatar" v-attr="src: user.avatar_url"/>
-          </a>
-          <ul class="dropdown-menu" role="menu">
-            <li><a href="/logout">Logout</a></li>
-          </ul>
-        </div>
-        <div v-if="!user"><a href="/login">Log in with GitHub Account</a></div>
+        <ul class="nav nav-pills">
+          <li role="presentation" class="dropdown" v-if="user">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+              {{user.name}}
+              <img class="gn-user-avatar" v-attr="src: user.avatar_url"/>
+            </a>
+            <ul class="dropdown-menu" role="menu">
+              <li role="presentation" class="dropdown-header">@{{user.login}}</li>
+              <li><a href="{{user.html_url}}">Open GitHub</a></li>
+              <li><a href="/logout">Logout</a></li>
+            </ul>
+          </li>
+          <li role="presentation" class="dropdown" v-if="!user">
+            <a href="/login">Log in with GitHub Account</a>
+          </li>
+        </ul>
       </div>
 
       <div v-if="gist.meta.id">
