@@ -10,21 +10,18 @@
   margin-left: .5em;
 }
 
-.gn-gists-list {
+.gn-gists {
   position: fixed;
   top: 0;
   bottom: 0;
   overflow-y: auto;
 }
 
-.gn-gist {
+.gn-gists-list-item {
+  overflow-x: hidden;
 }
 
-.gn-active {
+.gn-gists-list-item-active {
   font-weight: bold;
   background-color: #eee;
-}
-
-.gn-active h4 {
-  font-weight: bold;
 }

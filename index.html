@@ -6,7 +6,7 @@ title: Home
 
 <div class="container-fluid">
   <div class="row">
-    <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 gn-gists-list">
+    <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 gn-gists">
 
       <nav class="navbar navbar-default">
         <div class="container-fluid">
@@ -15,15 +15,16 @@ title: Home
           </div>
         </div>
       </nav>
-      <div class="list-group" style="display: none" v-show="1">
-        <a href="/{{id}}" class="list-group-item" v-repeat="gists" v-class="'gn-active': id == gist.meta.id">
+      <div class="list-group gn-gists-list" style="display: none" v-show="1">
+        <a href="/{{id}}" class="list-group-item gn-gists-list-item" v-repeat="gists"
+           v-class="'gn-gists-list-item-active': id == gist.meta.id">
           {{description}}
         </a>
       </div>
 
     </div>
     <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2"></div>
-    <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10 gn-gist" style="display: none" v-show="1">
+    <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10" style="display: none" v-show="1">
 
       <div class="pull-right">
         <div class="dropdown" v-if="authorized">
