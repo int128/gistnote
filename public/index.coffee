@@ -1,9 +1,6 @@
 ---
 ---
 
-if location.hostname != 'localhost' and location.protocol != 'https:'
-  location.replace "https://#{location.host}"
-
 marked.setOptions highlight: (code, lang) -> hljs.highlightAuto(code, [lang]).value
 
 vm = new Vue
