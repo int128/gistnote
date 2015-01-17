@@ -28,7 +28,7 @@ vm = new Vue
     showList: ->
       github.gists().then (gists) => @gists = gists
     openGist: (id) ->
-      if cached = (@gists.filter -> @id == id)[0]
+      if cached = (@gists.filter (gist) -> gist.id == id)[0]
         @openGistObject cached
       else
         github.gist(id).then (gist) => @openGistObject gist
