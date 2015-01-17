@@ -11,22 +11,27 @@ github =
   get: (resource) ->
     $.ajax "https://api.github.com/#{resource}",
       headers: Authorization: "token #{@token}" if @token
-  gists:     -> @get 'gists'
-  gist: (id) -> @get "gists/#{id}"
-  user:      -> @get 'user'
+  gistsOfCurrentUser: -> @get 'gists'
+  gistsOfPublic:      -> @get 'gists/public'
+  gist: (id)          -> @get "gists/#{id}"
+  user:               -> @get 'user'
 
 vm = new Vue
   el: 'body'
   data:
     user: null
     gists: []
+    gistsIsPublic: !github.token
     gist: null
   methods:
-    showUser: ->
+    fetchUser: ->
       if github.token
         github.user().then (user) => @user = user
-    showList: ->
-      github.gists().then (gists) => @gists = gists
+    fetchGists: ->
+      if @gistsIsPublic
+        github.gistsOfPublic().then (gists) => @gists = gists
+      else
+        github.gistsOfCurrentUser().then (gists) => @gists = gists
     openGist: (id) ->
       if cached = (@gists.filter (gist) -> gist.id == id)[0]
         @openGistObject cached
@@ -46,11 +51,12 @@ vm = new Vue
   filters:
     marked: (content) -> marked(content) if content
     highlight: (content) -> hljs.highlightAuto(content).value if content
+  created: ->
+    @fetchUser()
+    @fetchGists()
+    @$watch 'gistsIsPublic', -> @fetchGists()
   compiled: ->
     marked.setOptions highlight: (code, lang) -> hljs.highlightAuto(code, [lang]).value
-  ready: ->
-    @showUser()
-    @showList()
 
 page '/login', ->
   clientId = '741e291348ea3f2305bd'

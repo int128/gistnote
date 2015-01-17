@@ -15,11 +15,25 @@ title: Home
           </div>
         </div>
       </nav>
-      <div class="list-group gn-gists-list" style="display: none" v-show="1">
-        <a href="/{{id}}" class="list-group-item gn-gists-list-item" v-repeat="gists"
-           v-class="'gn-gists-list-item-active': id == gist.meta.id">
-          {{description}}
-        </a>
+
+      <div style="display: none" v-show="1">
+        <ul class="nav nav-pills">
+          <li v-class="active: !gistsIsPublic" v-if="user">
+            <a tabindex="0" v-on="click: gistsIsPublic = false">@{{user.login}}</a>
+          </li>
+          <li v-class="active: gistsIsPublic">
+            <a tabindex="0" v-on="click: gistsIsPublic = true">Public</a>
+          </li>
+          <li v-if="!user">
+            <a href="/login">Yours</a>
+          </li>
+        </ul>
+        <div class="list-group gn-gists-list">
+          <a href="/{{id}}" class="list-group-item gn-gists-list-item" v-repeat="gists"
+             v-class="'gn-gists-list-item-active': id == gist.meta.id">
+            {{description}}
+          </a>
+        </div>
       </div>
 
     </div>
@@ -56,8 +70,8 @@ title: Home
             <img src="public/arrow.png" class="img-responsive"/>
           </div>
           <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8 gn-help-gists-description">
-            <h2 v-if="user">Your Gists. Click to Open.</h2>
-            <h2 v-if="!user">Public Gists. Click to Open.</h2>
+            <h2 v-if="!gistsIsPublic">Your Gists. Click to Open.</h2>
+            <h2 v-if="gistsIsPublic">Public Gists. Click to Open.</h2>
           </div>
         </div>
         <div class="text-right gn-copyright">
