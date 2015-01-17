@@ -40,12 +40,32 @@ title: Home
             </ul>
           </li>
           <li role="presentation" class="dropdown" v-if="!user">
-            <a href="/login">Log in with GitHub Account</a>
+            <a href="/login"><span class="glyphicon glyphicon-user"></span> Login with your GitHub account</a>
           </li>
         </ul>
       </div>
 
-      <div v-if="gist.meta.id">
+      <div v-if="!gist">
+        <div class="jumbotron">
+          <h1>Gistnote</h1>
+          <p>Makes easy to work with Gist.</p>
+          <p v-if="!user"><a href="/login" class="btn btn-primary">Login with your GitHub account</a></p>
+        </div>
+        <div class="row gn-help-gists">
+          <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+            <img src="public/arrow.png" class="img-responsive"/>
+          </div>
+          <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8 gn-help-gists-description">
+            <h2 v-if="user">Your Gists. Click to Open.</h2>
+            <h2 v-if="!user">Public Gists. Click to Open.</h2>
+          </div>
+        </div>
+        <div class="text-right gn-copyright">
+          <p>Gistnote is a Gist client app based on JavaScript. &copy; Hidetake Iwata, 2015.</p>
+        </div>
+      </div>
+
+      <div v-if="gist">
         <div class="page-header">
           <h2>{{gist.meta.description}}</h2>
         </div>

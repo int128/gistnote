@@ -3,6 +3,10 @@
   margin-bottom: 0;
 }
 
+.jumbotron {
+  background-color: inherit;
+}
+
 .gn-user-avatar {
   width: 32px;
   height: 32px;
@@ -24,4 +28,20 @@
 .gn-gists-list-item-active {
   font-weight: bold;
   background-color: #eee;
+}
+
+.gn-help-gists.row {
+  position: relative;
+}
+
+.gn-help-gists-description {
+  position: absolute;
+  bottom: 0;
+  right: 1em;
+}
+
+.gn-copyright {
+  margin-top: 5em;
+  font-size: 90%;
+  color: #444;
 }

@@ -15,9 +15,7 @@ vm = new Vue
   data:
     user: null
     gists: []
-    gist:
-      meta: {}
-      files: []
+    gist: null
   methods:
     showUser: ->
       if github.token
@@ -30,13 +28,16 @@ vm = new Vue
       else
         github.gist(id).then (gist) => @openGistObject gist
     openGistObject: (gistObject) ->
-      @gist.meta = gistObject
-      @gist.files = Object.keys(gistObject.files).map (filename) ->
-        file =
-          meta: gistObject.files[filename]
-          content: null
-        $.get(file.meta.raw_url).then (content) -> file.content = content
-        file
+      @gist =
+        meta: gistObject
+        files: Object.keys(gistObject.files).map (filename) ->
+          file =
+            meta: gistObject.files[filename]
+            content: null
+          $.get(file.meta.raw_url).then (content) -> file.content = content
+          file
+    openTopPage: ->
+      @gist = null
   filters:
     marked: (content) -> marked(content) if content
     highlight: (content) -> hljs.highlightAuto(content).value if content
@@ -59,8 +60,9 @@ page '/logout', ->
   location.replace '/'
 
 page '/:id', (context) ->
-  vm.openGist(context.params.id)
+  vm.openGist context.params.id
 
 page ->
+  vm.openTopPage()
 
 page hashbang: true
