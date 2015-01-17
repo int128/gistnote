@@ -27,7 +27,7 @@ title: Home
     <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10" style="display: none" v-show="1">
 
       <div class="pull-right">
-        <div class="dropdown" v-if="authorized">
+        <div class="dropdown" v-if="user">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
             {{user.name}}
             <img class="gn-user-avatar" v-attr="src: user.avatar_url"/>
@@ -36,7 +36,7 @@ title: Home
             <li><a href="/logout">Logout</a></li>
           </ul>
         </div>
-        <div v-if="!authorized"><a href="/login">Log in with GitHub Account</a></div>
+        <div v-if="!user"><a href="/login">Log in with GitHub Account</a></div>
       </div>
 
       <div v-if="gist.meta.id">

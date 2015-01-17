@@ -18,10 +18,9 @@ vm = new Vue
     gist:
       meta: {}
       files: []
-    authorized: github.token
   methods:
     showUser: ->
-      if @authorized
+      if github.token
         github.user().then (user) => @user = user
     showList: ->
       github.gists().then (gists) => @gists = gists
