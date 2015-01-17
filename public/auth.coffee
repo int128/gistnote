@@ -6,7 +6,7 @@ if m = location.search.match(/\?code=(.+)&state=(.+)/)
   if state == sessionStorage.state
     $.post 'https://gistnote.appspot.com/auth', code: code
     .then (token) ->
-      sessionStorage.token = token
+      localStorage.token = token
       delete sessionStorage.state
       location.replace '/'
     .fail (e) ->

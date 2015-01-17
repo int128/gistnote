@@ -2,7 +2,7 @@
 ---
 
 github =
-  token: sessionStorage.token
+  token: localStorage.token
   get: (resource) ->
     $.ajax "https://api.github.com/#{resource}",
       headers: Authorization: "token #{@token}" if @token
@@ -56,7 +56,7 @@ page '/login', ->
   location.href = "#{endpoint}?client_id=#{clientId}&redirect_uri=#{uri}&scope=#{scope}&state=#{state}"
 
 page '/logout', ->
-  delete sessionStorage.token
+  delete localStorage.token
   location.replace '/'
 
 page '/:id', (context) ->
