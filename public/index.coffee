@@ -4,7 +4,7 @@
 # Enforce reload after authorization to clear cache
 if sessionStorage.state
   delete sessionStorage.state
-  location.reload()
+  location.reload true
 
 github =
   token: localStorage.token
