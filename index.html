@@ -89,7 +89,11 @@ title: Home
           <ul>
         </div>
         <ul class="list-inline">
-          <li><span class="glyphicon glyphicon-user"></span> {{gist.meta.owner.login}}</li>
+          <li>
+            <span class="glyphicon glyphicon-user"></span>
+            <a href="{{gist.meta.owner.html_url}}" v-if="gist.meta.owner">{{gist.meta.owner.login}}</a>
+            <span v-if="!gist.meta.owner">anonymous</span>
+          </li>
           <li><span class="glyphicon glyphicon-time"></span> Created at {{gist.meta.created_at}}</li>
           <li><span class="glyphicon glyphicon-time"></span> Updated at {{gist.meta.updated_at}}</li>
           <li class="text-danger" v-if="!gist.meta.public">Private</li>
