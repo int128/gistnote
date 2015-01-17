@@ -44,6 +44,7 @@ vm = new Vue
     marked.setOptions highlight: (code, lang) -> hljs.highlightAuto(code, [lang]).value
   ready: ->
     @showUser()
+    @showList()
 
 page '/authorize', ->
   clientId = '741e291348ea3f2305bd'
@@ -58,9 +59,8 @@ page '/logout', ->
   location.replace '/'
 
 page '/:id', (context) ->
-  vm.showList().then -> vm.openGist(context.params.id)
+  vm.openGist(context.params.id)
 
 page ->
-  vm.showList()
 
 page hashbang: true
