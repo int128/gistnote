@@ -1,7 +1,13 @@
 ---
 ---
 
-marked.setOptions highlight: (code, lang) -> hljs.highlightAuto(code, [lang]).value
+github =
+  headers: ->
+    if sessionStorage.token
+      Authorization: "token #{sessionStorage.token}"
+  gists: -> $.ajax 'https://api.github.com/gists', headers: @headers()
+  gist: (id) -> $.ajax "https://api.github.com/gists/#{id}", headers: @headers()
+  user: -> $.ajax 'https://api.github.com/user', headers: @headers()
 
 vm = new Vue
   el: 'body'
@@ -17,31 +23,27 @@ vm = new Vue
     authorized: sessionStorage.token
   methods:
     showUser: ->
-      if vm.authorized
-        github.user().then (user) -> vm.user = user
+      if @authorized
+        github.user().then (user) => @user = user
     showList: ->
-      github.gists().then (gists) -> vm.gists = gists
+      github.gists().then (gists) => @gists = gists
     openGist: (id) ->
-      if found = (vm.gists.filter -> @id == id)[0]
-        vm.openGistObject found
+      if cached = (@gists.filter -> @id == id)[0]
+        @openGistObject cached
       else
-        github.gist(id).then (gist) -> vm.openGistObject gist
+        github.gist(id).then (gist) => @openGistObject gist
     openGistObject: (gistObject) ->
-      vm.gist.meta = gistObject
-      vm.gist.files = Object.keys(gistObject.files).map (filename) ->
+      @gist.meta = gistObject
+      @gist.files = Object.keys(gistObject.files).map (filename) ->
         file =
           meta: gistObject.files[filename]
           content: null
         $.get(file.meta.raw_url).then (content) -> file.content = content
         file
-
-github =
-  headers: ->
-    if sessionStorage.token
-      Authorization: "token #{sessionStorage.token}"
-  gists: -> $.ajax 'https://api.github.com/gists', headers: @headers()
-  gist: (id) -> $.ajax "https://api.github.com/gists/#{id}", headers: @headers()
-  user: -> $.ajax 'https://api.github.com/user', headers: @headers()
+  compiled: ->
+    marked.setOptions highlight: (code, lang) -> hljs.highlightAuto(code, [lang]).value
+  ready: ->
+    @showUser()
 
 page '/authorize', ->
   clientId = '741e291348ea3f2305bd'
@@ -56,11 +58,9 @@ page '/logout', ->
   location.replace '/'
 
 page '/:id', (context) ->
-  vm.openGist context.params.id
+  vm.showList().then -> vm.openGist(context.params.id)
 
 page ->
+  vm.showList()
 
-vm.showList().then ->
-  page hashbang: true
-
-vm.showUser()
+page hashbang: true
