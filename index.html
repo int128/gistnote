@@ -2,26 +2,29 @@
 layout: default
 title: Home
 ---
+{% raw %}
 
 <div class="container-fluid">
   <div class="row">
     <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 gn-gists-list">
+
       <nav class="navbar navbar-default">
         <div class="container-fluid">
           <div class="navbar-header">
-            <a class="navbar-brand" href="/">{{site.title}}</a>
+            <a class="navbar-brand" href="/">{% endraw %}{{site.title}}{% raw %}</a>
           </div>
         </div>
       </nav>
-      {% raw %}
       <div class="list-group">
         <a href="/{{id}}" class="list-group-item" v-repeat="gists" v-class="'gn-active': id == gist.meta.id">
           {{description}}
         </a>
       </div>
+
     </div>
     <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2"></div>
     <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10 gn-gist">
+
       <div class="pull-right">
         <div class="dropdown" v-if="authorized">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
@@ -34,6 +37,7 @@ title: Home
         </div>
         <div v-if="!authorized"><a href="/authorize">Log in with GitHub Account</a></div>
       </div>
+
       <div v-if="gist.meta.id">
         <div class="page-header">
           <h2>{{gist.meta.description}}</h2>
@@ -64,6 +68,7 @@ title: Home
           </div>
         </div>
       </div>
+
     </div>
   </div>
 </div>
