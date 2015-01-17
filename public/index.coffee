@@ -2,25 +2,23 @@
 ---
 
 github =
-  headers: ->
-    if sessionStorage.token
-      Authorization: "token #{sessionStorage.token}"
-  gists: -> $.ajax 'https://api.github.com/gists', headers: @headers()
-  gist: (id) -> $.ajax "https://api.github.com/gists/#{id}", headers: @headers()
-  user: -> $.ajax 'https://api.github.com/user', headers: @headers()
+  token: sessionStorage.token
+  get: (resource) ->
+    $.ajax "https://api.github.com/#{resource}",
+      headers: Authorization: "token #{@token}" if @token
+  gists:     -> @get 'gists'
+  gist: (id) -> @get "gists/#{id}"
+  user:      -> @get 'user'
 
 vm = new Vue
   el: 'body'
-  filters:
-    marked: (content) -> marked(content) if content
-    highlight: (content) -> hljs.highlightAuto(content).value if content
   data:
     user: null
     gists: []
     gist:
       meta: {}
       files: []
-    authorized: sessionStorage.token
+    authorized: github.token
   methods:
     showUser: ->
       if @authorized
@@ -40,13 +38,16 @@ vm = new Vue
           content: null
         $.get(file.meta.raw_url).then (content) -> file.content = content
         file
+  filters:
+    marked: (content) -> marked(content) if content
+    highlight: (content) -> hljs.highlightAuto(content).value if content
   compiled: ->
     marked.setOptions highlight: (code, lang) -> hljs.highlightAuto(code, [lang]).value
   ready: ->
     @showUser()
     @showList()
 
-page '/authorize', ->
+page '/login', ->
   clientId = '741e291348ea3f2305bd'
   endpoint = 'https://github.com/login/oauth/authorize'
   uri = "#{location.origin}/auth.html"
