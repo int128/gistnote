@@ -57,7 +57,7 @@ page '/login', ->
   endpoint = 'https://github.com/login/oauth/authorize'
   uri = "#{location.origin}/auth.html"
   scope = 'gist'
-  sessionStorage.state = state = Math.random().toString(36)  # TODO: more secure method
+  sessionStorage.state = state = Math.random().toString(36).substring(2) + Math.random().toString(36).substring(2)
   location.href = "#{endpoint}?client_id=#{clientId}&redirect_uri=#{uri}&scope=#{scope}&state=#{state}"
 
 page '/logout', ->
