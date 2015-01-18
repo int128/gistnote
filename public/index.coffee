@@ -17,25 +17,26 @@ github =
   user:               -> @get 'user'
 
 Vue.component 'login-status', template: '#template-login-status'
-
+Vue.component 'gist-list', template: '#template-gist-list'
 Vue.component 'a-gist', template: '#template-a-gist'
 
 vm = new Vue
   el: 'body'
   data:
     user: null
-    gists: []
-    gistsIsPublic: !github.token
+    gists:
+      all: []
+      isPublic: !github.token
     gist: null
   methods:
     fetchUser: ->
       if github.token
         github.user().then (user) => @user = user
     fetchGists: ->
-      if @gistsIsPublic
-        github.gistsOfPublic().then (gists) => @gists = gists
+      if @gists.isPublic
+        github.gistsOfPublic().then (gists) => @gists.all = gists
       else
-        github.gistsOfCurrentUser().then (gists) => @gists = gists
+        github.gistsOfCurrentUser().then (gists) => @gists.all = gists
     openGist: (id) ->
       github.gist(id).then (gist) => @gist = gist
     openTopPage: ->
@@ -46,7 +47,7 @@ vm = new Vue
   created: ->
     @fetchUser()
     @fetchGists()
-    @$watch 'gistsIsPublic', -> @fetchGists()
+    @$watch 'gists.isPublic', -> @fetchGists()
   compiled: ->
     marked.setOptions highlight: (code, lang) -> hljs.highlightAuto(code, [lang]).value
 

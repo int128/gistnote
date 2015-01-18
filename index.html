@@ -16,25 +16,7 @@ title: Home
         </div>
       </nav>
 
-      <div style="display: none" v-show="1">
-        <ul class="nav nav-pills">
-          <li v-class="active: !gistsIsPublic" v-if="user">
-            <a tabindex="0" v-on="click: gistsIsPublic = false">@{{user.login}}</a>
-          </li>
-          <li v-class="active: gistsIsPublic">
-            <a tabindex="0" v-on="click: gistsIsPublic = true">Public</a>
-          </li>
-          <li v-if="!user">
-            <a href="/login">Yours</a>
-          </li>
-        </ul>
-        <div class="list-group gn-gists-list">
-          <a href="/{{id}}" class="list-group-item gn-gists-list-item" v-repeat="gists"
-             v-class="'gn-gists-list-item-active': id == gist.id">
-            {{description}}
-          </a>
-        </div>
-      </div>
+      <div v-component="gist-list" v-with="gists, current: gist, user: user"></div>
 
     </div>
     <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2"></div>
@@ -87,6 +69,20 @@ title: Home
         <a href="/login"><span class="glyphicon glyphicon-user"></span> Login with your GitHub account</a>
       </li>
     </ul>
+  </div>
+
+  <div id="template-gist-list">
+    <ul class="nav nav-pills">
+      <li v-class="active: !isPublic" v-if="user"><a tabindex="0" v-on="click: isPublic = false">@{{user.login}}</a></li>
+      <li v-class="active: isPublic"><a tabindex="0" v-on="click: isPublic = true">Public</a></li>
+      <li v-if="!user"><a href="/login">Yours</a></li>
+    </ul>
+    <div class="list-group gn-gists-list">
+      <a href="/{{id}}" class="list-group-item gn-gists-list-item"
+        v-repeat="all" v-class="'gn-gists-list-item-active': id == current.id">
+        {{description}}
+      </a>
+    </div>
   </div>
 
   <div id="template-a-gist">
