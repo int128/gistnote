@@ -44,7 +44,55 @@ title: Home
         </div>
       </div>
 
-      <div v-component="a-gist" v-with="gist" v-show="gist"></div>
+      <div v-if="gist">
+        <div class="page-header"><h2>{{gist.description}}</h2></div>
+        <ul class="list-inline pull-right">
+          <li v-if="!edit">
+            <span class="glyphicon glyphicon-edit"></span>
+            <a href="/{{gist.id}}/edit">Edit</a>
+          </li>
+          <li>
+            <span class="glyphicon glyphicon-new-window"></span>
+            <a href="{{gist.html_url}}" target="_blank">Open in Gist</a>
+          </li>
+        </ul>
+        <ul class="list-inline">
+          <li>
+            <span class="glyphicon glyphicon-user"></span>
+            <a href="{{gist.owner.html_url}}" v-if="gist.owner">{{gist.owner.login}}</a>
+            <span v-if="!gist.owner">anonymous</span>
+          </li>
+          <li><span class="glyphicon glyphicon-time"></span> Created at {{gist.created_at}}</li>
+          <li><span class="glyphicon glyphicon-time"></span> Updated at {{gist.updated_at}}</li>
+          <li class="text-danger" v-if="!gist.public">Private</li>
+        </ul>
+        <div v-repeat="gist.files">
+          <h3>{{filename}}</h3>
+          <span class="label label-primary">{{language}}</span>
+          <div class="panel panel-default" v-if="language == 'Markdown'">
+            <div class="panel-body">
+              <div v-html="content | marked" v-if="!edit"></div>
+              <div class="row autosize-textarea" v-if="edit">
+                <textarea class="form-control" v-model="content"></textarea>
+                <div class="col-sm-6 col-md-6 col-lg-6 col-sm-offset-6 col-md-offset-6 col-lg-offset-6" v-html="content | marked"></div>
+              </div>
+            </div>
+          </div>
+          <div v-if="language != 'Markdown'">
+            <pre v-if="!edit"><code v-html="content | highlight"></code></pre>
+            <div class="row autosize-textarea" v-if="edit">
+              <textarea class="form-control" v-model="content"></textarea>
+              <pre class="col-sm-6 col-md-6 col-lg-6 col-sm-offset-6 col-md-offset-6 col-lg-offset-6"><code v-html="content | highlight"></code></pre>
+            </div>
+          </div>
+        </div>
+        <div v-if="edit">
+          <form class="gn-gist-edit-form">
+            <button type="button" class="btn btn-primary" v-on="click: saveGist">Update Gist</button>
+            <a href="/{{gist.id}}" class="btn btn-default">Cancel</a>
+          </form>
+        </div>
+      </div>
 
     </div>
   </div>
@@ -82,34 +130,6 @@ title: Home
         v-repeat="all" v-class="'gn-gists-list-item-active': id == current.id">
         {{description}}
       </a>
-    </div>
-  </div>
-
-  <div id="template-a-gist">
-    <div class="page-header"><h2>{{description}}</h2></div>
-    <ul class="list-inline pull-right">
-      <li>
-        <span class="glyphicon glyphicon-new-window"></span>
-        <a href="{{html_url}}" target="_blank">Open in Gist</a>
-      </li>
-    </ul>
-    <ul class="list-inline">
-      <li>
-        <span class="glyphicon glyphicon-user"></span>
-        <a href="{{owner.html_url}}" v-if="owner">{{owner.login}}</a>
-        <span v-if="!owner">anonymous</span>
-      </li>
-      <li><span class="glyphicon glyphicon-time"></span> Created at {{created_at}}</li>
-      <li><span class="glyphicon glyphicon-time"></span> Updated at {{updated_at}}</li>
-      <li class="text-danger" v-if="!public">Private</li>
-    </ul>
-    <div v-repeat="files">
-      <h3>{{filename}}</h3>
-      <span class="label label-primary">{{language}}</span>
-      <div class="panel panel-default" v-if="language == 'Markdown'">
-        <div class="panel-body" v-html="content | marked"></div>
-      </div>
-      <pre v-if="language != 'Markdown'"><code v-html="content | highlight"></code></pre>
     </div>
   </div>
 

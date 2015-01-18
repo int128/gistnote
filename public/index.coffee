@@ -11,14 +11,20 @@ github =
   get: (resource) ->
     $.ajax "https://api.github.com/#{resource}",
       headers: Authorization: "token #{@token}" if @token
+  patch: (resource, data) ->
+    $.ajax "https://api.github.com/#{resource}",
+      data: data
+      contentType: 'application/json'
+      type: 'PATCH'
+      headers: Authorization: "token #{@token}"
   gistsOfCurrentUser: -> @get 'gists'
   gistsOfPublic:      -> @get 'gists/public'
   gist: (id)          -> @get "gists/#{id}"
+  saveGist: (id, req) -> @patch "gists/#{id}", JSON.stringify(req)
   user:               -> @get 'user'
 
 Vue.component 'login-status', template: '#template-login-status'
 Vue.component 'gist-list', template: '#template-gist-list'
-Vue.component 'a-gist', template: '#template-a-gist'
 
 vm = new Vue
   el: 'body'
@@ -28,6 +34,7 @@ vm = new Vue
       all: []
       isPublic: !github.token
     gist: null
+    edit: false
   methods:
     fetchUser: ->
       if github.token
@@ -37,8 +44,20 @@ vm = new Vue
         github.gistsOfPublic().then (gists) => @gists.all = gists
       else
         github.gistsOfCurrentUser().then (gists) => @gists.all = gists
+    fetchGist: (id) ->
+      if @gist?.id != id
+        github.gist(id).then (gist) => @gist = gist
+    saveGist: ->
+      req = files: {}
+      Object.keys(@gist.files).map (name) => req.files[name] = content: @gist.files[name].content
+      github.saveGist(@gist.id, req).then =>
+        page "/#{@gist.id}"
     openGist: (id) ->
-      github.gist(id).then (gist) => @gist = gist
+      @edit = false
+      @fetchGist(id)
+    editGist: (id) ->
+      @edit = true
+      @fetchGist(id)
     openTopPage: ->
       @gist = null
   filters:
@@ -65,6 +84,9 @@ page '/logout', ->
 
 page '/:id', (context) ->
   vm.openGist context.params.id
+
+page '/:id/edit', (context) ->
+  vm.editGist context.params.id
 
 page ->
   vm.openTopPage()
