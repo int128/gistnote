@@ -62,46 +62,14 @@ title: Home
         </div>
       </div>
 
-      <div v-if="gist">
-        <div class="page-header">
-          <h2>{{gist.meta.description}}</h2>
-        </div>
-        <div class="pull-right">
-          <ul class="list-inline">
-            <li><span class="glyphicon glyphicon-new-window"></span> <a href="{{gist.meta.html_url}}" target="_blank">Open in Gist</a></li>
-          <ul>
-        </div>
-        <ul class="list-inline">
-          <li>
-            <span class="glyphicon glyphicon-user"></span>
-            <a href="{{gist.meta.owner.html_url}}" v-if="gist.meta.owner">{{gist.meta.owner.login}}</a>
-            <span v-if="!gist.meta.owner">anonymous</span>
-          </li>
-          <li><span class="glyphicon glyphicon-time"></span> Created at {{gist.meta.created_at}}</li>
-          <li><span class="glyphicon glyphicon-time"></span> Updated at {{gist.meta.updated_at}}</li>
-          <li class="text-danger" v-if="!gist.meta.public">Private</li>
-        </ul>
-        <div v-repeat="gist.files">
-          <div class="panel panel-default" v-if="meta.language == 'Markdown'">
-            <div class="panel-heading">
-              <span class="label label-primary pull-right">{{meta.language}}</span>
-              <h3 class="panel-title">{{meta.filename}}</h3>
-            </div>
-            <div class="panel-body" v-html="content | marked"></div>
-          </div>
-          <div v-if="meta.language != 'Markdown'">
-            <h3>{{meta.filename}}</h3>
-            <span class="label label-primary">{{meta.language}}</span>
-            <pre><code v-html="content | highlight"></code></pre>
-          </div>
-        </div>
-      </div>
+      <div v-component="a-gist" v-with="gist: gist"></div>
 
     </div>
   </div>
 </div>
 
 <div class="templates" style="display: none" v-if="false">
+
   <div id="template-login-status">
     <ul class="nav nav-pills">
       <li role="presentation" class="dropdown" v-if="user">
@@ -120,6 +88,43 @@ title: Home
       </li>
     </ul>
   </div>
+
+  <div id="template-a-gist">
+    <div v-if="gist">
+      <div class="page-header"><h2>{{gist.meta.description}}</h2></div>
+      <ul class="list-inline pull-right">
+        <li>
+          <span class="glyphicon glyphicon-new-window"></span>
+          <a href="{{gist.meta.html_url}}" target="_blank">Open in Gist</a>
+        </li>
+      </ul>
+      <ul class="list-inline">
+        <li>
+          <span class="glyphicon glyphicon-user"></span>
+          <a href="{{gist.meta.owner.html_url}}" v-if="gist.meta.owner">{{gist.meta.owner.login}}</a>
+          <span v-if="!gist.meta.owner">anonymous</span>
+        </li>
+        <li><span class="glyphicon glyphicon-time"></span> Created at {{gist.meta.created_at}}</li>
+        <li><span class="glyphicon glyphicon-time"></span> Updated at {{gist.meta.updated_at}}</li>
+        <li class="text-danger" v-if="!gist.meta.public">Private</li>
+      </ul>
+      <div v-repeat="gist.files">
+        <div class="panel panel-default" v-if="meta.language == 'Markdown'">
+          <div class="panel-heading">
+            <span class="label label-primary pull-right">{{meta.language}}</span>
+            <h3 class="panel-title">{{meta.filename}}</h3>
+          </div>
+          <div class="panel-body" v-html="content | marked"></div>
+        </div>
+        <div v-if="meta.language != 'Markdown'">
+          <h3>{{meta.filename}}</h3>
+          <span class="label label-primary">{{meta.language}}</span>
+          <pre><code v-html="content | highlight"></code></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </div>
 
 <script src="//code.jquery.com/jquery-2.1.0.min.js"></script>

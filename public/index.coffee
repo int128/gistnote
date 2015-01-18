@@ -18,6 +18,8 @@ github =
 
 Vue.component 'login-status', template: '#template-login-status'
 
+Vue.component 'a-gist', template: '#template-a-gist'
+
 vm = new Vue
   el: 'body'
   data:
