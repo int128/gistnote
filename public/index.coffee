@@ -37,19 +37,7 @@ vm = new Vue
       else
         github.gistsOfCurrentUser().then (gists) => @gists = gists
     openGist: (id) ->
-      if cached = (@gists.filter (gist) -> gist.id == id)[0]
-        @openGistObject cached
-      else
-        github.gist(id).then (gist) => @openGistObject gist
-    openGistObject: (gistObject) ->
-      @gist =
-        meta: gistObject
-        files: Object.keys(gistObject.files).map (filename) ->
-          file =
-            meta: gistObject.files[filename]
-            content: null
-          $.get(file.meta.raw_url).then (content) -> file.content = content
-          file
+      github.gist(id).then (gist) => @gist = gist
     openTopPage: ->
       @gist = null
   filters:

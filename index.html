@@ -30,7 +30,7 @@ title: Home
         </ul>
         <div class="list-group gn-gists-list">
           <a href="/{{id}}" class="list-group-item gn-gists-list-item" v-repeat="gists"
-             v-class="'gn-gists-list-item-active': id == gist.meta.id">
+             v-class="'gn-gists-list-item-active': id == gist.id">
             {{description}}
           </a>
         </div>
@@ -40,7 +40,7 @@ title: Home
     <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2"></div>
     <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10" style="display: none" v-show="1">
 
-      <div class="pull-right" v-component="login-status" v-with="user: user"></div>
+      <div class="pull-right" v-component="login-status" v-with="user"></div>
 
       <div v-if="!gist">
         <div class="jumbotron">
@@ -62,7 +62,7 @@ title: Home
         </div>
       </div>
 
-      <div v-component="a-gist" v-with="gist: gist"></div>
+      <div v-component="a-gist" v-with="gist"></div>
 
     </div>
   </div>
@@ -72,53 +72,53 @@ title: Home
 
   <div id="template-login-status">
     <ul class="nav nav-pills">
-      <li role="presentation" class="dropdown" v-if="user">
+      <li role="presentation" class="dropdown" v-if="id">
         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-          {{user.name}}
-          <img class="gn-user-avatar" v-attr="src: user.avatar_url"/>
+          {{name}}
+          <img class="gn-user-avatar" v-attr="src: avatar_url"/>
         </a>
         <ul class="dropdown-menu" role="menu">
-          <li role="presentation" class="dropdown-header">@{{user.login}}</li>
-          <li><a href="{{user.html_url}}">Open GitHub</a></li>
+          <li role="presentation" class="dropdown-header">@{{login}}</li>
+          <li><a href="{{html_url}}">Open GitHub</a></li>
           <li><a href="/logout">Logout</a></li>
         </ul>
       </li>
-      <li role="presentation" class="dropdown" v-if="!user">
+      <li role="presentation" class="dropdown" v-if="!id">
         <a href="/login"><span class="glyphicon glyphicon-user"></span> Login with your GitHub account</a>
       </li>
     </ul>
   </div>
 
   <div id="template-a-gist">
-    <div v-if="gist">
-      <div class="page-header"><h2>{{gist.meta.description}}</h2></div>
+    <div v-if="id">
+      <div class="page-header"><h2>{{description}}</h2></div>
       <ul class="list-inline pull-right">
         <li>
           <span class="glyphicon glyphicon-new-window"></span>
-          <a href="{{gist.meta.html_url}}" target="_blank">Open in Gist</a>
+          <a href="{{html_url}}" target="_blank">Open in Gist</a>
         </li>
       </ul>
       <ul class="list-inline">
         <li>
           <span class="glyphicon glyphicon-user"></span>
-          <a href="{{gist.meta.owner.html_url}}" v-if="gist.meta.owner">{{gist.meta.owner.login}}</a>
-          <span v-if="!gist.meta.owner">anonymous</span>
+          <a href="{{owner.html_url}}" v-if="owner">{{owner.login}}</a>
+          <span v-if="!owner">anonymous</span>
         </li>
-        <li><span class="glyphicon glyphicon-time"></span> Created at {{gist.meta.created_at}}</li>
-        <li><span class="glyphicon glyphicon-time"></span> Updated at {{gist.meta.updated_at}}</li>
-        <li class="text-danger" v-if="!gist.meta.public">Private</li>
+        <li><span class="glyphicon glyphicon-time"></span> Created at {{created_at}}</li>
+        <li><span class="glyphicon glyphicon-time"></span> Updated at {{updated_at}}</li>
+        <li class="text-danger" v-if="!public">Private</li>
       </ul>
-      <div v-repeat="gist.files">
-        <div class="panel panel-default" v-if="meta.language == 'Markdown'">
+      <div v-repeat="files">
+        <div class="panel panel-default" v-if="language == 'Markdown'">
           <div class="panel-heading">
-            <span class="label label-primary pull-right">{{meta.language}}</span>
-            <h3 class="panel-title">{{meta.filename}}</h3>
+            <span class="label label-primary pull-right">{{language}}</span>
+            <h3 class="panel-title">{{filename}}</h3>
           </div>
           <div class="panel-body" v-html="content | marked"></div>
         </div>
-        <div v-if="meta.language != 'Markdown'">
-          <h3>{{meta.filename}}</h3>
-          <span class="label label-primary">{{meta.language}}</span>
+        <div v-if="language != 'Markdown'">
+          <h3>{{filename}}</h3>
+          <span class="label label-primary">{{language}}</span>
           <pre><code v-html="content | highlight"></code></pre>
         </div>
       </div>
