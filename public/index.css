@@ -3,8 +3,20 @@
   margin-bottom: 0;
 }
 
-pre {
+pre, textarea.form-control {
   border: none;
+}
+
+.autosize-textarea {
+  position: relative;
+}
+
+.autosize-textarea textarea {
+  position: absolute;
+  width: 50%;
+  top: 0;
+  bottom: 0;
+  left: 0;
 }
 
 .jumbotron {
@@ -32,6 +44,11 @@ pre {
 .gn-gists-list-item-active {
   font-weight: bold;
   background-color: #eee;
+}
+
+.gn-gist-edit-form {
+  margin-top: 2em;
+  margin-bottom: 2em;
 }
 
 .gn-help-gists.row {
