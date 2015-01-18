@@ -16,6 +16,8 @@ github =
   gist: (id)          -> @get "gists/#{id}"
   user:               -> @get 'user'
 
+Vue.component 'login-status', template: '#template-login-status'
+
 vm = new Vue
   el: 'body'
   data:
