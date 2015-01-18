@@ -3,6 +3,10 @@
   margin-bottom: 0;
 }
 
+pre {
+  border: none;
+}
+
 .jumbotron {
   background-color: inherit;
 }

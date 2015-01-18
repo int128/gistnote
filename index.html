@@ -104,18 +104,12 @@ title: Home
       <li class="text-danger" v-if="!public">Private</li>
     </ul>
     <div v-repeat="files">
+      <h3>{{filename}}</h3>
+      <span class="label label-primary">{{language}}</span>
       <div class="panel panel-default" v-if="language == 'Markdown'">
-        <div class="panel-heading">
-          <span class="label label-primary pull-right">{{language}}</span>
-          <h3 class="panel-title">{{filename}}</h3>
-        </div>
         <div class="panel-body" v-html="content | marked"></div>
       </div>
-      <div v-if="language != 'Markdown'">
-        <h3>{{filename}}</h3>
-        <span class="label label-primary">{{language}}</span>
-        <pre><code v-html="content | highlight"></code></pre>
-      </div>
+      <pre v-if="language != 'Markdown'"><code v-html="content | highlight"></code></pre>
     </div>
   </div>
 
