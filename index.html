@@ -46,26 +46,26 @@ title: Home
 
       <div v-if="gist">
         <div class="page-header"><h2>{{gist.description}}</h2></div>
-        <ul class="list-inline pull-right">
-          <li v-if="!edit">
-            <span class="glyphicon glyphicon-edit"></span>
-            <a href="/{{gist.id}}/edit">Edit</a>
-          </li>
+        <ul class="list-inline pull-left">
           <li>
-            <span class="glyphicon glyphicon-new-window"></span>
-            <a href="{{gist.html_url}}" target="_blank">Open in Gist</a>
-          </li>
-        </ul>
-        <ul class="list-inline">
-          <li>
-            <span class="glyphicon glyphicon-user"></span>
-            <a href="{{gist.owner.html_url}}" v-if="gist.owner">{{gist.owner.login}}</a>
-            <span v-if="!gist.owner">anonymous</span>
+            <a href="{{gist.owner.html_url}}" target="_blank" v-if="gist.owner">
+              <span class="glyphicon glyphicon-user"></span> {{gist.owner.login}}
+            </a>
+            <span v-if="!gist.owner"><span class="glyphicon glyphicon-user"></span> anonymous</span>
           </li>
           <li><span class="glyphicon glyphicon-time"></span> Created at {{gist.created_at}}</li>
           <li><span class="glyphicon glyphicon-time"></span> Updated at {{gist.updated_at}}</li>
           <li class="text-danger" v-if="!gist.public">Private</li>
         </ul>
+        <ul class="list-inline pull-right">
+          <li v-if="!edit">
+            <a href="/{{gist.id}}/edit"><span class="glyphicon glyphicon-edit"></span> Edit</a>
+          </li>
+          <li>
+            <a href="{{gist.html_url}}" target="_blank"><span class="glyphicon glyphicon-new-window"></span> Gist</a>
+          </li>
+        </ul>
+        <div class="clearfix"></div>
         <div v-repeat="gist.files">
           <h3>{{filename}}</h3>
           <span class="label label-primary">{{language}}</span>
