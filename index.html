@@ -64,7 +64,7 @@ layout: default
             <span class="glyphicon glyphicon-time"></span>
             Updated <time datetime="{{gist.updated_at}}" title="{{gist.updated_at}}">{{gist.updated_at | timeago}}</time>
           </li>
-          <li class="text-danger" v-if="!gist.public">Private</li>
+          <li class="text-danger" v-if="!gist.public"><span class="glyphicon glyphicon-lock"></span> Private</li>
         </ul>
         <ul class="list-inline pull-right">
           <li v-if="!edit">
