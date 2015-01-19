@@ -20,4 +20,4 @@ gulp.task 'lib', ->
 gulp.task 'lib:pack', ->
   gulp.src javascripts.map (e) -> "bower_components/#{e}"
     .pipe uglify 'lib.js', outSourceMap: true
-    .pipe gulp.dest '..'
+    .pipe gulp.dest '../public'
