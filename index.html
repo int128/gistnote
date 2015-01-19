@@ -23,7 +23,7 @@ layout: default
 
       <div class="pull-right" v-component="login-status" v-with="user"></div>
 
-      <div v-if="!gist">
+      <div v-if="topPage">
         <div class="jumbotron">
           <h1>Gistnote</h1>
           <p>Makes easy to work with Gist.</p>
@@ -43,7 +43,11 @@ layout: default
         </div>
       </div>
 
-      <div v-if="gist">
+      <div v-if="!topPage &amp;&amp; !gist">
+        <div class="page-header"><h2><img src="public/loading.gif" alt="loading"/></h2></div>
+      </div>
+
+      <div v-if="!topPage &amp;&amp; gist">
         <div class="page-header"><h2>{{gist | gistTitle}}</h2></div>
         <ul class="list-inline pull-left">
           <li>

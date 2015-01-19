@@ -35,6 +35,7 @@ vm = new Vue
       isPublic: !github.token
     gist: null
     edit: false
+    topPage: false
   methods:
     fetchUser: ->
       if github.token
@@ -47,6 +48,7 @@ vm = new Vue
     fetchGist: (id) ->
       if @gist?.id != id
         github.gist(id).then (gist) => @gist = gist
+        @gist = null
     saveGist: ->
       req = files: {}
       Object.keys(@gist.files).map (name) => req.files[name] = content: @gist.files[name].content
@@ -54,11 +56,14 @@ vm = new Vue
         page "/#{@gist.id}"
     openGist: (id) ->
       @edit = false
+      @topPage = false
       @fetchGist(id)
     editGist: (id) ->
       @edit = true
+      @topPage = false
       @fetchGist(id)
     openTopPage: ->
+      @topPage = true
       @gist = null
   filters:
     marked: (content) -> marked(content) if content
