@@ -1,5 +1,8 @@
 /_site
 
+node_modules
+bower_components
+
 /.settings
 /bin
 .classpath
