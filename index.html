@@ -53,8 +53,14 @@ title: Home
             </a>
             <span v-if="!gist.owner"><span class="glyphicon glyphicon-user"></span> anonymous</span>
           </li>
-          <li><span class="glyphicon glyphicon-time"></span> Created at {{gist.created_at}}</li>
-          <li><span class="glyphicon glyphicon-time"></span> Updated at {{gist.updated_at}}</li>
+          <li>
+            <span class="glyphicon glyphicon-time"></span>
+            Created <time datetime="{{gist.created_at}}" title="{{gist.created_at}}">{{gist.created_at | timeago}}</time>
+          </li>
+          <li>
+            <span class="glyphicon glyphicon-time"></span>
+            Updated <time datetime="{{gist.updated_at}}" title="{{gist.updated_at}}">{{gist.updated_at | timeago}}</time>
+          </li>
           <li class="text-danger" v-if="!gist.public">Private</li>
         </ul>
         <ul class="list-inline pull-right">
@@ -139,8 +145,9 @@ title: Home
 <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/vue/0.11.0/vue.min.js"></script>
 <script src="//cdn.rawgit.com/visionmedia/page.js/1.5.0/page.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
 <script src="//cdn.rawgit.com/chjj/marked/v0.3.2/lib/marked.js"></script>
+<script src="//cdn.rawgit.com/rmm5t/jquery-timeago/v1.4.1/jquery.timeago.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
 <script src="/public/index.js"></script>
 
 {% endraw %}

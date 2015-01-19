@@ -63,6 +63,7 @@ vm = new Vue
   filters:
     marked: (content) -> marked(content) if content
     highlight: (content) -> hljs.highlightAuto(content).value if content
+    timeago: (time) -> $.timeago(time)
   created: ->
     @fetchUser()
     @fetchGists()
