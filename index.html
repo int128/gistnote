@@ -44,7 +44,7 @@ layout: default
       </div>
 
       <div v-if="gist">
-        <div class="page-header"><h2>{{gist.description}}</h2></div>
+        <div class="page-header"><h2>{{gist | gistTitle}}</h2></div>
         <ul class="list-inline pull-left">
           <li>
             <a href="{{gist.owner.html_url}}" target="_blank" v-if="gist.owner">
@@ -133,7 +133,7 @@ layout: default
     <div class="list-group gn-gists-list">
       <a href="/{{id}}" class="list-group-item gn-gists-list-item"
         v-repeat="all" v-class="'gn-gists-list-item-active': id == current.id">
-        {{description}}
+        {{$data | gistTitle}}
       </a>
     </div>
   </div>

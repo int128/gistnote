@@ -64,6 +64,7 @@ vm = new Vue
     marked: (content) -> marked(content) if content
     highlight: (content) -> hljs.highlightAuto(content).value if content
     timeago: (time) -> $.timeago(time)
+    gistTitle: (gist) -> gist.description or "gist:#{gist.id}" if gist
   created: ->
     @fetchUser()
     @fetchGists()
