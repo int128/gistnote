@@ -139,7 +139,7 @@ layout: default
     </ul>
     <div class="list-group gn-gists-list">
       <a href="/{{id}}" class="list-group-item gn-gists-list-item"
-        v-repeat="all" v-class="'gn-gists-list-item-active': id == current.id">
+        v-repeat="all" v-class="'gn-gists-list-item-active': id == (current ? current.id : null)">
         {{$data | gistTitle}}
       </a>
     </div>
