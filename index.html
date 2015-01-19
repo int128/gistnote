@@ -34,8 +34,8 @@ layout: default
             <img src="public/arrow.png" class="img-responsive"/>
           </div>
           <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8 gn-help-gists-description">
-            <h2 v-if="!gistsIsPublic">Your Gists. Click to Open.</h2>
-            <h2 v-if="gistsIsPublic">Public Gists. Click to Open.</h2>
+            <h2 v-if="!gists.isPublic">Your Gists. Click to Open.</h2>
+            <h2 v-if="gists.isPublic">Public Gists. Click to Open.</h2>
           </div>
         </div>
         <div class="text-right gn-copyright">
