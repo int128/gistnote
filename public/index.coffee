@@ -50,7 +50,9 @@ vm = new Vue
         github.gist(id).then (gist) => @gist = gist
         @gist = null
     saveGist: ->
-      req = files: {}
+      req =
+        description: @gist.description
+        files: {}
       Object.keys(@gist.files).map (name) => req.files[name] = content: @gist.files[name].content
       github.saveGist(@gist.id, req).then =>
         page "/#{@gist.id}"

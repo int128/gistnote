@@ -48,7 +48,9 @@ layout: default
       </div>
 
       <div v-if="!topPage &amp;&amp; gist">
-        <div class="page-header"><h2>{{gist | gistTitle}}</h2></div>
+        <div class="page-header" v-if="!edit"><h2>{{gist | gistTitle}}</h2></div>
+        <input type="text" class="form-control input-lg h2" placeholder="gist:{{gist.id}}" v-model="gist.description" v-if="edit"/>
+
         <ul class="list-inline pull-left">
           <li>
             <a href="{{gist.owner.html_url}}" target="_blank" v-if="gist.owner">
@@ -75,6 +77,7 @@ layout: default
           </li>
         </ul>
         <div class="clearfix"></div>
+
         <div v-repeat="gist.files">
           <h3>{{filename}}</h3>
           <span class="label label-primary">{{language}}</span>
