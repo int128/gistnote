@@ -31,8 +31,7 @@ vm = new Vue
       all: []
       isPublic: !github.token
     gist: null
-    edit: false
-    topPage: false
+    state: null
   methods:
     fetchUser: ->
       if github.token
@@ -43,9 +42,11 @@ vm = new Vue
       else
         github.gistsOfCurrentUser().then (gists) => @gists.all = gists
     fetchGist: (id) ->
-      if @gist?.id != id
+      if @gist?.id == id
+        $.Deferred().resolve()
+      else
+        @state = 'loading'
         github.gist(id).then (gist) => @gist = gist
-        @gist = null
     saveGist: ->
       req =
         description: @gist.description
@@ -54,19 +55,14 @@ vm = new Vue
       github.saveGist(@gist.id, req).then =>
         page "/#{@gist.id}"
     openGist: (id) ->
-      @edit = false
-      @topPage = false
-      @fetchGist(id)
+      @fetchGist(id).then => @state = 'view'
     editGist: (id) ->
-      @edit = true
-      @topPage = false
-      @fetchGist(id)
-    openTopPage: ->
-      @topPage = true
+      @fetchGist(id).then => @state = 'edit'
+    openTop: ->
+      @state = 'top'
       @gist = null
   components:
     'login-status':  template: '#template-login-status'
-    'gists-list':    template: '#template-gists-list'
     'gist-metadata': template: '#template-gist-metadata'
   filters:
     marked: (content) -> marked(content) if content
@@ -99,6 +95,6 @@ page '/:id/edit', (context) ->
   vm.editGist context.params.id
 
 page ->
-  vm.openTopPage()
+  vm.openTop()
 
 page hashbang: true

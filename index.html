@@ -15,7 +15,19 @@ layout: default
         </div>
       </nav>
 
-      <div v-component="gists-list" v-with="gists, current: gist, user: user"></div>
+      <ul class="nav nav-pills">
+        <li v-class="active: !gists.isPublic" v-if="user">
+          <a tabindex="0" v-on="click: gists.isPublic = false">@{{user.login}}</a>
+        </li>
+        <li v-class="active: gists.isPublic"><a tabindex="0" v-on="click: gists.isPublic = true">Public</a></li>
+        <li v-if="!user"><a href="/login">Yours</a></li>
+      </ul>
+      <div class="list-group gn-gists-list">
+        <a href="/{{id}}" class="list-group-item gn-gists-list-item"
+          v-repeat="gists.all" v-class="'gn-gists-list-item-active': id == (gist ? gist.id : null)">
+          {{$data | gistTitle}}
+        </a>
+      </div>
 
     </div>
     <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2"></div>
@@ -23,7 +35,7 @@ layout: default
 
       <div class="pull-right" v-component="login-status" v-with="user"></div>
 
-      <div v-if="topPage">
+      <div v-if="state == 'top'">
         <div class="jumbotron">
           <h1>Gistnote</h1>
           <p>Makes easy to work with Gist.</p>
@@ -43,54 +55,48 @@ layout: default
         </div>
       </div>
 
-      <div v-if="!topPage">
+      <div v-if="state == 'loading'">
+        <div class="page-header"><h2><img src="public/loading.gif" alt="loading"/></h2></div>
+      </div>
 
-        <div v-if="!gist">
-          <div class="page-header"><h2><img src="public/loading.gif" alt="loading"/></h2></div>
-        </div>
-
-        <div v-if="gist">
-          <div v-if="!edit">
-            <div class="page-header"><h2>{{gist | gistTitle}}</h2></div>
-            <div v-component="gist-metadata" v-with="gist: gist"></div>
-            <div v-repeat="gist.files">
-              <h3>{{$key}}</h3>
-              <span class="label label-primary">{{language}}</span>
-              <div class="panel panel-default" v-if="language == 'Markdown'">
-                <div class="panel-body" v-html="content | marked"></div>
-              </div>
-              <div v-if="language != 'Markdown'">
-                <pre><code v-html="content | highlight"></code></pre>
-              </div>
-            </div>
+      <div v-if="state == 'view'">
+        <div class="page-header"><h2>{{gist | gistTitle}}</h2></div>
+        <div v-component="gist-metadata" v-with="gist"></div>
+        <div v-repeat="gist.files">
+          <h3>{{$key}}</h3>
+          <span class="label label-primary">{{language}}</span>
+          <div class="panel panel-default" v-if="language == 'Markdown'">
+            <div class="panel-body" v-html="content | marked"></div>
           </div>
+          <div v-if="language != 'Markdown'">
+            <pre><code v-html="content | highlight"></code></pre>
+          </div>
+        </div>
+      </div>
 
-          <div v-if="edit">
-            <input type="text" class="form-control input-lg h2" placeholder="gist:{{gist.id}}" v-model="gist.description" v-if="edit"/>
-            <div v-component="gist-metadata" v-with="gist: gist"></div>
-            <div v-repeat="gist.files">
-              <h3>{{$key}}</h3>
-              <span class="label label-primary">{{language}}</span>
-              <div class="panel panel-default" v-if="language == 'Markdown'">
-                <div class="panel-body">
-                  <div class="row autosize-textarea">
-                    <textarea class="form-control" v-model="content"></textarea>
-                    <div class="col-sm-6 col-md-6 col-lg-6 col-sm-offset-6 col-md-offset-6 col-lg-offset-6" v-html="content | marked"></div>
-                  </div>
-                </div>
-              </div>
-              <div class="row autosize-textarea" v-if="language != 'Markdown'">
+      <div v-if="state == 'edit'">
+        <input type="text" class="form-control input-lg h2" placeholder="gist:{{gist.id}}" v-model="gist.description"/>
+        <div v-component="gist-metadata" v-with="gist"></div>
+        <div v-repeat="gist.files">
+          <h3>{{$key}}</h3>
+          <span class="label label-primary">{{language}}</span>
+          <div class="panel panel-default" v-if="language == 'Markdown'">
+            <div class="panel-body">
+              <div class="row autosize-textarea">
                 <textarea class="form-control" v-model="content"></textarea>
-                <pre class="col-sm-6 col-md-6 col-lg-6 col-sm-offset-6 col-md-offset-6 col-lg-offset-6"><code v-html="content | highlight"></code></pre>
+                <div class="col-sm-6 col-md-6 col-lg-6 col-sm-offset-6 col-md-offset-6 col-lg-offset-6" v-html="content | marked"></div>
               </div>
             </div>
-            <form class="gn-gist-edit-form">
-              <button type="button" class="btn btn-primary" v-on="click: saveGist">Update Gist</button>
-              <a href="/{{gist.id}}" class="btn btn-default">Cancel</a>
-            </form>
           </div>
-
+          <div class="row autosize-textarea" v-if="language != 'Markdown'">
+            <textarea class="form-control" v-model="content"></textarea>
+            <pre class="col-sm-6 col-md-6 col-lg-6 col-sm-offset-6 col-md-offset-6 col-lg-offset-6"><code v-html="content | highlight"></code></pre>
+          </div>
         </div>
+        <form class="gn-gist-edit-form">
+          <button type="button" class="btn btn-primary" v-on="click: saveGist">Update Gist</button>
+          <a href="/{{gist.id}}" class="btn btn-default">Cancel</a>
+        </form>
       </div>
 
     </div>
@@ -116,44 +122,30 @@ layout: default
   </ul>
 </script>
 
-<script type="text/template" id="template-gists-list">
-  <ul class="nav nav-pills">
-    <li v-class="active: !isPublic" v-if="user"><a tabindex="0" v-on="click: isPublic = false">@{{user.login}}</a></li>
-    <li v-class="active: isPublic"><a tabindex="0" v-on="click: isPublic = true">Public</a></li>
-    <li v-if="!user"><a href="/login">Yours</a></li>
-  </ul>
-  <div class="list-group gn-gists-list">
-    <a href="/{{id}}" class="list-group-item gn-gists-list-item"
-      v-repeat="all" v-class="'gn-gists-list-item-active': id == (current ? current.id : null)">
-      {{$data | gistTitle}}
-    </a>
-  </div>
-</script>
-
 <script type="text/template" id="template-gist-metadata">
   <ul class="list-inline pull-left">
     <li>
-      <a href="{{gist.owner.html_url}}" target="_blank" v-if="gist.owner">
-        <span class="glyphicon glyphicon-user"></span> {{gist.owner.login}}
+      <a href="{{owner.html_url}}" target="_blank" v-if="owner">
+        <span class="glyphicon glyphicon-user"></span> {{owner.login}}
       </a>
-      <span v-if="!gist.owner"><span class="glyphicon glyphicon-user"></span> anonymous</span>
+      <span v-if="!owner"><span class="glyphicon glyphicon-user"></span> anonymous</span>
     </li>
     <li>
       <span class="glyphicon glyphicon-time"></span>
-      Created <time datetime="{{gist.created_at}}" title="{{gist.created_at}}">{{gist.created_at | timeago}}</time>
+      Created <time datetime="{{created_at}}" title="{{created_at}}">{{created_at | timeago}}</time>
     </li>
     <li>
       <span class="glyphicon glyphicon-time"></span>
-      Updated <time datetime="{{gist.updated_at}}" title="{{gist.updated_at}}">{{gist.updated_at | timeago}}</time>
+      Updated <time datetime="{{updated_at}}" title="{{updated_at}}">{{updated_at | timeago}}</time>
     </li>
-    <li class="text-danger" v-if="!gist.public"><span class="glyphicon glyphicon-lock"></span> Private</li>
+    <li class="text-danger" v-if="!$data.public"><span class="glyphicon glyphicon-lock"></span> Private</li>
   </ul>
   <ul class="list-inline pull-right">
-    <li v-if="!edit">
-      <a href="/{{gist.id}}/edit"><span class="glyphicon glyphicon-edit"></span> Edit</a>
+    <li v-if="$root.state == 'view'">
+      <a href="/{{id}}/edit"><span class="glyphicon glyphicon-edit"></span> Edit</a>
     </li>
     <li>
-      <a href="{{gist.html_url}}" target="_blank"><span class="glyphicon glyphicon-new-window"></span> Gist</a>
+      <a href="{{html_url}}" target="_blank"><span class="glyphicon glyphicon-new-window"></span> Gist</a>
     </li>
   </ul>
   <div class="clearfix"></div>
