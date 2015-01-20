@@ -65,8 +65,9 @@ vm = new Vue
       @topPage = true
       @gist = null
   components:
-    'login-status': template: '#template-login-status'
-    'gist-list':    template: '#template-gist-list'
+    'login-status':  template: '#template-login-status'
+    'gists-list':    template: '#template-gists-list'
+    'gist-metadata': template: '#template-gist-metadata'
   filters:
     marked: (content) -> marked(content) if content
     highlight: (content) -> hljs.highlightAuto(content).value if content

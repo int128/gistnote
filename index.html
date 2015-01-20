@@ -15,7 +15,7 @@ layout: default
         </div>
       </nav>
 
-      <div v-component="gist-list" v-with="gists, current: gist, user: user"></div>
+      <div v-component="gists-list" v-with="gists, current: gist, user: user"></div>
 
     </div>
     <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2"></div>
@@ -51,32 +51,7 @@ layout: default
         <div class="page-header" v-if="!edit"><h2>{{gist | gistTitle}}</h2></div>
         <input type="text" class="form-control input-lg h2" placeholder="gist:{{gist.id}}" v-model="gist.description" v-if="edit"/>
 
-        <ul class="list-inline pull-left">
-          <li>
-            <a href="{{gist.owner.html_url}}" target="_blank" v-if="gist.owner">
-              <span class="glyphicon glyphicon-user"></span> {{gist.owner.login}}
-            </a>
-            <span v-if="!gist.owner"><span class="glyphicon glyphicon-user"></span> anonymous</span>
-          </li>
-          <li>
-            <span class="glyphicon glyphicon-time"></span>
-            Created <time datetime="{{gist.created_at}}" title="{{gist.created_at}}">{{gist.created_at | timeago}}</time>
-          </li>
-          <li>
-            <span class="glyphicon glyphicon-time"></span>
-            Updated <time datetime="{{gist.updated_at}}" title="{{gist.updated_at}}">{{gist.updated_at | timeago}}</time>
-          </li>
-          <li class="text-danger" v-if="!gist.public"><span class="glyphicon glyphicon-lock"></span> Private</li>
-        </ul>
-        <ul class="list-inline pull-right">
-          <li v-if="!edit">
-            <a href="/{{gist.id}}/edit"><span class="glyphicon glyphicon-edit"></span> Edit</a>
-          </li>
-          <li>
-            <a href="{{gist.html_url}}" target="_blank"><span class="glyphicon glyphicon-new-window"></span> Gist</a>
-          </li>
-        </ul>
-        <div class="clearfix"></div>
+        <div v-component="gist-metadata" v-with="gist: gist"></div>
 
         <div v-repeat="gist.files">
           <h3>{{filename}}</h3>
@@ -129,7 +104,7 @@ layout: default
   </ul>
 </script>
 
-<script type="text/template" id="template-gist-list">
+<script type="text/template" id="template-gists-list">
   <ul class="nav nav-pills">
     <li v-class="active: !isPublic" v-if="user"><a tabindex="0" v-on="click: isPublic = false">@{{user.login}}</a></li>
     <li v-class="active: isPublic"><a tabindex="0" v-on="click: isPublic = true">Public</a></li>
@@ -141,6 +116,35 @@ layout: default
       {{$data | gistTitle}}
     </a>
   </div>
+</script>
+
+<script type="text/template" id="template-gist-metadata">
+  <ul class="list-inline pull-left">
+    <li>
+      <a href="{{gist.owner.html_url}}" target="_blank" v-if="gist.owner">
+        <span class="glyphicon glyphicon-user"></span> {{gist.owner.login}}
+      </a>
+      <span v-if="!gist.owner"><span class="glyphicon glyphicon-user"></span> anonymous</span>
+    </li>
+    <li>
+      <span class="glyphicon glyphicon-time"></span>
+      Created <time datetime="{{gist.created_at}}" title="{{gist.created_at}}">{{gist.created_at | timeago}}</time>
+    </li>
+    <li>
+      <span class="glyphicon glyphicon-time"></span>
+      Updated <time datetime="{{gist.updated_at}}" title="{{gist.updated_at}}">{{gist.updated_at | timeago}}</time>
+    </li>
+    <li class="text-danger" v-if="!gist.public"><span class="glyphicon glyphicon-lock"></span> Private</li>
+  </ul>
+  <ul class="list-inline pull-right">
+    <li v-if="!edit">
+      <a href="/{{gist.id}}/edit"><span class="glyphicon glyphicon-edit"></span> Edit</a>
+    </li>
+    <li>
+      <a href="{{gist.html_url}}" target="_blank"><span class="glyphicon glyphicon-new-window"></span> Gist</a>
+    </li>
+  </ul>
+  <div class="clearfix"></div>
 </script>
 
 <script src="/public/lib.js"></script>
