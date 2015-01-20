@@ -43,41 +43,53 @@ layout: default
         </div>
       </div>
 
-      <div v-if="!topPage &amp;&amp; !gist">
-        <div class="page-header"><h2><img src="public/loading.gif" alt="loading"/></h2></div>
-      </div>
+      <div v-if="!topPage">
 
-      <div v-if="!topPage &amp;&amp; gist">
-        <div class="page-header" v-if="!edit"><h2>{{gist | gistTitle}}</h2></div>
-        <input type="text" class="form-control input-lg h2" placeholder="gist:{{gist.id}}" v-model="gist.description" v-if="edit"/>
+        <div v-if="!gist">
+          <div class="page-header"><h2><img src="public/loading.gif" alt="loading"/></h2></div>
+        </div>
 
-        <div v-component="gist-metadata" v-with="gist: gist"></div>
-
-        <div v-repeat="gist.files">
-          <h3>{{filename}}</h3>
-          <span class="label label-primary">{{language}}</span>
-          <div class="panel panel-default" v-if="language == 'Markdown'">
-            <div class="panel-body">
-              <div v-html="content | marked" v-if="!edit"></div>
-              <div class="row autosize-textarea" v-if="edit">
-                <textarea class="form-control" v-model="content"></textarea>
-                <div class="col-sm-6 col-md-6 col-lg-6 col-sm-offset-6 col-md-offset-6 col-lg-offset-6" v-html="content | marked"></div>
+        <div v-if="gist">
+          <div v-if="!edit">
+            <div class="page-header"><h2>{{gist | gistTitle}}</h2></div>
+            <div v-component="gist-metadata" v-with="gist: gist"></div>
+            <div v-repeat="gist.files">
+              <h3>{{$key}}</h3>
+              <span class="label label-primary">{{language}}</span>
+              <div class="panel panel-default" v-if="language == 'Markdown'">
+                <div class="panel-body" v-html="content | marked"></div>
+              </div>
+              <div v-if="language != 'Markdown'">
+                <pre><code v-html="content | highlight"></code></pre>
               </div>
             </div>
           </div>
-          <div v-if="language != 'Markdown'">
-            <pre v-if="!edit"><code v-html="content | highlight"></code></pre>
-            <div class="row autosize-textarea" v-if="edit">
-              <textarea class="form-control" v-model="content"></textarea>
-              <pre class="col-sm-6 col-md-6 col-lg-6 col-sm-offset-6 col-md-offset-6 col-lg-offset-6"><code v-html="content | highlight"></code></pre>
+
+          <div v-if="edit">
+            <input type="text" class="form-control input-lg h2" placeholder="gist:{{gist.id}}" v-model="gist.description" v-if="edit"/>
+            <div v-component="gist-metadata" v-with="gist: gist"></div>
+            <div v-repeat="gist.files">
+              <h3>{{$key}}</h3>
+              <span class="label label-primary">{{language}}</span>
+              <div class="panel panel-default" v-if="language == 'Markdown'">
+                <div class="panel-body">
+                  <div class="row autosize-textarea">
+                    <textarea class="form-control" v-model="content"></textarea>
+                    <div class="col-sm-6 col-md-6 col-lg-6 col-sm-offset-6 col-md-offset-6 col-lg-offset-6" v-html="content | marked"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="row autosize-textarea" v-if="language != 'Markdown'">
+                <textarea class="form-control" v-model="content"></textarea>
+                <pre class="col-sm-6 col-md-6 col-lg-6 col-sm-offset-6 col-md-offset-6 col-lg-offset-6"><code v-html="content | highlight"></code></pre>
+              </div>
             </div>
+            <form class="gn-gist-edit-form">
+              <button type="button" class="btn btn-primary" v-on="click: saveGist">Update Gist</button>
+              <a href="/{{gist.id}}" class="btn btn-default">Cancel</a>
+            </form>
           </div>
-        </div>
-        <div v-if="edit">
-          <form class="gn-gist-edit-form">
-            <button type="button" class="btn btn-primary" v-on="click: saveGist">Update Gist</button>
-            <a href="/{{gist.id}}" class="btn btn-default">Cancel</a>
-          </form>
+
         </div>
       </div>
 
