@@ -23,9 +23,6 @@ github =
   saveGist: (id, req) -> @patch "gists/#{id}", JSON.stringify(req)
   user:               -> @get 'user'
 
-Vue.component 'login-status', template: '#template-login-status'
-Vue.component 'gist-list', template: '#template-gist-list'
-
 vm = new Vue
   el: 'body'
   data:
@@ -67,6 +64,9 @@ vm = new Vue
     openTopPage: ->
       @topPage = true
       @gist = null
+  components:
+    'login-status': template: '#template-login-status'
+    'gist-list':    template: '#template-gist-list'
   filters:
     marked: (content) -> marked(content) if content
     highlight: (content) -> hljs.highlightAuto(content).value if content

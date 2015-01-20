@@ -110,42 +110,38 @@ layout: default
   </div>
 </div>
 
-<div class="templates" style="display: none" v-if="false">
-
-  <div id="template-login-status">
-    <ul class="nav nav-pills">
-      <li role="presentation" class="dropdown" v-if="id">
-        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-          {{name}}
-          <img class="gn-user-avatar" v-attr="src: avatar_url"/>
-        </a>
-        <ul class="dropdown-menu" role="menu">
-          <li role="presentation" class="dropdown-header">@{{login}}</li>
-          <li><a href="{{html_url}}">Open GitHub</a></li>
-          <li><a href="/logout">Logout</a></li>
-        </ul>
-      </li>
-      <li role="presentation" class="dropdown" v-if="!id">
-        <a href="/login"><span class="glyphicon glyphicon-user"></span> Login with your GitHub account</a>
-      </li>
-    </ul>
-  </div>
-
-  <div id="template-gist-list">
-    <ul class="nav nav-pills">
-      <li v-class="active: !isPublic" v-if="user"><a tabindex="0" v-on="click: isPublic = false">@{{user.login}}</a></li>
-      <li v-class="active: isPublic"><a tabindex="0" v-on="click: isPublic = true">Public</a></li>
-      <li v-if="!user"><a href="/login">Yours</a></li>
-    </ul>
-    <div class="list-group gn-gists-list">
-      <a href="/{{id}}" class="list-group-item gn-gists-list-item"
-        v-repeat="all" v-class="'gn-gists-list-item-active': id == (current ? current.id : null)">
-        {{$data | gistTitle}}
+<script type="text/template" id="template-login-status">
+  <ul class="nav nav-pills">
+    <li role="presentation" class="dropdown" v-if="id">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+        {{name}}
+        <img class="gn-user-avatar" v-attr="src: avatar_url"/>
       </a>
-    </div>
-  </div>
+      <ul class="dropdown-menu" role="menu">
+        <li role="presentation" class="dropdown-header">@{{login}}</li>
+        <li><a href="{{html_url}}">Open GitHub</a></li>
+        <li><a href="/logout">Logout</a></li>
+      </ul>
+    </li>
+    <li role="presentation" class="dropdown" v-if="!id">
+      <a href="/login"><span class="glyphicon glyphicon-user"></span> Login with your GitHub account</a>
+    </li>
+  </ul>
+</script>
 
-</div>
+<script type="text/template" id="template-gist-list">
+  <ul class="nav nav-pills">
+    <li v-class="active: !isPublic" v-if="user"><a tabindex="0" v-on="click: isPublic = false">@{{user.login}}</a></li>
+    <li v-class="active: isPublic"><a tabindex="0" v-on="click: isPublic = true">Public</a></li>
+    <li v-if="!user"><a href="/login">Yours</a></li>
+  </ul>
+  <div class="list-group gn-gists-list">
+    <a href="/{{id}}" class="list-group-item gn-gists-list-item"
+      v-repeat="all" v-class="'gn-gists-list-item-active': id == (current ? current.id : null)">
+      {{$data | gistTitle}}
+    </a>
+  </div>
+</script>
 
 <script src="/public/lib.js"></script>
 <script src="/public/index.js"></script>
