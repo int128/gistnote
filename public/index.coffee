@@ -11,6 +11,12 @@ github =
   get: (resource) ->
     $.ajax "https://api.github.com/#{resource}",
       headers: Authorization: "token #{@token}" if @token
+  post: (resource, data) ->
+    $.ajax "https://api.github.com/#{resource}",
+      data: data
+      contentType: 'application/json'
+      type: 'POST'
+      headers: Authorization: "token #{@token}"
   patch: (resource, data) ->
     $.ajax "https://api.github.com/#{resource}",
       data: data
@@ -20,7 +26,8 @@ github =
   gistsOfCurrentUser: -> @get 'gists'
   gistsOfPublic:      -> @get 'gists/public'
   gist: (id)          -> @get "gists/#{id}"
-  saveGist: (id, req) -> @patch "gists/#{id}", JSON.stringify(req)
+  createGist: (r)     -> @post  'gists', JSON.stringify(r)
+  updateGist: (id, r) -> @patch "gists/#{id}", JSON.stringify(r)
   user:               -> @get 'user'
 
 vm = new Vue
@@ -47,17 +54,36 @@ vm = new Vue
       else
         @state = 'loading'
         github.gist(id).then (gist) => @gist = gist
-    saveGist: ->
+    addGistFile: ->
+      files = @gist.files
+      files["#{Math.random().toString(36).substring(2)}.txt"] = content: ''
+      @gist.files = {}
+      @gist.files = files
+    removeGistFile: (key) ->
+      files = @gist.files
+      delete files[key]
+      @gist.files = {}
+      @gist.files = files
+    createGist: (isPublic) ->
+      @gist.public = isPublic
+      github.createGist(@gist).then (created) ->
+        page "/#{created.id}"
+    updateGist: ->
       req =
         description: @gist.description
         files: {}
       Object.keys(@gist.files).map (name) => req.files[name] = content: @gist.files[name].content
-      github.saveGist(@gist.id, req).then =>
+      github.updateGist(@gist.id, req).then =>
         page "/#{@gist.id}"
     openGist: (id) ->
       @fetchGist(id).then => @state = 'view'
     editGist: (id) ->
       @fetchGist(id).then => @state = 'edit'
+    newGist: ->
+      @state = 'new'
+      @gist =
+        description: ''
+        files: 'gistfile1.txt': content: ''
     openTop: ->
       @state = 'top'
       @gist = null
@@ -67,6 +93,7 @@ vm = new Vue
     'gist-loading':       template: '#template-gist-loading'
     'gist-view':          template: '#template-gist-view'
     'gist-edit':          template: '#template-gist-edit'
+    'gist-new':           template: '#template-gist-new'
     'gist-view-metadata': template: '#template-gist-view-metadata'
   filters:
     marked: (content) -> marked(content) if content
@@ -91,6 +118,9 @@ page '/login', ->
 page '/logout', ->
   delete localStorage.token
   location.replace '/'
+
+page '/new', ->
+  vm.newGist()
 
 page '/:id', (context) ->
   vm.openGist context.params.id

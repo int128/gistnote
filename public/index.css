@@ -3,12 +3,13 @@
   margin-bottom: 0;
 }
 
-pre, textarea.form-control {
+pre {
   border: none;
 }
 
 .autosize-textarea {
   position: relative;
+  min-height: 15em;
 }
 
 .autosize-textarea textarea {
