@@ -31,7 +31,7 @@ vm = new Vue
       all: []
       isPublic: !github.token
     gist: null
-    state: null
+    state: 'loading'
   methods:
     fetchUser: ->
       if github.token
@@ -62,8 +62,12 @@ vm = new Vue
       @state = 'top'
       @gist = null
   components:
-    'login-status':  template: '#template-login-status'
-    'gist-metadata': template: '#template-gist-metadata'
+    'login-status':       template: '#template-login-status'
+    'gist-top':           template: '#template-gist-top'
+    'gist-loading':       template: '#template-gist-loading'
+    'gist-view':          template: '#template-gist-view'
+    'gist-edit':          template: '#template-gist-edit'
+    'gist-view-metadata': template: '#template-gist-view-metadata'
   filters:
     marked: (content) -> marked(content) if content
     highlight: (content) -> hljs.highlightAuto(content).value if content

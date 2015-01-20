@@ -31,73 +31,11 @@ layout: default
 
     </div>
     <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2"></div>
-    <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10" style="display: none" v-show="1">
+    <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10">
 
       <div class="pull-right" v-component="login-status" v-with="user"></div>
 
-      <div v-if="state == 'top'">
-        <div class="jumbotron">
-          <h1>Gistnote</h1>
-          <p>Makes easy to work with Gist.</p>
-          <p v-if="!user"><a href="/login" class="btn btn-primary">Login with your GitHub account</a></p>
-        </div>
-        <div class="row gn-help-gists">
-          <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
-            <img src="public/arrow.png" class="img-responsive"/>
-          </div>
-          <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8 gn-help-gists-description">
-            <h2 v-if="!gists.isPublic">Your Gists. Click to Open.</h2>
-            <h2 v-if="gists.isPublic">Public Gists. Click to Open.</h2>
-          </div>
-        </div>
-        <div class="text-right gn-copyright">
-          <p>Gistnote is a Gist client app based on JavaScript. &copy; Hidetake Iwata, 2015.</p>
-        </div>
-      </div>
-
-      <div v-if="state == 'loading'">
-        <div class="page-header"><h2><img src="public/loading.gif" alt="loading"/></h2></div>
-      </div>
-
-      <div v-if="state == 'view'">
-        <div class="page-header"><h2>{{gist | gistTitle}}</h2></div>
-        <div v-component="gist-metadata" v-with="gist"></div>
-        <div v-repeat="gist.files">
-          <h3>{{$key}}</h3>
-          <span class="label label-primary">{{language}}</span>
-          <div class="panel panel-default" v-if="language == 'Markdown'">
-            <div class="panel-body" v-html="content | marked"></div>
-          </div>
-          <div v-if="language != 'Markdown'">
-            <pre><code v-html="content | highlight"></code></pre>
-          </div>
-        </div>
-      </div>
-
-      <div v-if="state == 'edit'">
-        <input type="text" class="form-control input-lg h2" placeholder="gist:{{gist.id}}" v-model="gist.description"/>
-        <div v-component="gist-metadata" v-with="gist"></div>
-        <div v-repeat="gist.files">
-          <h3>{{$key}}</h3>
-          <span class="label label-primary">{{language}}</span>
-          <div class="panel panel-default" v-if="language == 'Markdown'">
-            <div class="panel-body">
-              <div class="row autosize-textarea">
-                <textarea class="form-control" v-model="content"></textarea>
-                <div class="col-sm-6 col-md-6 col-lg-6 col-sm-offset-6 col-md-offset-6 col-lg-offset-6" v-html="content | marked"></div>
-              </div>
-            </div>
-          </div>
-          <div class="row autosize-textarea" v-if="language != 'Markdown'">
-            <textarea class="form-control" v-model="content"></textarea>
-            <pre class="col-sm-6 col-md-6 col-lg-6 col-sm-offset-6 col-md-offset-6 col-lg-offset-6"><code v-html="content | highlight"></code></pre>
-          </div>
-        </div>
-        <form class="gn-gist-edit-form">
-          <button type="button" class="btn btn-primary" v-on="click: saveGist">Update Gist</button>
-          <a href="/{{gist.id}}" class="btn btn-default">Cancel</a>
-        </form>
-      </div>
+      <div v-component="gist-{{state}}" v-with="gist"></div>
 
     </div>
   </div>
@@ -122,7 +60,71 @@ layout: default
   </ul>
 </script>
 
-<script type="text/template" id="template-gist-metadata">
+<script type="text/template" id="template-gist-top">
+  <div class="jumbotron">
+    <h1>Gistnote</h1>
+    <p>Makes easy to work with Gist.</p>
+    <p v-if="!$root.user"><a href="/login" class="btn btn-primary">Login with your GitHub account</a></p>
+  </div>
+  <div class="row gn-help-gists">
+    <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+      <img src="public/arrow.png" class="img-responsive"/>
+    </div>
+    <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8 gn-help-gists-description">
+      <h2 v-if="!$root.gists.isPublic">Your Gists. Click to Open.</h2>
+      <h2 v-if="$root.gists.isPublic">Public Gists. Click to Open.</h2>
+    </div>
+  </div>
+  <div class="text-right gn-copyright">
+    <p>Gistnote is a Gist client app based on JavaScript. &copy; Hidetake Iwata, 2015.</p>
+  </div>
+</script>
+
+<script type="text/template" id="template-gist-loading">
+  <div class="page-header"><h2><img src="public/loading.gif" alt="loading"/></h2></div>
+</script>
+
+<script type="text/template" id="template-gist-view">
+  <div class="page-header"><h2>{{$data | gistTitle}}</h2></div>
+  <div v-component="gist-view-metadata" v-with="$data"></div>
+  <div v-repeat="files">
+    <h3>{{$key}}</h3>
+    <span class="label label-primary">{{language}}</span>
+    <div class="panel panel-default" v-if="language == 'Markdown'">
+      <div class="panel-body" v-html="content | marked"></div>
+    </div>
+    <div v-if="language != 'Markdown'">
+      <pre><code v-html="content | highlight"></code></pre>
+    </div>
+  </div>
+</script>
+
+<script type="text/template" id="template-gist-edit">
+  <input type="text" class="form-control input-lg h2" placeholder="gist:{{id}}" v-model="description"/>
+  <div v-component="gist-view-metadata" v-with="$data"></div>
+  <div v-repeat="files">
+    <h3>{{$key}}</h3>
+    <span class="label label-primary">{{language}}</span>
+    <div class="panel panel-default" v-if="language == 'Markdown'">
+      <div class="panel-body">
+        <div class="row autosize-textarea">
+          <textarea class="form-control" v-model="content"></textarea>
+          <div class="col-sm-6 col-md-6 col-lg-6 col-sm-offset-6 col-md-offset-6 col-lg-offset-6" v-html="content | marked"></div>
+        </div>
+      </div>
+    </div>
+    <div class="row autosize-textarea" v-if="language != 'Markdown'">
+      <textarea class="form-control" v-model="content"></textarea>
+      <pre class="col-sm-6 col-md-6 col-lg-6 col-sm-offset-6 col-md-offset-6 col-lg-offset-6"><code v-html="content | highlight"></code></pre>
+    </div>
+  </div>
+  <form class="gn-gist-edit-form">
+    <button type="button" class="btn btn-primary" v-on="click: $root.saveGist">Update Gist</button>
+    <a href="/{{id}}" class="btn btn-default">Cancel</a>
+  </form>
+</script>
+
+<script type="text/template" id="template-gist-view-metadata">
   <ul class="list-inline pull-left">
     <li>
       <a href="{{owner.html_url}}" target="_blank" v-if="owner">
