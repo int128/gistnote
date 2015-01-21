@@ -49,41 +49,43 @@ vm = new Vue
       else
         github.gistsOfCurrentUser().then (gists) => @gists.all = gists
     fetchGist: (id) ->
-      if @gist?.id == id
-        $.Deferred().resolve()
-      else
-        @state = 'loading'
-        github.gist(id).then (gist) => @gist = gist
+      @state = 'loading'
+      github.gist(id).then (gist) =>
+        gist.files = Object.keys(gist.files).map (name) ->
+          file = gist.files[name]
+          file.state = 'loaded'
+          file
+        @gist = gist
     addGistFile: ->
-      files = @gist.files
-      files["#{Math.random().toString(36).substring(2)}.txt"] = content: ''
-      @gist.files = {}
-      @gist.files = files
-    removeGistFile: (key) ->
-      files = @gist.files
-      delete files[key]
-      @gist.files = {}
-      @gist.files = files
+      @gist.files.push
+        filename: "gistfile#{@gist.files.length + 1}.md"
+        content: ''
+        state: 'new'
+    removeGistFile: (filename) ->
+      @gist.files = @gist.files.filter (file) -> file.filename != filename
     createGist: (isPublic) ->
-      @gist.public = isPublic
-      github.createGist(@gist).then (created) ->
-        page "/#{created.id}"
+      req =
+        public: isPublic
+        description: @gist.description
+        files: {}
+      @gist.files.forEach (file) ->
+        req.files[file.filename] = if file.state == 'removed' then null else content: file.content
+      github.createGist(req).then (created) -> page "/#{created.id}"
     updateGist: ->
       req =
         description: @gist.description
         files: {}
-      Object.keys(@gist.files).map (name) => req.files[name] = content: @gist.files[name].content
-      github.updateGist(@gist.id, req).then =>
-        page "/#{@gist.id}"
+      @gist.files.forEach (file) ->
+        req.files[file.filename] = if file.state == 'removed' then null else content: file.content
+      github.updateGist(@gist.id, req).then (created) -> page "/#{created.id}"
     openGist: (id) ->
       @fetchGist(id).then => @state = 'view'
     editGist: (id) ->
       @fetchGist(id).then => @state = 'edit'
     newGist: ->
       @state = 'new'
-      @gist =
-        description: ''
-        files: 'gistfile1.txt': content: ''
+      @gist = description: '', files: []
+      @addGistFile()
     openTop: ->
       @state = 'top'
       @gist = null
@@ -94,6 +96,8 @@ vm = new Vue
     'gist-view':          template: '#template-gist-view'
     'gist-edit':          template: '#template-gist-edit'
     'gist-new':           template: '#template-gist-new'
+    'gist-edit-file':     template: '#template-gist-edit-file'
+    'gist-new-file':      template: '#template-gist-new-file'
     'gist-view-metadata': template: '#template-gist-view-metadata'
   filters:
     marked: (content) -> marked(content) if content

@@ -91,7 +91,7 @@ layout: default
   <div class="page-header"><h2>{{$data | gistTitle}}</h2></div>
   <div v-component="gist-view-metadata" v-with="$data"></div>
   <div v-repeat="files">
-    <h3>{{$key}}</h3>
+    <h3>{{filename}}</h3>
     <span class="label label-primary">{{language}}</span>
     <div class="panel panel-default" v-if="language == 'Markdown'">
       <div class="panel-body" v-html="content | marked"></div>
@@ -105,25 +105,18 @@ layout: default
 <script type="text/template" id="template-gist-edit">
   <input type="text" class="form-control input-lg h2" placeholder="gist:{{id}}" v-model="description"/>
   <div v-component="gist-view-metadata" v-with="$data"></div>
-  <div v-repeat="files">
-    <h3>{{$key}}</h3>
-    <span class="label label-primary">{{language}}</span>
-    <div class="panel panel-default" v-if="language == 'Markdown'">
-      <div class="panel-body">
-        <div class="row autosize-textarea">
-          <textarea class="form-control" v-model="content"></textarea>
-          <div class="col-sm-6 col-md-6 col-lg-6 col-sm-offset-6 col-md-offset-6 col-lg-offset-6" v-html="content | marked"></div>
-        </div>
-      </div>
-    </div>
-    <div class="row autosize-textarea" v-if="language != 'Markdown'">
-      <textarea class="form-control" v-model="content"></textarea>
-      <pre class="col-sm-6 col-md-6 col-lg-6 col-sm-offset-6 col-md-offset-6 col-lg-offset-6"><code v-html="content | highlight"></code></pre>
-    </div>
-  </div>
+  <div v-repeat="files" v-component="gist-edit-file"></div>
   <form class="gn-gist-edit-form">
-    <button type="button" class="btn btn-primary" v-on="click: $root.updateGist">Update Gist</button>
-    <a href="/{{id}}" class="btn btn-default">Cancel</a>
+    <div class="pull-left">
+      <button type="button" class="btn btn-link" v-on="click: $root.addGistFile">
+        <span class="glyphicon glyphicon-plus-sign"></span> Add File
+      </button>
+    </div>
+    <div class="pull-right">
+      <button type="button" class="btn btn-primary" v-on="click: $root.updateGist">Update Gist</button>
+      <a href="/{{id}}" class="btn btn-default">Cancel</a>
+    </div>
+    <div class="clearfix"></div>
   </form>
 </script>
 
@@ -134,31 +127,7 @@ layout: default
     <li><span class="glyphicon glyphicon-file"></span> New Gist</li>
   </ul>
   <div class="clearfix"></div>
-  <div v-repeat="files">
-    <h3>
-      {{$key}}
-      <button type="button" class="btn btn-link" v-on="click: $root.removeGistFile($key)">
-        <span class="glyphicon glyphicon-minus-sign"></span> Remove
-      </button>
-    </h3>
-    <span class="label label-primary">{{language}}</span>
-    <div class="panel panel-default" v-if="language == 'Markdown'">
-      <div class="panel-body">
-        <div class="container">
-          <div class="row autosize-textarea">
-            <textarea class="form-control" v-model="content"></textarea>
-            <div class="col-sm-6 col-md-6 col-lg-6 col-sm-offset-6 col-md-offset-6 col-lg-offset-6" v-html="content | marked"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="container" v-if="language != 'Markdown'">
-      <div class="row autosize-textarea">
-        <textarea class="form-control" v-model="content"></textarea>
-        <pre class="col-sm-6 col-md-6 col-lg-6 col-sm-offset-6 col-md-offset-6 col-lg-offset-6"><code v-html="content | highlight"></code></pre>
-      </div>
-    </div>
-  </div>
+  <div v-repeat="files" v-component="gist-new-file"></div>
   <form class="gn-gist-edit-form">
     <div class="pull-left">
       <button type="button" class="btn btn-link" v-on="click: $root.addGistFile">
@@ -171,6 +140,67 @@ layout: default
     </div>
     <div class="clearfix"></div>
   </form>
+</script>
+
+<script type="text/template" id="template-gist-edit-file">
+  <h3 v-if="state != 'new'">
+    {{filename}}
+    <button type="button" class="btn btn-link" v-on="click: state = 'removed'" v-if="state != 'removed'">
+      <span class="glyphicon glyphicon-remove"></span> Mark as Removed
+    </button>
+  </h3>
+  <div class="panel panel-default">
+    <div class="panel-heading" v-if="state == 'new'">
+      <div class="row">
+        <div class="col-xs-11 col-sm-11 col-md-11 col-lg-11">
+          <input type="text" class="form-control" placeholder="Filename" v-model="filename"/>
+        </div>
+        <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1">
+          <button type="button" class="close" v-on="click: $root.removeGistFile(filename)">&times;</button>
+        </div>
+      </div>
+    </div>
+    <div class="panel-body text-danger" v-if="state == 'removed'">
+      <span class="glyphicon glyphicon-remove"></span> To be removed. <a v-on="click: state = 'loaded'">Cancel</a>
+    </div>
+    <div class="panel-body" v-if="state != 'removed'">
+      <div class="container-fluid">
+        <div class="row autosize-textarea">
+          <textarea class="form-control" v-model="content"></textarea>
+          <div class="col-sm-6 col-md-6 col-lg-6 col-sm-offset-6 col-md-offset-6 col-lg-offset-6">
+            <div v-if="filename.match(/.+\.md/)" v-html="content | marked"></div>
+            <pre v-if="!filename.match(/.+\.md/)"><code v-html="content | highlight"></code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</script>
+
+<script type="text/template" id="template-gist-new-file">
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <div class="row">
+        <div class="col-xs-11 col-sm-11 col-md-11 col-lg-11">
+          <input type="text" class="form-control" placeholder="Filename" v-model="filename"/>
+        </div>
+        <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1">
+          <button type="button" class="close" v-on="click: $root.removeGistFile(filename)">&times;</button>
+        </div>
+      </div>
+    </div>
+    <div class="panel-body">
+      <div class="container-fluid">
+        <div class="row autosize-textarea">
+          <textarea class="form-control" v-model="content"></textarea>
+          <div class="col-sm-6 col-md-6 col-lg-6 col-sm-offset-6 col-md-offset-6 col-lg-offset-6">
+            <div v-if="filename.match(/.+\.md/)" v-html="content | marked"></div>
+            <pre v-if="!filename.match(/.+\.md/)"><code v-html="content | highlight"></code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </script>
 
 <script type="text/template" id="template-gist-view-metadata">
