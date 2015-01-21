@@ -49,16 +49,13 @@ vm = new Vue
       else
         github.gistsOfCurrentUser().then (gists) => @gists.all = gists
     fetchGist: (id) ->
-      if @gist?.id == id
-        $.Deferred().resolve()
-      else
-        @state = 'loading'
-        github.gist(id).then (gist) =>
-          gist.files = Object.keys(gist.files).map (name) ->
-            file = gist.files[name]
-            file.state = 'loaded'
-            file
-          @gist = gist
+      @state = 'loading'
+      github.gist(id).then (gist) =>
+        gist.files = Object.keys(gist.files).map (name) ->
+          file = gist.files[name]
+          file.state = 'loaded'
+          file
+        @gist = gist
     addGistFile: ->
       @gist.files.push
         filename: "gistfile#{@gist.files.length + 1}.md"
