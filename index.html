@@ -56,11 +56,14 @@ layout: default
       </a>
       <ul class="dropdown-menu" role="menu">
         <li role="presentation" class="dropdown-header">@{{login}}</li>
-        <li><a href="{{html_url}}">Open GitHub</a></li>
+        <li><a href="{{html_url}}">Your Profile</a></li>
         <li><a href="/logout">Logout</a></li>
-      </ul>
+        <li role="presentation" class="divider"></li>
+        <li role="presentation" class="dropdown-header">{{$root.app.name}}</li>
+        <li role="presentation"><a href="{{$root.app.feedback}}" target="_blank">Send Feedback</a></li>
+        </ul>
     </li>
-    <li role="presentation" class="dropdown" v-if="!id">
+    <li role="presentation" v-if="!id">
       <a href="/login"><span class="glyphicon glyphicon-user"></span> Login with your GitHub account</a>
     </li>
   </ul>

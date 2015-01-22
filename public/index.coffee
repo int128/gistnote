@@ -33,6 +33,9 @@ github =
 vm = new Vue
   el: 'body'
   data:
+    app:
+      name: '{{site.title}}'
+      feedback: '{{site.github}}/issues/new'
     user: null
     gists:
       all: []
