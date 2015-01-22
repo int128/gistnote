@@ -46,6 +46,11 @@ vm = new Vue
         ago = $.timeago(gist.updated_at)
         if byDate[ago] then byDate[ago].push gist else byDate[ago] = [gist]
       byDate
+    pageTitle: -> switch @state
+      when 'new'  then "New Gist | {{site.title}}"
+      when 'view' then "#{@gist.description or @gist.id} | {{site.title}}"
+      when 'edit' then "#{@gist.description or @gist.id} | {{site.title}}"
+      else             '{{site.title}}'
   methods:
     fetchUser: ->
       if github.token
@@ -115,6 +120,7 @@ vm = new Vue
     @fetchUser()
     @fetchGists()
     @$watch 'gists.isPublic', -> @fetchGists()
+    @$watch 'pageTitle', -> document.title = @pageTitle
   compiled: ->
     marked.setOptions highlight: (code, lang) -> hljs.highlightAuto(code, [lang]).value
 
