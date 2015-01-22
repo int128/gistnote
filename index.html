@@ -126,7 +126,7 @@ layout: default
 <script type="text/template" id="template-gist-new">
   <input type="text" class="form-control input-lg h2" placeholder="Description" v-model="description"/>
   <ul class="list-inline pull-left">
-    <li><span class="glyphicon glyphicon-user"></span> {{$root.user.login}}</li>
+    <li v-component="gist-view-owner" v-with="owner: $root.user"></li>
     <li><span class="glyphicon glyphicon-file"></span> New Gist</li>
   </ul>
   <div class="clearfix"></div>
@@ -208,12 +208,7 @@ layout: default
 
 <script type="text/template" id="template-gist-view-metadata">
   <ul class="list-inline pull-left">
-    <li>
-      <a href="{{owner.html_url}}" target="_blank" v-if="owner">
-        <span class="glyphicon glyphicon-user"></span> {{owner.login}}
-      </a>
-      <span v-if="!owner"><span class="glyphicon glyphicon-user"></span> anonymous</span>
-    </li>
+    <li v-component="gist-view-owner" v-with="owner: owner"></li>
     <li>
       <span class="glyphicon glyphicon-time"></span>
       Created <time datetime="{{created_at}}" title="{{created_at}}">{{created_at | timeago}}</time>
@@ -233,6 +228,13 @@ layout: default
     </li>
   </ul>
   <div class="clearfix"></div>
+</script>
+
+<script type="text/template" id="template-gist-view-owner">
+  <a href="{{owner.html_url}}" target="_blank" v-if="owner">
+    <span class="glyphicon glyphicon-user"></span> {{owner.login}}
+  </a>
+  <span v-if="!owner"><span class="glyphicon glyphicon-user"></span> Anonymous</span>
 </script>
 
 <script src="/public/lib.js"></script>

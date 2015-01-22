@@ -111,6 +111,7 @@ vm = new Vue
     'gist-edit-file':     template: '#template-gist-edit-file'
     'gist-new-file':      template: '#template-gist-new-file'
     'gist-view-metadata': template: '#template-gist-view-metadata'
+    'gist-view-owner':    template: '#template-gist-view-owner'
   filters:
     marked: (content) -> marked(content) if content
     highlight: (content) -> hljs.highlightAuto(content).value if content
