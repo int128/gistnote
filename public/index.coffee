@@ -39,6 +39,13 @@ vm = new Vue
       isPublic: !github.token
     gist: null
     state: 'loading'
+  computed:
+    gistsByDate: ->
+      byDate = {}
+      @gists.all.forEach (gist) ->
+        ago = $.timeago(gist.updated_at)
+        if byDate[ago] then byDate[ago].push gist else byDate[ago] = [gist]
+      byDate
   methods:
     fetchUser: ->
       if github.token

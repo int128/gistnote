@@ -27,10 +27,13 @@ layout: default
           v-class="'gn-gists-list-item-active': state == 'new'">
           <span class="glyphicon glyphicon-file"></span> New Gist
         </a>
-        <a href="/{{id}}" class="list-group-item gn-gists-list-item"
-          v-repeat="gists.all" v-class="'gn-gists-list-item-active': id == (gist ? gist.id : null)">
-          {{$data | gistTitle}}
-        </a>
+        <template v-repeat="gistsByDate">
+          <li class="list-group-item gn-gists-list-date"><span class="h6">{{$key}}</span></li>
+          <a href="/{{id}}" class="list-group-item gn-gists-list-item"
+            v-repeat="$data" v-class="'gn-gists-list-item-active': id == (gist ? gist.id : null)">
+            {{$data | gistTitle}}
+          </a>
+        </template>
       </div>
 
     </div>
