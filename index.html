@@ -16,25 +16,13 @@ layout: default
       </nav>
 
       <ul class="nav nav-pills">
-        <li v-class="active: !gists.isPublic" v-if="user">
-          <a tabindex="0" v-on="click: gists.isPublic = false">@{{user.login}}</a>
+        <li v-class="active: !publicGists" v-if="user">
+          <a tabindex="0" v-on="click: publicGists = false">@{{user.login}}</a>
         </li>
-        <li v-class="active: gists.isPublic"><a tabindex="0" v-on="click: gists.isPublic = true">Public</a></li>
+        <li v-class="active: publicGists"><a tabindex="0" v-on="click: publicGists = true">Public</a></li>
         <li v-if="!user"><a href="/login">Yours</a></li>
       </ul>
-      <div class="list-group gn-gists-list">
-        <a href="/new" class="list-group-item gn-gists-list-item"
-          v-class="'gn-gists-list-item-active': state == 'new'">
-          <span class="glyphicon glyphicon-file"></span> New Gist
-        </a>
-        <template v-repeat="gistsByDate">
-          <li class="list-group-item gn-gists-list-date"><span class="h6">{{$key}}</span></li>
-          <a href="/{{id}}" class="list-group-item gn-gists-list-item"
-            v-repeat="$data" v-class="'gn-gists-list-item-active': id == (gist ? gist.id : null)">
-            {{$data | gistTitle}}
-          </a>
-        </template>
-      </div>
+      <div v-component="gists" v-with="current: (gist ? gist.id : null), public: publicGists"></div>
 
     </div>
     <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10 col-xs-offset-2 col-sm-offset-2 col-md-offset-2 col-lg-offset-2">
@@ -69,6 +57,23 @@ layout: default
   </ul>
 </script>
 
+<script type="text/template" id="template-gists">
+  <div class="list-group gn-gists-list">
+    <a href="/new" class="list-group-item gn-gists-list-item"
+      v-class="'gn-gists-list-item-active': $root.state == 'new'">
+      <span class="glyphicon glyphicon-file"></span> New Gist
+    </a>
+    <template v-repeat="gistsByDate">
+      <li class="list-group-item gn-gists-list-date"><span class="h6">{{$key}}</span></li>
+      <a href="/{{id}}" class="list-group-item gn-gists-list-item"
+        v-repeat="$data" v-class="'gn-gists-list-item-active': id == current">
+        {{$data | gistTitle}}
+      </a>
+    </template>
+    <li class="list-group-item" v-if="loading"><img src="public/loading.gif" alt="loading"/></li>
+  </div>
+</script>
+
 <script type="text/template" id="template-gist-top">
   <div class="jumbotron">
     <h1>Gistnote</h1>
@@ -80,8 +85,8 @@ layout: default
       <img src="public/arrow.png" class="img-responsive"/>
     </div>
     <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8 gn-help-gists-description">
-      <h2 v-if="!$root.gists.isPublic">Your Gists. Click to Open.</h2>
-      <h2 v-if="$root.gists.isPublic">Public Gists. Click to Open.</h2>
+      <h2 v-if="!$root.publicGists">Your Gists. Click to Open.</h2>
+      <h2 v-if="$root.publicGists">Public Gists. Click to Open.</h2>
     </div>
   </div>
   <div class="text-right gn-copyright">

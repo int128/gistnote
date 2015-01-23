@@ -23,12 +23,31 @@ github =
       contentType: 'application/json'
       type: 'PATCH'
       headers: Authorization: "token #{@token}"
-  gistsOfCurrentUser: -> @get 'gists'
-  gistsOfPublic:      -> @get 'gists/public'
+  gists: (options)    -> if options.public then @get 'gists/public' else @get 'gists'
   gist: (id)          -> @get "gists/#{id}"
   createGist: (r)     -> @post  'gists', JSON.stringify(r)
   updateGist: (id, r) -> @patch "gists/#{id}", JSON.stringify(r)
   user:               -> @get 'user'
+
+Vue.component 'gists',
+  template: '#template-gists'
+  data: ->
+    gists: []
+    loading: false
+  computed:
+    gistsByDate: ->
+      byDate = {}
+      @gists.forEach (gist) ->
+        ago = $.timeago(gist.updated_at)
+        if byDate[ago] then byDate[ago].push gist else byDate[ago] = [gist]
+      byDate
+  methods:
+    fetchGists: ->
+      [@gists, @loading] = [[], true]
+      github.gists(public: @public).then (gists) => [@gists, @loading] = [gists, false]
+  created: ->
+    @fetchGists()
+    @$watch 'public', -> @fetchGists()
 
 vm = new Vue
   el: 'body'
@@ -37,18 +56,10 @@ vm = new Vue
       name: '{{site.title}}'
       feedback: '{{site.github}}/issues/new'
     user: null
-    gists:
-      all: []
-      isPublic: !github.token
     gist: null
     state: 'loading'
+    publicGists: !github.token
   computed:
-    gistsByDate: ->
-      byDate = {}
-      @gists.all.forEach (gist) ->
-        ago = $.timeago(gist.updated_at)
-        if byDate[ago] then byDate[ago].push gist else byDate[ago] = [gist]
-      byDate
     pageTitle: -> switch @state
       when 'new'  then "New Gist | {{site.title}}"
       when 'view' then "#{@gist.description or @gist.id} | {{site.title}}"
@@ -58,11 +69,6 @@ vm = new Vue
     fetchUser: ->
       if github.token
         github.user().then (user) => @user = user
-    fetchGists: ->
-      if @gists.isPublic
-        github.gistsOfPublic().then (gists) => @gists.all = gists
-      else
-        github.gistsOfCurrentUser().then (gists) => @gists.all = gists
     fetchGist: (id) ->
       @state = 'loading'
       github.gist(id).then (gist) =>
@@ -122,8 +128,6 @@ vm = new Vue
     gistTitle: (gist) -> gist.description or "gist:#{gist.id}" if gist
   created: ->
     @fetchUser()
-    @fetchGists()
-    @$watch 'gists.isPublic', -> @fetchGists()
     @$watch 'pageTitle', -> document.title = @pageTitle
   compiled: ->
     marked.setOptions highlight: (code, lang) -> hljs.highlightAuto(code, [lang]).value
