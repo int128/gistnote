@@ -32,7 +32,7 @@ layout: default
 
       <div class="pull-right" v-component="login-status" v-with="user"></div>
 
-      <div v-component="gist-{{state}}" v-with="gist"></div>
+      <div v-component="gist-{{state}}" v-with="gist: gist"></div>
 
     </div>
   </div>
@@ -105,9 +105,9 @@ layout: default
 </script>
 
 <script type="text/template" id="template-gist-view">
-  <div class="page-header"><h2>{{$data | gistTitle}}</h2></div>
-  <div v-component="gist-view-metadata" v-with="$data"></div>
-  <div v-repeat="files">
+  <div class="page-header"><h2>{{gist | gistTitle}}</h2></div>
+  <div v-component="gist-view-metadata" v-with="gist"></div>
+  <div v-repeat="gist.files">
     <h3>{{filename}}</h3>
     <span class="label label-primary">{{language}}</span>
     <div class="panel panel-default" v-if="language == 'Markdown'">
@@ -120,40 +120,40 @@ layout: default
 </script>
 
 <script type="text/template" id="template-gist-edit">
-  <input type="text" class="form-control input-lg h2" placeholder="gist:{{id}}" v-model="description"/>
-  <div v-component="gist-view-metadata" v-with="$data"></div>
-  <div v-repeat="files" v-component="gist-edit-file"></div>
+  <input type="text" class="form-control input-lg h2" placeholder="gist:{{gist.id}}" v-model="gist.description"/>
+  <div v-component="gist-view-metadata" v-with="gist"></div>
+  <div v-repeat="gist.files" v-component="gist-edit-file" v-with="gist: gist"></div>
   <form class="gn-gist-edit-form">
     <div class="pull-left">
-      <button type="button" class="btn btn-link" v-on="click: $root.addGistFile">
+      <button type="button" class="btn btn-link" v-on="click: newGistFile">
         <span class="glyphicon glyphicon-plus-sign"></span> Add File
       </button>
     </div>
     <div class="pull-right">
-      <button type="button" class="btn btn-primary" v-on="click: $root.updateGist">Update Gist</button>
-      <a href="/{{id}}" class="btn btn-default">Cancel</a>
+      <button type="button" class="btn btn-primary" v-on="click: updateGist">Update Gist</button>
+      <a href="/{{gist.id}}" class="btn btn-default">Cancel</a>
     </div>
     <div class="clearfix"></div>
   </form>
 </script>
 
 <script type="text/template" id="template-gist-new">
-  <input type="text" class="form-control input-lg h2" placeholder="Description" v-model="description"/>
+  <input type="text" class="form-control input-lg h2" placeholder="Description" v-model="gist.description"/>
   <ul class="list-inline pull-left">
     <li v-component="gist-view-owner" v-with="owner: $root.user"></li>
     <li><span class="glyphicon glyphicon-file"></span> New Gist</li>
   </ul>
   <div class="clearfix"></div>
-  <div v-repeat="files" v-component="gist-new-file"></div>
+  <div v-repeat="gist.files" v-component="gist-new-file" v-with="gist: gist"></div>
   <form class="gn-gist-edit-form">
     <div class="pull-left">
-      <button type="button" class="btn btn-link" v-on="click: $root.addGistFile">
+      <button type="button" class="btn btn-link" v-on="click: newGistFile">
         <span class="glyphicon glyphicon-plus-sign"></span> Add File
       </button>
     </div>
     <div class="pull-right">
-      <button type="button" class="btn btn-primary" v-on="click: $root.createGist(false)">Create Private Gist</button>
-      <button type="button" class="btn btn-info" v-on="click: $root.createGist(true)">Create Public Gist</button>
+      <button type="button" class="btn btn-primary" v-on="click: createGist(false)">Create Private Gist</button>
+      <button type="button" class="btn btn-info" v-on="click: createGist(true)">Create Public Gist</button>
     </div>
     <div class="clearfix"></div>
   </form>
@@ -173,7 +173,7 @@ layout: default
           <input type="text" class="form-control" placeholder="Filename" v-model="filename"/>
         </div>
         <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1">
-          <button type="button" class="close" v-on="click: $root.removeGistFile(filename)">&times;</button>
+          <button type="button" class="close" v-on="click: removeGistFile(filename)">&times;</button>
         </div>
       </div>
     </div>
@@ -203,7 +203,7 @@ layout: default
           <input type="text" class="form-control" placeholder="Filename" v-model="filename"/>
         </div>
         <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1">
-          <button type="button" class="close" v-on="click: $root.removeGistFile(filename)">&times;</button>
+          <button type="button" class="close" v-on="click: removeGistFile(filename)">&times;</button>
         </div>
       </div>
     </div>

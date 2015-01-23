@@ -50,6 +50,53 @@ Vue.component 'gists',
     @fetchGists()
     @$watch 'public', -> @fetchGists()
 
+Vue.component 'gist-new',
+  template: '#template-gist-new'
+  methods:
+    createGist: (isPublic) ->
+      req =
+        public: isPublic
+        description: @gist.description
+        files: {}
+      @gist.files.forEach (file) -> req.files[file.filename] = content: file.content
+      github.createGist(req).then (created) -> page "/#{created.id}"
+    newGistFile: ->
+      @gist.files.push
+        filename: "gistfile#{@gist.files.length + 1}.md"
+        content: ''
+  attached: ->
+    @newGistFile()
+
+Vue.component 'gist-new-file',
+  template: '#template-gist-new-file'
+  methods:
+    removeGistFile: (filename) ->
+      @gist.files = @gist.files.filter (file) -> file.filename != filename
+
+Vue.component 'gist-edit',
+  template: '#template-gist-edit'
+  methods:
+    updateGist: ->
+      req =
+        description: @gist.description
+        files: {}
+      @gist.files.forEach (file) ->
+        req.files[file.filename] = if file.state == 'removed' then null else content: file.content
+      github.updateGist(@gist.id, req).then (created) -> page "/#{created.id}"
+    newGistFile: ->
+      @gist.files.push
+        filename: "gistfile#{@gist.files.length + 1}.md"
+        content: ''
+        state: 'new'
+
+Vue.component 'gist-edit-file',
+  template: '#template-gist-edit-file'
+  data: ->
+    state: 'loaded'
+  methods:
+    removeGistFile: (filename) ->
+      @gist.files = @gist.files.filter (file) -> file.filename != filename
+
 vm = new Vue
   el: 'body'
   data:
@@ -73,33 +120,8 @@ vm = new Vue
     fetchGist: (id) ->
       @state = 'loading'
       github.gist(id).then (gist) =>
-        gist.files = Object.keys(gist.files).map (name) ->
-          file = gist.files[name]
-          file.state = 'loaded'
-          file
+        gist.files = Object.keys(gist.files).map (name) -> gist.files[name]
         @gist = gist
-    addGistFile: ->
-      @gist.files.push
-        filename: "gistfile#{@gist.files.length + 1}.md"
-        content: ''
-        state: 'new'
-    removeGistFile: (filename) ->
-      @gist.files = @gist.files.filter (file) -> file.filename != filename
-    createGist: (isPublic) ->
-      req =
-        public: isPublic
-        description: @gist.description
-        files: {}
-      @gist.files.forEach (file) ->
-        req.files[file.filename] = if file.state == 'removed' then null else content: file.content
-      github.createGist(req).then (created) -> page "/#{created.id}"
-    updateGist: ->
-      req =
-        description: @gist.description
-        files: {}
-      @gist.files.forEach (file) ->
-        req.files[file.filename] = if file.state == 'removed' then null else content: file.content
-      github.updateGist(@gist.id, req).then (created) -> page "/#{created.id}"
     openGist: (id) ->
       @fetchGist(id).then => @state = 'view'
     editGist: (id) ->
@@ -107,7 +129,6 @@ vm = new Vue
     newGist: ->
       @state = 'new'
       @gist = description: '', files: []
-      @addGistFile()
     openTop: ->
       @state = 'top'
       @gist = null
@@ -116,10 +137,6 @@ vm = new Vue
     'gist-top':           template: '#template-gist-top'
     'gist-loading':       template: '#template-gist-loading'
     'gist-view':          template: '#template-gist-view'
-    'gist-edit':          template: '#template-gist-edit'
-    'gist-new':           template: '#template-gist-new'
-    'gist-edit-file':     template: '#template-gist-edit-file'
-    'gist-new-file':      template: '#template-gist-new-file'
     'gist-view-metadata': template: '#template-gist-view-metadata'
     'gist-view-owner':    template: '#template-gist-view-owner'
   filters:
