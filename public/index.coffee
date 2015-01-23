@@ -23,11 +23,11 @@ github =
       contentType: 'application/json'
       type: 'PATCH'
       headers: Authorization: "token #{@token}"
-  gists: (options)    -> if options.public then @get 'gists/public' else @get 'gists'
-  gist: (id)          -> @get "gists/#{id}"
-  createGist: (r)     -> @post  'gists', JSON.stringify(r)
-  updateGist: (id, r) -> @patch "gists/#{id}", JSON.stringify(r)
-  user:               -> @get 'user'
+  gists: (options)      -> if options.public then @get 'gists/public' else @get 'gists'
+  gist: (id)            -> @get   "gists/#{id}"
+  createGist: (req)     -> @post  'gists', JSON.stringify(r)
+  updateGist: (id, req) -> @patch "gists/#{id}", JSON.stringify(r)
+  user:                 -> @get   'user'
 
 Vue.component 'gists',
   template: '#template-gists'

@@ -22,6 +22,7 @@ layout: default
         <li v-class="active: publicGists"><a tabindex="0" v-on="click: publicGists = true">Public</a></li>
         <li v-if="!user"><a href="/login">Yours</a></li>
       </ul>
+
       <div v-component="gists" v-with="current: (gist ? gist.id : null), public: publicGists"></div>
 
     </div>
@@ -37,21 +38,21 @@ layout: default
 
 <script type="text/template" id="template-login-status">
   <ul class="nav nav-pills">
-    <li role="presentation" class="dropdown" v-if="id">
+    <li class="dropdown" v-if="id">
       <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
         {{name}}
         <img class="gn-user-avatar" v-attr="src: avatar_url"/>
       </a>
       <ul class="dropdown-menu" role="menu">
-        <li role="presentation" class="dropdown-header">@{{login}}</li>
+        <li class="dropdown-header">@{{login}}</li>
         <li><a href="{{html_url}}">Your Profile</a></li>
         <li><a href="/logout">Logout</a></li>
-        <li role="presentation" class="divider"></li>
-        <li role="presentation" class="dropdown-header">{{$root.app.name}}</li>
-        <li role="presentation"><a href="{{$root.app.feedback}}" target="_blank">Send Feedback</a></li>
-        </ul>
+        <li class="divider"></li>
+        <li class="dropdown-header">{{$root.app.name}}</li>
+        <li><a href="{{$root.app.feedback}}" target="_blank">Send Feedback</a></li>
+      </ul>
     </li>
-    <li role="presentation" v-if="!id">
+    <li v-if="!id">
       <a href="/login"><span class="glyphicon glyphicon-user"></span> Login with your GitHub account</a>
     </li>
   </ul>
