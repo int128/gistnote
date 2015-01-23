@@ -17,9 +17,11 @@ layout: default
 
       <ul class="nav nav-pills">
         <li v-class="active: !publicGists" v-if="user">
-          <a tabindex="0" v-on="click: publicGists = false">@{{user.login}}</a>
+          <a href="javascript:void(0)" v-on="click: publicGists = false">@{{user.login}}</a>
         </li>
-        <li v-class="active: publicGists"><a tabindex="0" v-on="click: publicGists = true">Public</a></li>
+        <li v-class="active: publicGists">
+          <a href="javascript:void(0)" v-on="click: publicGists = true">Public</a>
+        </li>
         <li v-if="!user"><a href="/login">Yours</a></li>
       </ul>
 
@@ -176,7 +178,8 @@ layout: default
       </div>
     </div>
     <div class="panel-body text-danger" v-if="state == 'removed'">
-      <span class="glyphicon glyphicon-remove"></span> To be removed. <a v-on="click: state = 'loaded'">Cancel</a>
+      <span class="glyphicon glyphicon-remove"></span> To be removed.
+      <a href="javascript:void(0)" v-on="click: state = 'loaded'">Cancel</a>
     </div>
     <div class="panel-body" v-if="state != 'removed'">
       <div class="container-fluid">
