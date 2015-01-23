@@ -26,8 +26,8 @@ github =
       headers: Authorization: "token #{@token}"
   gists: (options)      -> if options.public then @get 'gists/public' else @get 'gists'
   gist: (id)            -> @get   "gists/#{id}"
-  createGist: (req)     -> @post  'gists', JSON.stringify(r)
-  updateGist: (id, req) -> @patch "gists/#{id}", JSON.stringify(r)
+  createGist: (req)     -> @post  'gists', JSON.stringify(req)
+  updateGist: (id, req) -> @patch "gists/#{id}", JSON.stringify(req)
   user:                 -> @get   'user'
 
 Vue.component 'gists',
