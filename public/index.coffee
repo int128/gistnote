@@ -7,18 +7,19 @@ if sessionStorage.state
   location.reload true
 
 github =
+  endpoint: 'https://api.github.com'
   token: localStorage.token
   get: (resource) ->
-    $.ajax "https://api.github.com/#{resource}",
+    $.ajax "#{@endpoint}/#{resource}",
       headers: Authorization: "token #{@token}" if @token
   post: (resource, data) ->
-    $.ajax "https://api.github.com/#{resource}",
+    $.ajax "#{@endpoint}/#{resource}",
       data: data
       contentType: 'application/json'
       type: 'POST'
       headers: Authorization: "token #{@token}"
   patch: (resource, data) ->
-    $.ajax "https://api.github.com/#{resource}",
+    $.ajax "#{@endpoint}/#{resource}",
       data: data
       contentType: 'application/json'
       type: 'PATCH'
