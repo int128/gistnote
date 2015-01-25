@@ -240,14 +240,12 @@ layout: default
       <span class="glyphicon glyphicon-time"></span>
       Updated <time datetime="{{updated_at}}" title="{{updated_at}}">{{updated_at | timeago}}</time>
     </li>
+    <li><a href="{{html_url}}" target="_blank"><span class="glyphicon glyphicon-link"></span> Gist</a></li>
     <li class="text-danger" v-if="!$data.public"><span class="glyphicon glyphicon-lock"></span> Private</li>
   </ul>
-  <ul class="list-inline pull-right">
+  <ul class="nav nav-pills pull-right">
     <li v-if="$root.state == 'view'">
       <a href="/{{id}}/edit"><span class="glyphicon glyphicon-edit"></span> Edit</a>
-    </li>
-    <li>
-      <a href="{{html_url}}" target="_blank"><span class="glyphicon glyphicon-new-window"></span> Gist</a>
     </li>
   </ul>
   <div class="clearfix"></div>
