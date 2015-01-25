@@ -52,6 +52,9 @@ Vue.component 'gists',
 
 Vue.component 'gist-new',
   template: '#template-gist-new'
+  data: ->
+    saving: false
+    error: null
   methods:
     createGist: (isPublic) ->
       req =
@@ -59,7 +62,11 @@ Vue.component 'gist-new',
         description: @gist.description
         files: {}
       @gist.files.forEach (file) -> req.files[file.filename] = content: file.content
-      github.createGist(req).then (created) -> page "/#{created.id}"
+      [@saving, @error] = [true, null]
+      github.createGist req
+        .then (created) -> page "/#{created.id}"
+        .fail (error) => @error = error
+        .always => @saving = false
     newGistFile: ->
       @gist.files.push
         filename: "gistfile#{@gist.files.length + 1}.md"
@@ -75,6 +82,9 @@ Vue.component 'gist-new-file',
 
 Vue.component 'gist-edit',
   template: '#template-gist-edit'
+  data: ->
+    saving: false
+    error: null
   methods:
     updateGist: ->
       req =
@@ -82,7 +92,11 @@ Vue.component 'gist-edit',
         files: {}
       @gist.files.forEach (file) ->
         req.files[file.filename] = if file.state == 'removed' then null else content: file.content
-      github.updateGist(@gist.id, req).then (created) -> page "/#{created.id}"
+      [@saving, @error] = [true, null]
+      github.updateGist @gist.id, req
+        .then (created) -> page "/#{created.id}"
+        .fail (error) => @error = error
+        .always => @saving = false
     newGistFile: ->
       @gist.files.push
         filename: "gistfile#{@gist.files.length + 1}.md"
@@ -139,6 +153,7 @@ vm = new Vue
     'gist-view':          template: '#template-gist-view'
     'gist-view-metadata': template: '#template-gist-view-metadata'
     'gist-view-owner':    template: '#template-gist-view-owner'
+    'api-error':          template: '#template-api-error'
   filters:
     marked: (content) -> marked(content) if content
     highlight: (content) -> hljs.highlightAuto(content).value if content

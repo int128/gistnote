@@ -123,6 +123,7 @@ layout: default
   <input type="text" class="form-control input-lg h2" placeholder="gist:{{gist.id}}" v-model="gist.description"/>
   <div v-component="gist-view-metadata" v-with="gist"></div>
   <div v-repeat="gist.files" v-component="gist-edit-file" v-with="gist: gist"></div>
+  <div v-component="api-error" v-with="error: error"></div>
   <form class="gn-gist-edit-form">
     <div class="pull-left">
       <button type="button" class="btn btn-link" v-on="click: newGistFile">
@@ -130,6 +131,7 @@ layout: default
       </button>
     </div>
     <div class="pull-right">
+      <img src="public/loading.gif" alt="loading" v-if="saving" />
       <button type="button" class="btn btn-primary" v-on="click: updateGist">Update Gist</button>
       <a href="/{{gist.id}}" class="btn btn-default">Cancel</a>
     </div>
@@ -145,6 +147,7 @@ layout: default
   </ul>
   <div class="clearfix"></div>
   <div v-repeat="gist.files" v-component="gist-new-file" v-with="gist: gist"></div>
+  <div v-component="api-error" v-with="error: error"></div>
   <form class="gn-gist-edit-form">
     <div class="pull-left">
       <button type="button" class="btn btn-link" v-on="click: newGistFile">
@@ -152,6 +155,7 @@ layout: default
       </button>
     </div>
     <div class="pull-right">
+      <img src="public/loading.gif" alt="loading" v-if="saving" />
       <button type="button" class="btn btn-primary" v-on="click: createGist(false)">Create Private Gist</button>
       <button type="button" class="btn btn-info" v-on="click: createGist(true)">Create Public Gist</button>
     </div>
@@ -250,6 +254,12 @@ layout: default
     <span class="glyphicon glyphicon-user"></span> {{owner.login}}
   </a>
   <span v-if="!owner"><span class="glyphicon glyphicon-user"></span> Anonymous</span>
+</script>
+
+<script type="text/template" id="template-api-error">
+  <div class="alert alert-warning" role="alert" v-if="error">
+    <strong>Server Error:</strong> {{error.status}} {{error.statusText}} ({{error.responseJSON.message}})
+  </div>
 </script>
 
 <script src="/public/lib.js"></script>
