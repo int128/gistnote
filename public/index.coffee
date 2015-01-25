@@ -128,26 +128,21 @@ vm = new Vue
       when 'edit' then "#{@gist.description or @gist.id} | {{site.title}}"
       else             '{{site.title}}'
   methods:
+    navigate: (state, gist = null) -> [@state, @gist] = [state, gist]
     fetchUser: ->
       if github.token
         github.user().then (user) => @user = user
     fetchGist: (id) ->
-      [@state, @gist] = ['loading', null]
+      @navigate 'loading'
       github.gist id
         .then (gist) ->
           gist.files = Object.keys(gist.files).map (name) -> gist.files[name]
           gist
-        .fail (error) => [@state, @gist] = ['error', error]
-    openGist: (id) ->
-      @fetchGist(id).then (gist) => [@state, @gist] = ['view', gist]
-    editGist: (id) ->
-      @fetchGist(id).then (gist) => [@state, @gist] = ['edit', gist]
-    newGist: ->
-      @state = 'new'
-      @gist = description: '', files: []
-    openTop: ->
-      @state = 'top'
-      @gist = null
+        .fail (error) => @navigate 'error', error
+    openGist: (id) -> @fetchGist(id).then (gist) => @navigate 'view', gist
+    editGist: (id) -> @fetchGist(id).then (gist) => @navigate 'edit', gist
+    newGist: -> @navigate 'new', description: '', files: []
+    openTop: -> @navigate 'top'
   components:
     'login-status':       template: '#template-login-status'
     'gist-top':           template: '#template-gist-top'
