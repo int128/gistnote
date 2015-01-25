@@ -132,14 +132,16 @@ vm = new Vue
       if github.token
         github.user().then (user) => @user = user
     fetchGist: (id) ->
-      @state = 'loading'
-      github.gist(id).then (gist) =>
-        gist.files = Object.keys(gist.files).map (name) -> gist.files[name]
-        @gist = gist
+      [@state, @gist] = ['loading', null]
+      github.gist id
+        .then (gist) ->
+          gist.files = Object.keys(gist.files).map (name) -> gist.files[name]
+          gist
+        .fail (error) => [@state, @gist] = ['error', error]
     openGist: (id) ->
-      @fetchGist(id).then => @state = 'view'
+      @fetchGist(id).then (gist) => [@state, @gist] = ['view', gist]
     editGist: (id) ->
-      @fetchGist(id).then => @state = 'edit'
+      @fetchGist(id).then (gist) => [@state, @gist] = ['edit', gist]
     newGist: ->
       @state = 'new'
       @gist = description: '', files: []
@@ -151,6 +153,7 @@ vm = new Vue
     'gist-top':           template: '#template-gist-top'
     'gist-loading':       template: '#template-gist-loading'
     'gist-view':          template: '#template-gist-view'
+    'gist-error':         template: '#template-gist-error'
     'gist-view-metadata': template: '#template-gist-view-metadata'
     'gist-view-owner':    template: '#template-gist-view-owner'
     'api-error':          template: '#template-api-error'

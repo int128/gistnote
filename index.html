@@ -163,6 +163,10 @@ layout: default
   </form>
 </script>
 
+<script type="text/template" id="template-gist-error">
+  <div v-component="api-error" v-with="error: gist"></div>
+</script>
+
 <script type="text/template" id="template-gist-edit-file">
   <h3 v-if="state != 'new'">
     {{filename}}
