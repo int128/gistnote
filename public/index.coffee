@@ -125,12 +125,27 @@ Vue.component 'gist-top-stars',
   created: ->
     github.repo('{{site.github.owner}}', '{{site.github.repo}}').then (repo) => @stars = repo.stargazers_count
 
+Vue.component 'gist-top-feedback',
+  template: '#template-gist-top-feedback'
+  data: ->
+    feedback: ''
+    saving: false
+    saved: null
+    error: null
+  methods:
+    sendFeedback: ->
+      [@saving, @error] = [true, null]
+      github.createIssue '{{site.github.owner}}', '{{site.github.repo}}', title: 'Feedback', body: @feedback
+        .then (created) => @saved = created
+        .fail (error) => @error = error
+        .always => @saving = false
+
 vm = new Vue
   el: 'body'
   data:
     app:
       name: '{{site.title}}'
-      feedback: '{{site.github}}/issues/new'
+      feedback: '{{site.github.url}}/issues/new'
     user: null
     gist: null
     state: 'loading'

@@ -101,6 +101,9 @@ layout: default
       <h2 v-if="$root.publicGists">Public Gists. Click to Open.</h2>
     </div>
   </div>
+  <div class="row gn-top-feedback" v-if="$root.user">
+    <div class="col-md-6 col-lg-6 col-md-offset-6 col-lg-offset-6" v-component="gist-top-feedback"></div>
+  </div>
   <div class="text-right gn-copyright">
     <p>Gistnote is a Gist client app based on JavaScript. &copy; Hidetake Iwata, 2015.</p>
     <p>
@@ -115,6 +118,22 @@ layout: default
   <a href="{% endraw %}{{site.github.url}}{% raw %}" target="_blank" title="{{stars}} stars on GitHub" class="gn-top-stars">
     <span class="glyphicon glyphicon-star" v-repeat="stars"></span>
   </span>
+</script>
+
+<script type="text/template" id="template-gist-top-feedback">
+  <form class="well" v-if="!saved">
+    <div class="form-group">
+      <label for="feedback-text">Send me your feedback:</label>
+      <textarea id="feedback-text" class="form-control" rows="3" v-model="feedback"></textarea>
+      <p class="help-block">Your feedback will be an open issue of <a href="{% endraw %}{{site.github.url}}{% raw %}">the project</a>.</p>
+    </div>
+    <button type="button" class="btn btn-primary" disabled="{{!feedback}}" v-on="click: sendFeedback">Send Feedback</button>
+    <img src="/public/loading.gif" alt="loading" v-if="saving" />
+    <div v-component="api-error" v-with="error: error"></div>
+  </form>
+  <div class="well" v-if="saved">
+    Thank you for your feedback.
+  </div>
 </script>
 
 <script type="text/template" id="template-gist-loading">

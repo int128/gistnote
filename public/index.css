@@ -72,8 +72,12 @@ pre {
   color: inherit;
 }
 
+.gn-top-feedback {
+  margin-top: 3em;
+}
+
 .gn-copyright {
-  margin-top: 5em;
+  margin-top: 3em;
   font-size: 90%;
   color: #444;
 }
