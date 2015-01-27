@@ -73,7 +73,7 @@ layout: default
         {{$data | gistTitle}}
       </a>
     </template>
-    <li class="list-group-item" v-if="loading"><img src="public/loading.gif" alt="loading"/></li>
+    <li class="list-group-item" v-if="loading"><img src="/public/loading.gif" alt="loading"/></li>
   </div>
 </script>
 
@@ -95,7 +95,7 @@ layout: default
   </div>
   <div class="row gn-help-gists">
     <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
-      <img src="public/arrow.png" class="img-responsive"/>
+      <img src="/public/arrow.png" class="img-responsive"/>
     </div>
     <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8 gn-help-gists-description">
       <h2 v-if="!$root.publicGists">Your Gists. Click to Open.</h2>
@@ -113,7 +113,7 @@ layout: default
 </script>
 
 <script type="text/template" id="template-gist-loading">
-  <div class="page-header"><h2><img src="public/loading.gif" alt="loading"/></h2></div>
+  <div class="page-header"><h2><img src="/public/loading.gif" alt="loading"/></h2></div>
 </script>
 
 <script type="text/template" id="template-gist-view">
@@ -143,7 +143,7 @@ layout: default
       </button>
     </div>
     <div class="pull-right">
-      <img src="public/loading.gif" alt="loading" v-if="saving" />
+      <img src="/public/loading.gif" alt="loading" v-if="saving" />
       <button type="button" class="btn btn-primary" v-on="click: updateGist">Update Gist</button>
       <a href="/{{gist.id}}" class="btn btn-default">Cancel</a>
     </div>
@@ -167,7 +167,7 @@ layout: default
       </button>
     </div>
     <div class="pull-right">
-      <img src="public/loading.gif" alt="loading" v-if="saving" />
+      <img src="/public/loading.gif" alt="loading" v-if="saving" />
       <button type="button" class="btn btn-primary" v-on="click: createGist(false)">Create Private Gist</button>
       <button type="button" class="btn btn-info" v-on="click: createGist(true)">Create Public Gist</button>
     </div>
