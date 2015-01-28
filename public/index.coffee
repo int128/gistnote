@@ -1,11 +1,6 @@
 ---
 ---
 
-# Enforce reload after authorization to clear cache
-if sessionStorage.state
-  delete sessionStorage.state
-  location.reload true
-
 github =
   endpoint: 'https://api.github.com'
   token: localStorage.token
