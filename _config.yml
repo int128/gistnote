@@ -4,4 +4,7 @@ redcarpet:
 
 title: Gistnote
 url: https://gistnote.github.io
-github: https://github.com/gistnote/gistnote.github.io
+github:
+  url: https://github.com/gistnote/gistnote.github.io
+  owner: gistnote
+  repo: gistnote.github.io
