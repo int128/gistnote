@@ -3,7 +3,8 @@
 
 github =
   endpoint: 'https://api.github.com'
-  token: localStorage.token
+  scope: 'gist,public_repo'
+  token: null
   get: (resource) ->
     $.ajax "#{@endpoint}/#{resource}",
       headers: Authorization: "token #{@token}" if @token
@@ -24,6 +25,9 @@ github =
   createGist: (req)     -> @post  'gists', JSON.stringify(req)
   updateGist: (id, req) -> @patch "gists/#{id}", JSON.stringify(req)
   user:                 -> @get   'user'
+
+if localStorage.scope == github.scope
+  github.token = localStorage.token
 
 Vue.component 'gists',
   template: '#template-gists'
@@ -162,12 +166,13 @@ page '/login', ->
   clientId = '741e291348ea3f2305bd'
   endpoint = 'https://github.com/login/oauth/authorize'
   uri = "#{location.origin}/auth.html"
-  scope = 'gist'
+  scope = github.scope
   sessionStorage.state = state = Math.random().toString(36).substring(2) + Math.random().toString(36).substring(2)
   location.href = "#{endpoint}?client_id=#{clientId}&redirect_uri=#{uri}&scope=#{scope}&state=#{state}"
 
 page '/logout', ->
   delete localStorage.token
+  delete localStorage.scope
   location.replace '/'
 
 page '/new', ->
