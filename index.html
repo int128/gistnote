@@ -66,13 +66,12 @@ layout: default
       v-class="'gn-gists-list-item-active': $root.state == 'new'">
       <span class="glyphicon glyphicon-file"></span> New Gist
     </a>
-    <template v-repeat="gistsByDate">
-      <li class="list-group-item gn-gists-list-date"><span class="h6">{{$key}}</span></li>
-      <a href="/{{id}}" class="list-group-item gn-gists-list-item"
-        v-repeat="$data" v-class="'gn-gists-list-item-active': id == current">
-        {{$data | gistTitle}}
-      </a>
-    </template>
+    <a href="/{{id}}" class="list-group-item gn-gists-list-item"
+      v-repeat="gists" v-class="'gn-gists-list-item-active': id == current">
+      <div class="pull-left">{{$data | gistTitle}}</div>
+      <div class="pull-right"><small>{{updated_at | formatDate}}</small></div>
+      <div class="clearfix"></div>
+    </a>
     <li class="list-group-item" v-if="loading"><img src="/public/loading.gif" alt="loading"/></li>
   </div>
 </script>
