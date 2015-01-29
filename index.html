@@ -278,6 +278,9 @@ layout: default
   </ul>
   <ul class="nav nav-pills pull-right">
     <li v-if="$root.state == 'view'">
+      <a href="/{{id}}/slide"><span class="glyphicon glyphicon-film"></span> Slideshow</a>
+    </li>
+    <li v-if="$root.state == 'view'">
       <a href="/{{id}}/edit"><span class="glyphicon glyphicon-edit"></span> Edit</a>
     </li>
   </ul>

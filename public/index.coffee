@@ -173,6 +173,9 @@ page '/:id', (context) ->
 page '/:id/edit', (context) ->
   vm.editGist context.params.id
 
+page '/:id/slide', (context) ->
+  location.replace "/slide/?/#{context.params.id}"
+
 page ->
   vm.openTop()
 
