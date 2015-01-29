@@ -68,9 +68,7 @@ layout: default
     </a>
     <a href="/{{id}}" class="list-group-item gn-gists-list-item"
       v-repeat="gists" v-class="'gn-gists-list-item-active': id == current">
-      <div class="pull-left">{{$data | gistTitle}}</div>
-      <div class="pull-right"><small>{{updated_at | formatDate}}</small></div>
-      <div class="clearfix"></div>
+      {{$data | gistTitle}}
     </a>
     <li class="list-group-item" v-if="loading"><img src="/public/loading.gif" alt="loading"/></li>
   </div>

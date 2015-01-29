@@ -46,11 +46,6 @@ Vue.component 'gists',
     fetchGists: ->
       [@gists, @loading] = [[], true]
       github.gists(public: @public).then (gists) => [@gists, @loading] = [gists, false]
-  filters:
-    formatDate: (time) ->
-      months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-      d = new Date(time)
-      "#{months[d.getMonth()]} #{d.getDate()}"
   created: ->
     @fetchGists()
     @$watch 'public', -> @fetchGists()

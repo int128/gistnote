@@ -38,11 +38,6 @@ pre {
   overflow-y: auto;
 }
 
-.gn-gists-list-date {
-  padding-top: 0;
-  padding-bottom: 0;
-}
-
 .gn-gists-list-item {
   overflow-x: hidden;
 }
