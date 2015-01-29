@@ -170,6 +170,7 @@ layout: default
     </div>
     <div class="clearfix"></div>
   </form>
+  <div v-component="gist-edit-tips"></div>
 </script>
 
 <script type="text/template" id="template-gist-new">
@@ -194,6 +195,15 @@ layout: default
     </div>
     <div class="clearfix"></div>
   </form>
+  <div v-component="gist-edit-tips"></div>
+</script>
+
+<script type="text/template" id="template-gist-edit-tips">
+  <div class="well">
+    <strong>Tips for Slideshow:</strong>
+    Split slide pages by <code>---</code> separator.
+    See <a href="https://github.com/gnab/remark/wiki/Markdown">Markdown of remark</a> for details.
+  </div>
 </script>
 
 <script type="text/template" id="template-gist-error">

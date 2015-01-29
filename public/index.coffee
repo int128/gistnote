@@ -139,6 +139,7 @@ vm = new Vue
     'gist-error':         template: '#template-gist-error'
     'gist-view-metadata': template: '#template-gist-view-metadata'
     'gist-view-owner':    template: '#template-gist-view-owner'
+    'gist-edit-tips':     template: '#template-gist-edit-tips'
     'api-error':          template: '#template-api-error'
   filters:
     marked: (content) -> marked(content) if content
