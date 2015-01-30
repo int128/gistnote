@@ -169,7 +169,7 @@ routesIndex = ->
   page '/new',                  -> vm().newGist()
   page '/:id',        (context) -> vm().openGist context.params.id
   page '/:id/edit',   (context) -> vm().editGist context.params.id
-  page '/:id/slide',  (context) -> location.replace "/slide/?/#{context.params.id}"
+  page '/:id/slide',  (context) -> location.replace "/slide.html#!/#{context.params.id}/slide"
   page                          -> vm().openTop()
 
   _vm = null

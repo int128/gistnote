@@ -19,6 +19,12 @@ fetchGist = (id) ->
     .always ->
       $('.loading').hide()
 
-id = location.search.substring(2)
+page '/:id/slide', (context) -> fetchGist context.params.id
 
-fetchGist id
+page (context) -> console.info context
+
+page()
+
+# Handles redirect from 404 page
+if location.hash
+  page.redirect location.hash.substring(2)
