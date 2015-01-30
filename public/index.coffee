@@ -3,103 +3,7 @@
 
 {% include github.coffee %}
 
-Vue.component 'gists',
-  template: '#template-gists'
-  data: ->
-    gists: []
-    loading: false
-  methods:
-    fetchGists: ->
-      [@gists, @loading] = [[], true]
-      github.gists(public: @public).then (gists) => [@gists, @loading] = [gists, false]
-  created: ->
-    @fetchGists()
-    @$watch 'public', -> @fetchGists()
-
-Vue.component 'gist-new',
-  template: '#template-gist-new'
-  data: ->
-    saving: false
-    error: null
-  methods:
-    createGist: (isPublic) ->
-      req =
-        public: isPublic
-        description: @gist.description
-        files: {}
-      @gist.files.forEach (file) -> req.files[file.filename] = content: file.content
-      [@saving, @error] = [true, null]
-      github.createGist req
-        .then (created) -> page "/#{created.id}"
-        .fail (error) => @error = error
-        .always => @saving = false
-    newGistFile: ->
-      @gist.files.push
-        filename: "gistfile#{@gist.files.length + 1}.md"
-        content: ''
-  attached: ->
-    @newGistFile()
-
-Vue.component 'gist-new-file',
-  template: '#template-gist-new-file'
-  methods:
-    removeGistFile: (filename) ->
-      @gist.files = @gist.files.filter (file) -> file.filename != filename
-
-Vue.component 'gist-edit',
-  template: '#template-gist-edit'
-  data: ->
-    saving: false
-    error: null
-  methods:
-    updateGist: ->
-      req =
-        description: @gist.description
-        files: {}
-      @gist.files.forEach (file) ->
-        req.files[file.filename] = if file.state == 'removed' then null else content: file.content
-      [@saving, @error] = [true, null]
-      github.updateGist @gist.id, req
-        .then (created) -> page "/#{created.id}"
-        .fail (error) => @error = error
-        .always => @saving = false
-    newGistFile: ->
-      @gist.files.push
-        filename: "gistfile#{@gist.files.length + 1}.md"
-        content: ''
-        state: 'new'
-
-Vue.component 'gist-edit-file',
-  template: '#template-gist-edit-file'
-  data: ->
-    state: 'loaded'
-  methods:
-    removeGistFile: (filename) ->
-      @gist.files = @gist.files.filter (file) -> file.filename != filename
-
-Vue.component 'gist-top-stars',
-  template: '#template-gist-top-stars'
-  data: ->
-    stars: 0
-  created: ->
-    github.repo('{{site.github.owner}}', '{{site.github.repo}}').then (repo) => @stars = repo.stargazers_count
-
-Vue.component 'gist-top-feedback',
-  template: '#template-gist-top-feedback'
-  data: ->
-    feedback: ''
-    saving: false
-    saved: null
-    error: null
-  methods:
-    sendFeedback: ->
-      [@saving, @error] = [true, null]
-      github.createIssue '{{site.github.owner}}', '{{site.github.repo}}', title: 'Feedback', body: @feedback
-        .then (created) => @saved = created
-        .fail (error) => @error = error
-        .always => @saving = false
-
-vm = new Vue
+vmIndex = -> new Vue
   el: 'body'
   data:
     app:
@@ -131,16 +35,6 @@ vm = new Vue
     editGist: (id) -> @fetchGist(id).then (gist) => @navigate 'edit', gist
     newGist: -> @navigate 'new', description: '', files: []
     openTop: -> @navigate 'top'
-  components:
-    'login-status':       template: '#template-login-status'
-    'gist-top':           template: '#template-gist-top'
-    'gist-loading':       template: '#template-gist-loading'
-    'gist-view':          template: '#template-gist-view'
-    'gist-error':         template: '#template-gist-error'
-    'gist-view-metadata': template: '#template-gist-view-metadata'
-    'gist-view-owner':    template: '#template-gist-view-owner'
-    'gist-edit-tips':     template: '#template-gist-edit-tips'
-    'api-error':          template: '#template-api-error'
   filters:
     marked: (content) -> marked(content) if content
     highlight: (content) -> hljs.highlightAuto(content).value if content
@@ -151,37 +45,140 @@ vm = new Vue
     @$watch 'pageTitle', -> document.title = @pageTitle
   compiled: ->
     marked.setOptions highlight: (code, lang) -> hljs.highlightAuto(code, [lang]).value
+  components:
+    'login-status':       template: '#template-login-status'
+    'gist-top':           template: '#template-gist-top'
+    'gist-loading':       template: '#template-gist-loading'
+    'gist-view':          template: '#template-gist-view'
+    'gist-error':         template: '#template-gist-error'
+    'gist-view-metadata': template: '#template-gist-view-metadata'
+    'gist-view-owner':    template: '#template-gist-view-owner'
+    'gist-edit-tips':     template: '#template-gist-edit-tips'
+    'api-error':          template: '#template-api-error'
 
-page '/login', ->
-  clientId = '741e291348ea3f2305bd'
-  endpoint = 'https://github.com/login/oauth/authorize'
-  uri = "#{location.origin}/auth.html"
-  scope = github.scope
-  sessionStorage.state = state = Math.random().toString(36).substring(2) + Math.random().toString(36).substring(2)
-  location.href = "#{endpoint}?client_id=#{clientId}&redirect_uri=#{uri}&scope=#{scope}&state=#{state}"
+    'gists':
+      template: '#template-gists'
+      data: ->
+        gists: []
+        loading: false
+      methods:
+        fetchGists: ->
+          [@gists, @loading] = [[], true]
+          github.gists(public: @public).then (gists) => [@gists, @loading] = [gists, false]
+      created: ->
+        @fetchGists()
+        @$watch 'public', -> @fetchGists()
 
-page '/logout', ->
-  delete localStorage.token
-  delete localStorage.scope
-  location.replace '/'
+    'gist-new':
+      template: '#template-gist-new'
+      data: ->
+        saving: false
+        error: null
+      methods:
+        createGist: (isPublic) ->
+          req =
+            public: isPublic
+            description: @gist.description
+            files: {}
+          @gist.files.forEach (file) -> req.files[file.filename] = content: file.content
+          [@saving, @error] = [true, null]
+          github.createGist req
+            .then (created) -> page "/#{created.id}"
+            .fail (error) => @error = error
+            .always => @saving = false
+        newGistFile: ->
+          @gist.files.push
+            filename: "gistfile#{@gist.files.length + 1}.md"
+            content: ''
+      attached: ->
+        @newGistFile()
 
-page '/new', ->
-  vm.newGist()
+    'gist-new-file':
+      template: '#template-gist-new-file'
+      methods:
+        removeGistFile: (filename) ->
+          @gist.files = @gist.files.filter (file) -> file.filename != filename
 
-page '/:id', (context) ->
-  vm.openGist context.params.id
+    'gist-edit':
+      template: '#template-gist-edit'
+      data: ->
+        saving: false
+        error: null
+      methods:
+        updateGist: ->
+          req =
+            description: @gist.description
+            files: {}
+          @gist.files.forEach (file) ->
+            req.files[file.filename] = if file.state == 'removed' then null else content: file.content
+          [@saving, @error] = [true, null]
+          github.updateGist @gist.id, req
+            .then (created) -> page "/#{created.id}"
+            .fail (error) => @error = error
+            .always => @saving = false
+        newGistFile: ->
+          @gist.files.push
+            filename: "gistfile#{@gist.files.length + 1}.md"
+            content: ''
+            state: 'new'
 
-page '/:id/edit', (context) ->
-  vm.editGist context.params.id
+    'gist-edit-file':
+      template: '#template-gist-edit-file'
+      data: ->
+        state: 'loaded'
+      methods:
+        removeGistFile: (filename) ->
+          @gist.files = @gist.files.filter (file) -> file.filename != filename
 
-page '/:id/slide', (context) ->
-  location.replace "/slide/?/#{context.params.id}"
+    'gist-top-stars':
+      template: '#template-gist-top-stars'
+      data: ->
+        stars: 0
+      created: ->
+        github.repo('{{site.github.owner}}', '{{site.github.repo}}').then (repo) => @stars = repo.stargazers_count
 
-page ->
-  vm.openTop()
+    'gist-top-feedback':
+      template: '#template-gist-top-feedback'
+      data: ->
+        feedback: ''
+        saving: false
+        saved: null
+        error: null
+      methods:
+        sendFeedback: ->
+          [@saving, @error] = [true, null]
+          github.createIssue '{{site.github.owner}}', '{{site.github.repo}}', title: 'Feedback', body: @feedback
+            .then (created) => @saved = created
+            .fail (error) => @error = error
+            .always => @saving = false
+
+routesIndex = ->
+  page '/login', ->
+    clientId = '741e291348ea3f2305bd'
+    endpoint = 'https://github.com/login/oauth/authorize'
+    uri = "#{location.origin}/auth.html"
+    scope = github.scope
+    sessionStorage.state = state = Math.random().toString(36).substring(2) + Math.random().toString(36).substring(2)
+    location.href = "#{endpoint}?client_id=#{clientId}&redirect_uri=#{uri}&scope=#{scope}&state=#{state}"
+
+  page '/logout', ->
+    delete localStorage.token
+    delete localStorage.scope
+    location.replace '/'
+
+  page '/new',                  -> vm().newGist()
+  page '/:id',        (context) -> vm().openGist context.params.id
+  page '/:id/edit',   (context) -> vm().editGist context.params.id
+  page '/:id/slide',  (context) -> location.replace "/slide/?/#{context.params.id}"
+  page                          -> vm().openTop()
+
+  _vm = null
+  vm = -> _vm or (_vm = vmIndex())
+
+routesIndex()
+
+page()
 
 # Handles redirect from 404 page
 if location.hash
   page.redirect location.hash.substring(2)
-
-page()
