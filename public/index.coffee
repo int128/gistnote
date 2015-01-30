@@ -180,4 +180,8 @@ page '/:id/slide', (context) ->
 page ->
   vm.openTop()
 
-page hashbang: true
+# Handles redirect from 404 page
+if location.hash
+  page.redirect location.hash.substring(2)
+
+page()
