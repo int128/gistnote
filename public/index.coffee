@@ -1,7 +1,41 @@
 ---
 ---
 
-{% include github.coffee %}
+github =
+  endpoint: 'https://api.github.com'
+  scope: 'gist,public_repo'
+  token: null
+  get: (resource) ->
+    $.ajax "#{@endpoint}/#{resource}",
+      headers: Authorization: "token #{@token}" if @token
+  post: (resource, data) ->
+    $.ajax "#{@endpoint}/#{resource}",
+      data: data
+      contentType: 'application/json'
+      type: 'POST'
+      headers: Authorization: "token #{@token}"
+  put: (resource, data) ->
+    $.ajax "#{@endpoint}/#{resource}",
+      data: data
+      contentType: 'application/json'
+      type: 'PUT'
+      headers: Authorization: "token #{@token}"
+  patch: (resource, data) ->
+    $.ajax "#{@endpoint}/#{resource}",
+      data: data
+      contentType: 'application/json'
+      type: 'PATCH'
+      headers: Authorization: "token #{@token}"
+  user:                 -> @get   'user'
+  gists: (options)      -> if options.public then @get 'gists/public' else @get 'gists'
+  gist: (id)            -> @get   "gists/#{id}"
+  createGist: (req)     -> @post  'gists', JSON.stringify(req)
+  updateGist: (id, req) -> @patch "gists/#{id}", JSON.stringify(req)
+  repo: (owner, repo)             -> @get  "repos/#{owner}/#{repo}"
+  createIssue: (owner, repo, req) -> @post "repos/#{owner}/#{repo}/issues", JSON.stringify(req)
+
+if localStorage.scope == github.scope
+  github.token = localStorage.token
 
 vmIndex = -> new Vue
   el: 'body'
@@ -175,10 +209,32 @@ routesIndex = ->
   _vm = null
   vm = -> _vm or (_vm = vmIndex())
 
-routesIndex()
+routesSlide = ->
+  page '/:id/slide', (context) ->
+    github.gist context.params.id
+      .then (gist) ->
+        document.title = gist.description or gist.id
+        contents = Object.keys(gist.files)
+          .map (name) -> gist.files[name]
+          .filter (file) -> file.language == 'Markdown'
+          .map (file) -> file.content
+        remark.create source: contents.join('\n---\n')
+      .fail (error) ->
+        $('.alert').text("#{error.status} #{error.statusText} (#{error.responseJSON.message})").show()
+      .always ->
+        $('.loading').hide()
 
-page()
+  page ->
+    $('.loading').hide()
+    $('.alert').text('Page Not Found').show()
 
-# Handles redirect from 404 page
+switch location.pathname
+  when '/'           then routesIndex()
+  when '/slide.html' then routesSlide()
+  else location.replace '/'
+
 if location.hash
+  # Handles redirect from 404 page
   page.redirect location.hash.substring(2)
+else
+  page()
