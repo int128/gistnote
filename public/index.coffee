@@ -78,7 +78,7 @@ vmIndex = -> new Vue
         .then (gist)  => [@gist, @state] = [gist, 'edit']
         .fail (error) => [@gist, @state] = [error, 'error']
     newGist: ->
-      @state = 'loading'
+      @state = 'blank'
       @gist = description: '', files: [filename: 'gistfile1.md', content: '']
       @state = 'new'
     openTop: ->
@@ -94,14 +94,17 @@ vmIndex = -> new Vue
   compiled: ->
     marked.setOptions highlight: (code, lang) -> hljs.highlightAuto(code, [lang]).value
   components:
-    'login-status':       template: '#template-login-status'
     'gist-top':           template: '#template-gist-top'
-    'gist-loading':       template: '#template-gist-loading'
     'gist-view':          template: '#template-gist-view'
+    'gist-loading':       template: '#template-gist-loading'
     'gist-error':         template: '#template-gist-error'
+    'gist-blank':         template: ''
+
     'gist-view-metadata': template: '#template-gist-view-metadata'
     'gist-view-owner':    template: '#template-gist-view-owner'
     'gist-edit-tips':     template: '#template-gist-edit-tips'
+
+    'login-status':       template: '#template-login-status'
     'api-error':          template: '#template-api-error'
 
     'gists':
