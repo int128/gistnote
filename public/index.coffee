@@ -7,25 +7,29 @@ github =
   token: null
   get: (resource) ->
     $.ajax "#{@endpoint}/#{resource}",
-      headers: Authorization: "token #{@token}" if @token
+      headers:
+        Authorization: "token #{@token}" if @token
   post: (resource, data) ->
     $.ajax "#{@endpoint}/#{resource}",
       data: data
       contentType: 'application/json'
       type: 'POST'
-      headers: Authorization: "token #{@token}"
+      headers:
+        Authorization: "token #{@token}" if @token
   put: (resource, data) ->
     $.ajax "#{@endpoint}/#{resource}",
       data: data
       contentType: 'application/json'
       type: 'PUT'
-      headers: Authorization: "token #{@token}"
+      headers:
+        Authorization: "token #{@token}" if @token
   patch: (resource, data) ->
     $.ajax "#{@endpoint}/#{resource}",
       data: data
       contentType: 'application/json'
       type: 'PATCH'
-      headers: Authorization: "token #{@token}"
+      headers:
+        Authorization: "token #{@token}" if @token
   user:                 -> @get   'user'
   gists: (options)      -> if options.public then @get 'gists/public' else @get 'gists'
   gist: (id)            -> @get   "gists/#{id}"
