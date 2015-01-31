@@ -15,14 +15,13 @@ layout: default
         </div>
       </nav>
 
-      <ul class="nav nav-pills">
-        <li v-class="active: !publicGists" v-if="user">
+      <ul class="nav nav-pills" v-if="user">
+        <li v-class="active: !publicGists">
           <a href="javascript:void(0)" v-on="click: publicGists = false">@{{user.login}}</a>
         </li>
         <li v-class="active: publicGists">
           <a href="javascript:void(0)" v-on="click: publicGists = true">Public</a>
         </li>
-        <li v-if="!user"><a href="/login">Yours</a></li>
       </ul>
 
       <div v-component="gists" v-with="current: (gist ? gist.id : null), public: publicGists"></div>
