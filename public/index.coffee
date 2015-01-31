@@ -203,14 +203,14 @@ routesIndex = ->
   page '/new',                  -> vm().newGist()
   page '/:id',        (context) -> vm().openGist context.params.id
   page '/:id/edit',   (context) -> vm().editGist context.params.id
-  page '/:id/slide',  (context) -> location.replace "/slide.html#!/#{context.params.id}/slide"
+  page '/slide/:id',  (context) -> location.replace "/slide/#{context.params.id}"
   page                          -> vm().openTop()
 
   _vm = null
   vm = -> _vm or (_vm = vmIndex())
 
 routesSlide = ->
-  page '/:id/slide', (context) ->
+  page '/slide/:id', (context) ->
     github.gist context.params.id
       .then (gist) ->
         document.title = "#{gist.description or gist.id} | {{site.title}} Slide"

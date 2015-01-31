@@ -3,7 +3,10 @@
 <head>
 <meta charset="utf-8"/>
 <script>
-location.replace('/#!' + location.pathname);
+if (location.pathname.indexOf('/slide/') == 0)
+  location.replace('/slide.html#!' + location.pathname);
+else
+  location.replace('/#!' + location.pathname);
 </script>
 </head>
 <body>
