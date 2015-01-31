@@ -59,16 +59,26 @@ vmIndex = -> new Vue
       if github.token
         github.user().then (user) => @user = user
     fetchGist: (id) ->
-      @navigate 'loading'
       github.gist id
         .then (gist) ->
           gist.files = Object.keys(gist.files).map (name) -> gist.files[name]
           gist
-        .fail (error) => @navigate 'error', error
-    openGist: (id) -> @fetchGist(id).then (gist) => @navigate 'view', gist
-    editGist: (id) -> @fetchGist(id).then (gist) => @navigate 'edit', gist
-    newGist: -> @navigate 'new', description: '', files: []
-    openTop: -> @navigate 'top'
+    openGist: (id) ->
+      @state = 'loading'
+      @fetchGist(id)
+        .then (gist)  => [@gist, @state] = [gist, 'view']
+        .fail (error) => [@gist, @state] = [error, 'error']
+    editGist: (id) ->
+      @state = 'loading'
+      @fetchGist(id)
+        .then (gist)  => [@gist, @state] = [gist, 'edit']
+        .fail (error) => [@gist, @state] = [error, 'error']
+    newGist: ->
+      @state = 'loading'
+      @gist = description: '', files: [filename: 'gistfile1.md', content: '']
+      @state = 'new'
+    openTop: ->
+      @state = 'top'
   filters:
     marked: (content) -> marked(content) if content
     highlight: (content) -> hljs.highlightAuto(content).value if content
@@ -124,8 +134,6 @@ vmIndex = -> new Vue
           @gist.files.push
             filename: "gistfile#{@gist.files.length + 1}.md"
             content: ''
-      attached: ->
-        @newGistFile()
 
     'gist-new-file':
       template: '#template-gist-new-file'
