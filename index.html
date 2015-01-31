@@ -54,7 +54,7 @@ layout: default
       </ul>
     </li>
     <li v-if="!id">
-      <a href="/login"><span class="glyphicon glyphicon-user"></span> Login with your GitHub account</a>
+      <a href="/login"><span class="glyphicon glyphicon-user"></span> Sign in with GitHub</a>
     </li>
   </ul>
 </script>
@@ -84,7 +84,7 @@ layout: default
           Gistnote <small v-component="gist-top-stars"></small>
         </h1>
         <p>Makes easy to work with Gist.</p>
-        <p v-if="!$root.user"><a href="/login" class="btn btn-primary">Login with your GitHub account</a></p>
+        <p v-if="!$root.user"><a href="/login" class="btn btn-primary">Sign in with GitHub</a></p>
       </div>
     </div>
   </div>
