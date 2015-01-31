@@ -213,28 +213,43 @@ routesSlide = ->
   page '/:id/slide', (context) ->
     github.gist context.params.id
       .then (gist) ->
-        document.title = gist.description or gist.id
-        contents = Object.keys(gist.files)
-          .map (name) -> gist.files[name]
-          .filter (file) -> file.language == 'Markdown'
-          .map (file) -> file.content
-        remark.create source: contents.join('\n---\n')
+        document.title = "#{gist.description or gist.id} | {{site.title}} Slide"
+        new Vue
+          el: 'body'
+          data: gist: gist
+          components: shown: template: '#template-slide', inherit: true
+          ready: ->
+            content = Object.keys(gist.files)
+              .map    (name) -> gist.files[name]
+              .filter (file) -> file.language == 'Markdown'
+              .map    (file) -> file.content
+              .join '\n---\n'
+            remark.create source: content
+
       .fail (error) ->
-        $('.alert').text("#{error.status} #{error.statusText} (#{error.responseJSON.message})").show()
-      .always ->
-        $('.loading').hide()
+        new Vue
+          el: 'body'
+          data: error: error
+          components: shown: template: '#template-not-found', inherit: true
+
+  page '/:id', (context) -> location.replace "/#{context.params.id}"
 
   page ->
-    $('.loading').hide()
-    $('.alert').text('Page Not Found').show()
+    new Vue
+      el: 'body'
+      components: shown: template: '#template-not-found'
 
 switch location.pathname
-  when '/'           then routesIndex()
-  when '/slide.html' then routesSlide()
-  else location.replace '/'
+  when '/'
+    routesIndex()
+  when '/slide.html'
+    routesSlide()
+  else
+    location.replace '/'
 
 if location.hash
   # Handles redirect from 404 page
+  page dispatch: false
   page.redirect location.hash.substring(2)
 else
   page()
