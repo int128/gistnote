@@ -30,12 +30,12 @@ github =
       type: 'PATCH'
       headers:
         Authorization: "token #{@token}" if @token
-  user:                 -> @get   'user'
-  gists: (options)      -> if options.public then @get 'gists/public' else @get 'gists'
-  gist: (id)            -> @get   "gists/#{id}"
-  createGist: (req)     -> @post  'gists', JSON.stringify(req)
-  updateGist: (id, req) -> @patch "gists/#{id}", JSON.stringify(req)
-  repo: (owner, repo)             -> @get  "repos/#{owner}/#{repo}"
+  user:                           -> @get   'user'
+  gists:       (options)          -> if options.public then @get 'gists/public' else @get 'gists'
+  gist:        (id)               -> @get   "gists/#{id}"
+  createGist:  (req)              -> @post  'gists', JSON.stringify(req)
+  updateGist:  (id, req)          -> @patch "gists/#{id}", JSON.stringify(req)
+  repo:        (owner, repo)      -> @get  "repos/#{owner}/#{repo}"
   createIssue: (owner, repo, req) -> @post "repos/#{owner}/#{repo}/issues", JSON.stringify(req)
 
 if localStorage.scope == github.scope
