@@ -4,9 +4,9 @@
 <meta charset="utf-8"/>
 <script>
 if (location.pathname.indexOf('/slide/') == 0)
-  location.replace('/slide.html#!' + location.pathname);
+  location.replace('/slide.html#!' + location.pathname + location.hash);
 else
-  location.replace('/#!' + location.pathname);
+  location.replace('/#!' + location.pathname + location.hash);
 </script>
 </head>
 <body>
