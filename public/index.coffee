@@ -88,6 +88,7 @@ vmIndex = -> new Vue
     highlight: (content) -> hljs.highlightAuto(content).value if content
     timeago: (time) -> $.timeago(time)
     gistTitle: (gist) -> gist.description or "gist:#{gist.id}" if gist
+    escapeHtml: (html) -> $(document.createElement 'div').text(html).html()
   created: ->
     @fetchUser()
     @$watch 'pageTitle', -> document.title = @pageTitle
@@ -239,7 +240,8 @@ routesSlide = ->
               .filter (file) -> file.language == 'Markdown'
               .map    (file) -> file.content
               .join '\n---\n'
-            remark.create source: content
+            escapedContent = $(document.createElement 'div').text(content).html()
+            remark.create source: escapedContent
 
       .fail (error) ->
         new Vue
