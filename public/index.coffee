@@ -88,12 +88,13 @@ vmIndex = -> new Vue
     highlight: (content) -> hljs.highlightAuto(content).value if content
     timeago: (time) -> $.timeago(time)
     gistTitle: (gist) -> gist.description or "gist:#{gist.id}" if gist
-    escapeHtml: (html) -> $(document.createElement 'div').text(html).html()
   created: ->
     @fetchUser()
     @$watch 'pageTitle', -> document.title = @pageTitle
   compiled: ->
-    marked.setOptions highlight: (code, lang) -> hljs.highlightAuto(code, [lang]).value
+    marked.setOptions
+      sanitize: true
+      highlight: (code, lang) -> hljs.highlightAuto(code, [lang]).value
   components:
     'gist-top':           template: '#template-gist-top'
     'gist-view':          template: '#template-gist-view'
