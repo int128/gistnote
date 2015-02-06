@@ -241,8 +241,15 @@ routesSlide = ->
               .filter (file) -> file.language == 'Markdown'
               .map    (file) -> file.content
               .join '\n---\n'
-            escapedContent = $(document.createElement 'div').text(content).html()
-            remark.create source: escapedContent
+              .replace(/</g, '&lt;')
+              .replace(/>/g, '&gt;')
+            remark.create source: content
+            # unescape symbols
+            $(':not(iframe)').contents()
+              .filter -> @nodeType == 3
+              .each -> @nodeValue = @nodeValue.replace(/\&lt;/g, '<').replace(/\&gt;/g, '>')
+            # remove script links
+            $('a[href^="javascript:"]').removeAttr 'href'
 
       .fail (error) ->
         new Vue
