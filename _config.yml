@@ -3,6 +3,9 @@ redcarpet:
   extensions: [ "no_intra_emphasis", "fenced_code_blocks", "autolink", "tables", "with_toc_data" ]
 
 title: Gistnote
+tagline: Evernote like Gist client app
+description: Gistnote is a Gist client application with Evernote like user interface.
+
 url: https://gistnote.github.io
 github:
   url: https://github.com/gistnote/gistnote.github.io

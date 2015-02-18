@@ -81,8 +81,8 @@ layout: default
   <div class="clearfix"></div>
   <div class="jumbotron text-center">
     <img src="/public/logo.png" alt="logo"/>
-    <h1>Gistnote</h1>
-    <p>Evernote like Gist client app</p>
+    <h1>{% endraw %}{{site.title}}{% raw %}</h1>
+    <p>{% endraw %}{{site.tagline}}{% raw %}</p>
     <p v-if="!$root.user"><a href="/login" class="btn btn-primary">Sign in with GitHub</a></p>
     <p v-component="gist-top-stars"></p>
   </div>
