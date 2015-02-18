@@ -79,7 +79,8 @@ vmIndex = -> new Vue
     openTop: ->
       @state = 'top'
     scrollGists: (e) ->
-      if (e.target.scrollTop + e.target.offsetHeight) >= e.target.scrollHeight
+      target = $(e.target)
+      if (target.scrollTop() + target.outerHeight()) >= e.target.scrollHeight
         @$broadcast 'scroll-gists-bottom'
   filters:
     marked: (content) -> marked(content) if content
