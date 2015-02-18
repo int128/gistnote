@@ -78,6 +78,9 @@ vmIndex = -> new Vue
       @state = 'new'
     openTop: ->
       @state = 'top'
+    scrollGists: (e) ->
+      if (e.target.scrollTop + e.target.offsetHeight) >= e.target.scrollHeight
+        @$broadcast 'scroll-gists-bottom'
   filters:
     marked: (content) -> marked(content) if content
     highlight: (content) -> hljs.highlightAuto(content).value if content
@@ -112,17 +115,19 @@ vmIndex = -> new Vue
         loading: false
         next: null
       methods:
-        fetchGists: ->
-          [@gists, @loading] = [[], true]
+        fetch: ->
+          [@gists, @next, @loading] = [[], null, true]
           github.gists(public: @public).then (data) =>
             [@gists, @next, @loading] = [data.gists, data.next, false]
         fetchMore: ->
-          [next, @next, @loading] = [@next, null, true]
-          github.gists(public: @public, page: next).then (data) =>
-            [@gists, @next, @loading] = [@gists.concat(data.gists), data.next, false]
+          if !@loading
+            [next, @next, @loading] = [@next, null, true]
+            github.gists(public: @public, page: next).then (data) =>
+              [@gists, @next, @loading] = [@gists.concat(data.gists), data.next, false]
       created: ->
-        @fetchGists()
-        @$watch 'public', -> @fetchGists()
+        @fetch()
+        @$watch 'public', -> @fetch()
+        @$on 'scroll-gists-bottom', -> @fetchMore()
 
     'gist-new':
       template: '#template-gist-new'
