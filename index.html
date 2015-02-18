@@ -69,6 +69,9 @@ layout: default
       v-repeat="gists" v-class="'gn-gists-list-item-active': id == current">
       {{$data | gistTitle}}
     </a>
+    <a href="javascript:void(0)" class="list-group-item" v-on="click: fetchMore" v-if="next">
+      <span class="glyphicon glyphicon-chevron-down"></span> more...
+    </a>
     <li class="list-group-item" v-if="loading"><img src="/public/loading.gif" alt="loading"/></li>
   </div>
 </script>

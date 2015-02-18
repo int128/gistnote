@@ -5,8 +5,9 @@ github =
   endpoint: 'https://api.github.com'
   scope: 'gist,public_repo'
   token: null
-  get: (resource) ->
+  get: (resource, data) ->
     $.ajax "#{@endpoint}/#{resource}",
+      data: data
       headers:
         Authorization: "token #{@token}" if @token
   post: (resource, data) ->
@@ -31,7 +32,11 @@ github =
       headers:
         Authorization: "token #{@token}" if @token
   user:                           -> @get   'user'
-  gists:       (options)          -> if options.public then @get 'gists/public' else @get 'gists'
+  gists: (options) ->
+    path = if options.public then 'gists/public' else 'gists'
+    @get(path, page: options.page).then (gists, status, xhr) =>
+      next = xhr.getResponseHeader('Link')?.match(/<.+?page=(.+?)>; rel="next"/)?.pop()
+      gists: gists, next: next
   gist:        (id)               -> @get   "gists/#{id}"
   createGist:  (req)              -> @post  'gists', JSON.stringify(req)
   updateGist:  (id, req)          -> @patch "gists/#{id}", JSON.stringify(req)
@@ -114,10 +119,16 @@ vmIndex = -> new Vue
       data: ->
         gists: []
         loading: false
+        next: null
       methods:
         fetchGists: ->
           [@gists, @loading] = [[], true]
-          github.gists(public: @public).then (gists) => [@gists, @loading] = [gists, false]
+          github.gists(public: @public).then (data) =>
+            [@gists, @next, @loading] = [data.gists, data.next, false]
+        fetchMore: ->
+          [next, @next, @loading] = [@next, null, true]
+          github.gists(public: @public, page: next).then (data) =>
+            [@gists, @next, @loading] = [@gists.concat(data.gists), data.next, false]
       created: ->
         @fetchGists()
         @$watch 'public', -> @fetchGists()
