@@ -52,25 +52,6 @@ pre {
   margin-bottom: 2em;
 }
 
-.gn-help-gists.row {
-  position: relative;
-}
-
-.gn-help-gists-description {
-  position: absolute;
-  bottom: 0;
-  right: 1em;
-}
-
-.gn-top-stars {
-  font-size: 50%;
-  color: inherit;
-}
-
-.gn-top-feedback {
-  margin-top: 3em;
-}
-
 .gn-slide-go-view {
   z-index: 10;
   position: fixed;

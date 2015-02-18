@@ -78,44 +78,26 @@ layout: default
 </script>
 
 <script type="text/template" id="template-gist-top">
-  <div class="jumbotron">
-    <div class="row">
-      <div class="col-sm-3 col-md-2 col-lg-2">
-        <img src="/public/logo.png" class="img-responsive" alt="Logo" role="presentation"/>
-      </div>
-      <div class="col-sm-9 col-md-10 col-lg-10">
-        <h1>
-          Gistnote <small v-component="gist-top-stars"></small>
-        </h1>
-        <p>Makes easy to work with Gist.</p>
-        <p v-if="!$root.user"><a href="/login" class="btn btn-primary">Sign in with GitHub</a></p>
-      </div>
-    </div>
+  <div class="clearfix"></div>
+  <div class="jumbotron text-center">
+    <img src="/public/logo.png" alt="logo"/>
+    <h1>Gistnote</h1>
+    <p>Evernote like Gist client app</p>
+    <p v-if="!$root.user"><a href="/login" class="btn btn-primary">Sign in with GitHub</a></p>
+    <p v-component="gist-top-stars"></p>
   </div>
-  <div class="row gn-help-gists">
-    <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
-      <img src="/public/arrow.png" class="img-responsive"/>
-    </div>
-    <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8 gn-help-gists-description">
-      <h2>Click to Open.</h2>
-    </div>
+  <div class="row" v-if="$root.user">
+    <div class="col-md-6 col-lg-6 col-md-offset-3 col-lg-offset-3" v-component="gist-top-feedback"></div>
   </div>
-  <div class="row gn-top-feedback" v-if="$root.user">
-    <div class="col-md-6 col-lg-6 col-md-offset-6 col-lg-offset-6" v-component="gist-top-feedback"></div>
-  </div>
-  <div class="text-right gn-copyright">
+  <div class="text-center gn-copyright">
     <p>Gistnote is a Gist client app based on JavaScript. &copy; Hidetake Iwata, 2015.</p>
-    <p>
-      Thanks to
-      <a href="http://yajidesign.com/">yajidesign.com</a> and
-      <a href="http://findicons.com/icon/591630/sticky_notes">Metro Uinvert Dock Icon</a>.
-    </p>
+    <p>Thanks to <a href="http://findicons.com/icon/591630/sticky_notes">Metro Uinvert Dock Icon</a>.</p>
   </div>
 </script>
 
 <script type="text/template" id="template-gist-top-stars">
-  <a href="{% endraw %}{{site.github.url}}{% raw %}" target="_blank" title="{{stars}} stars on GitHub" class="gn-top-stars">
-    <span class="glyphicon glyphicon-star" v-repeat="stars"></span>
+  <a href="{% endraw %}{{site.github.url}}{% raw %}" target="_blank" v-if="stars">
+    &star; {{stars}}
   </span>
 </script>
 
@@ -124,7 +106,6 @@ layout: default
     <div class="form-group">
       <label for="feedback-text">Send me your feedback:</label>
       <textarea id="feedback-text" class="form-control" rows="3" v-model="feedback"></textarea>
-      <p class="help-block">Your feedback will be an open issue of <a href="{% endraw %}{{site.github.url}}{% raw %}">the project</a>.</p>
     </div>
     <button type="button" class="btn btn-primary" disabled="{{!feedback}}" v-on="click: sendFeedback">Send Feedback</button>
     <img src="/public/loading.gif" alt="loading" v-if="saving" />
