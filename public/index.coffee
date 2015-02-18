@@ -5,43 +5,34 @@ github =
   endpoint: 'https://api.github.com'
   scope: 'gist,public_repo'
   token: null
-  get: (resource, data) ->
-    $.ajax "#{@endpoint}/#{resource}",
-      data: data
-      headers:
-        Authorization: "token #{@token}" if @token
-  post: (resource, data) ->
+  ajax: (method, resource, data) ->
     $.ajax "#{@endpoint}/#{resource}",
       data: data
       contentType: 'application/json'
-      type: 'POST'
+      type: method
       headers:
         Authorization: "token #{@token}" if @token
-  put: (resource, data) ->
-    $.ajax "#{@endpoint}/#{resource}",
-      data: data
-      contentType: 'application/json'
-      type: 'PUT'
-      headers:
-        Authorization: "token #{@token}" if @token
-  patch: (resource, data) ->
-    $.ajax "#{@endpoint}/#{resource}",
-      data: data
-      contentType: 'application/json'
-      type: 'PATCH'
-      headers:
-        Authorization: "token #{@token}" if @token
-  user:                           -> @get   'user'
+  get:   (resource, data) -> @ajax 'GET',   resource, data
+  post:  (resource, data) -> @ajax 'POST',  resource, data
+  put:   (resource, data) -> @ajax 'PUT',   resource, data
+  patch: (resource, data) -> @ajax 'PATCH', resource, data
+  user: ->
+    @get 'user'
   gists: (options) ->
     path = if options.public then 'gists/public' else 'gists'
     @get(path, page: options.page).then (gists, status, xhr) =>
       next = xhr.getResponseHeader('Link')?.match(/<.+?page=(.+?)>; rel="next"/)?.pop()
       gists: gists, next: next
-  gist:        (id)               -> @get   "gists/#{id}"
-  createGist:  (req)              -> @post  'gists', JSON.stringify(req)
-  updateGist:  (id, req)          -> @patch "gists/#{id}", JSON.stringify(req)
-  repo:        (owner, repo)      -> @get  "repos/#{owner}/#{repo}"
-  createIssue: (owner, repo, req) -> @post "repos/#{owner}/#{repo}/issues", JSON.stringify(req)
+  gist: (id) ->
+    @get "gists/#{id}"
+  createGist: (req) ->
+    @post 'gists', JSON.stringify(req)
+  updateGist: (id, req) ->
+    @patch "gists/#{id}", JSON.stringify(req)
+  repo: (owner, repo) ->
+    @get "repos/#{owner}/#{repo}"
+  createIssue: (owner, repo, req) ->
+    @post "repos/#{owner}/#{repo}/issues", JSON.stringify(req)
 
 if localStorage.scope == github.scope
   github.token = localStorage.token
