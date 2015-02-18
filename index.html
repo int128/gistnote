@@ -15,16 +15,9 @@ layout: default
         </div>
       </nav>
 
-      <ul class="nav nav-pills" v-if="user">
-        <li v-class="active: !publicGists">
-          <a href="javascript:void(0)" v-on="click: publicGists = false">@{{user.login}}</a>
-        </li>
-        <li v-class="active: publicGists">
-          <a href="javascript:void(0)" v-on="click: publicGists = true">Public</a>
-        </li>
-      </ul>
+      <img src="/public/loading.gif" alt="loading" v-if="false" />
 
-      <div v-component="gists" v-with="current: (gist ? gist.id : null), public: publicGists"></div>
+      <div v-component="gists" v-with="current: (gist ? gist.id : null)"></div>
 
     </div>
     <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10 col-xs-offset-2 col-sm-offset-2 col-md-offset-2 col-lg-offset-2">
@@ -60,6 +53,14 @@ layout: default
 </script>
 
 <script type="text/template" id="template-gists">
+  <ul class="nav nav-pills" v-if="$root.user">
+    <li v-class="active: !$data.public">
+      <a href="javascript:void(0)" v-on="click: $data.public = false">@{{$root.user.login}}</a>
+    </li>
+    <li v-class="active: $data.public">
+      <a href="javascript:void(0)" v-on="click: $data.public = true">Public</a>
+    </li>
+  </ul>
   <div class="list-group gn-gists-list">
     <a href="/new" class="list-group-item gn-gists-list-item"
       v-class="'gn-gists-list-item-active': $root.state == 'new'">
@@ -96,8 +97,7 @@ layout: default
       <img src="/public/arrow.png" class="img-responsive"/>
     </div>
     <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8 gn-help-gists-description">
-      <h2 v-if="!$root.publicGists">Your Gists. Click to Open.</h2>
-      <h2 v-if="$root.publicGists">Public Gists. Click to Open.</h2>
+      <h2>Click to Open.</h2>
     </div>
   </div>
   <div class="row gn-top-feedback" v-if="$root.user">

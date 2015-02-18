@@ -46,7 +46,6 @@ vmIndex = -> new Vue
     user: null
     gist: null
     state: 'loading'
-    publicGists: !github.token
   computed:
     pageTitle: -> switch @state
       when 'new'  then "New Gist | {{site.title}}"
@@ -108,6 +107,7 @@ vmIndex = -> new Vue
     'gists':
       template: '#template-gists'
       data: ->
+        public: !github.token
         gists: []
         loading: false
         next: null
