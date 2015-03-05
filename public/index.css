@@ -41,13 +41,27 @@ pre {
 }
 
 .gn-gists-list-item {
-  height: 5em;
   overflow-x: hidden;
 }
 
 .gn-gists-list-item-active {
   font-weight: bold;
   background-color: #eee;
+}
+
+.gn-gists-list-item-title {
+  height: 3em;
+  overflow-y: hidden;
+}
+
+.gn-gists-list-item-updated {
+  color: #888;
+  font-size: 80%;
+}
+
+.gn-gists-list-item-icons {
+  color: #ccc;
+  font-size: 80%;
 }
 
 .gn-gist-edit-form {

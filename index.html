@@ -68,7 +68,12 @@ layout: default
     </a>
     <a href="/{{id}}" class="list-group-item gn-gists-list-item"
       v-repeat="gists" v-class="'gn-gists-list-item-active': id == current">
-      {{$data | gistTitle}}
+      <div class="gn-gists-list-item-title">{{$data | gistTitle}}</div>
+      <div class="gn-gists-list-item-updated pull-left">{{updated_at | timeago}}</div>
+      <div class="gn-gists-list-item-icons pull-right" v-if="!$data.public">
+        <span class="glyphicon glyphicon-lock"></span>
+      </div>
+      <div class="clearfix"></div>
     </a>
     <a href="javascript:void(0)" class="list-group-item" v-on="click: fetchMore" v-if="next">
       <span class="glyphicon glyphicon-chevron-down"></span> more...
