@@ -1,5 +1,82 @@
-body {
-  margin: 0;
-  padding: 0;
-  font-family: sans-serif;
+.navbar {
+  margin-bottom: 0;
+}
+
+pre {
+  border: none;
+}
+
+.autosize-textarea {
+  position: relative;
+  min-height: 15em;
+}
+
+.autosize-textarea textarea {
+  position: absolute;
+  width: 50%;
+  top: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.jumbotron {
+  background-color: inherit;
+}
+
+.gn-user-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 16px;
+  margin-left: .5em;
+}
+
+.gn-gists {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  padding-left: 0;
+  padding-right: 0;
+  overflow-y: auto;
+}
+
+.gn-gists-list-item {
+  overflow-x: hidden;
+}
+
+.gn-gists-list-item-active {
+  font-weight: bold;
+  background-color: #eee;
+}
+
+.gn-gists-list-item-title {
+  height: 3em;
+  overflow-y: hidden;
+}
+
+.gn-gists-list-item-updated {
+  color: #888;
+  font-size: 80%;
+}
+
+.gn-gists-list-item-icons {
+  color: #ccc;
+  font-size: 80%;
+}
+
+.gn-gist-edit-form {
+  margin-top: 2em;
+  margin-bottom: 2em;
+}
+
+.gn-slide-go-view {
+  z-index: 10;
+  position: fixed;
+  bottom: 5px;
+  left: 5px;
+}
+
+.gn-copyright {
+  margin-top: 3em;
+  font-size: 90%;
+  color: #444;
 }

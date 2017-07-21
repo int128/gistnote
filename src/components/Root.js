@@ -1,17 +1,13 @@
 import React from 'react';
-import { Route, Link } from 'react-router-dom';
-import Home from './Home';
-import About from './About';
+import { Route } from 'react-router-dom';
+import Home from './home';
+import Slide from './slide';
+import About from './about';
 
 export default () => (
   <div>
-    <header>
-      <Link to="/">Home</Link>
-      <Link to="/about">About</Link>
-    </header>
-    <main>
-      <Route exact path="/" component={Home}/>
-      <Route exact path="/about" component={About}/>
-    </main>
+    <Route exact path="/" component={Home}/>
+    <Route exact path="/slide" component={Slide}/>
+    <Route exact path="/about" component={About}/>
   </div>
 )
