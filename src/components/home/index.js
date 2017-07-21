@@ -1,8 +1,8 @@
 import React from 'react';
 
-import GistListContainer from './list/GistListContainer';
-import GistContainer from './main/GistContainer';
-import UserContainer from './bar/UserContainer';
+import ListContainer from './list';
+import MainContainer from './main';
+import BarContainer from './bar';
 
 export default () => (
   <div className="container-fluid">
@@ -15,13 +15,13 @@ export default () => (
             </div>
           </div>
         </nav>
-        <GistListContainer/>
+        <ListContainer/>
       </div>
       <div className="col-xs-10 col-sm-10 col-md-10 col-lg-10 col-xs-offset-2 col-sm-offset-2 col-md-offset-2 col-lg-offset-2">
         <div className="pull-right">
-          <UserContainer/>
+          <BarContainer/>
         </div>
-        <GistContainer/>
+        <MainContainer/>
       </div>
     </div>
   </div>

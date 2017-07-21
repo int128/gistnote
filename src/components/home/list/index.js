@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 
 import PublicGistListContainer from './PublicGistListContainer';
 
-class GistListContainer extends React.Component {
+class ListContainer extends React.Component {
   static propTypes = {
     currentUser: PropTypes.object,
   }
@@ -29,4 +29,4 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => bindActionCreators({
 }, dispatch)
 
-export default connect(mapStateToProps, mapDispatchToProps)(GistListContainer);
+export default connect(mapStateToProps, mapDispatchToProps)(ListContainer);
