@@ -19,10 +19,12 @@ export default GistList
 
 const GistListItem = ({gist}) => (
   <Link to={`/${gist.id}`} className="list-group-item gn-gists-list-item">
-    <div className="gn-gists-list-item-title">{gist.title}</div>
+    <div className="gn-gists-list-item-title">{gist.description || gist.id}</div>
     <div className="gn-gists-list-item-updated pull-left">{gist.updated_at}</div>
     <div className="gn-gists-list-item-icons pull-right">
-      <span className="glyphicon glyphicon-lock"></span>
+      {gist.public ? null : (
+        <span className="glyphicon glyphicon-lock"></span>
+      )}
     </div>
     <div className="clearfix"></div>
   </Link>
