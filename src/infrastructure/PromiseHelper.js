@@ -10,7 +10,7 @@ export function createReducer(modelClass, actionLoading, actionResolved, actionR
       case actionResolved:
         return new modelClass({state: RESOLVED, data: action.data});
       case actionRejected:
-        return new modelClass({state: REJECTED});
+        return new modelClass({state: REJECTED, error: action.error});
       default:
         return state;
     }

@@ -4,6 +4,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 import GistsResponse from '../../../models/GistsResponse';
+import GistContentResponse from '../../../models/GistContentResponse';
 import { RESOLVED } from '../../../models/PromiseResponse';
 
 import { fetchPublicGists } from '../../../state/gists/actionCreators';
@@ -15,6 +16,7 @@ class PublicGistListContainer extends React.Component {
   static propTypes = {
     currentUser: PropTypes.object,
     gistsResponse: PropTypes.instanceOf(GistsResponse).isRequired,
+    gistContentResponse: PropTypes.instanceOf(GistContentResponse).isRequired,
   }
 
   componentDidMount() {
@@ -37,10 +39,10 @@ class PublicGistListContainer extends React.Component {
   }
 
   renderList() {
-    const { gistsResponse } = this.props;
+    const { gistsResponse, gistContentResponse } = this.props;
     switch (gistsResponse.state) {
       case RESOLVED:
-        return <GistList gists={gistsResponse.data}/>;
+        return <GistList gists={gistsResponse.data} activeGist={gistContentResponse.data}/>;
       default:
         return <li className="list-group-item"><LoadingIndicator/></li>;
     }
@@ -49,6 +51,7 @@ class PublicGistListContainer extends React.Component {
 
 const mapStateToProps = state => ({
   gistsResponse: state.gistsResponse,
+  gistContentResponse: state.gistContentResponse,
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({
