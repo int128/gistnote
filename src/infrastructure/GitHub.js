@@ -38,7 +38,7 @@ export default class GitHub {
     return request(`${GitHub.endpoint}/gists/public`, this.defaultOptions());
   }
 
-  getGist(id) {
+  getGistContent(id) {
     return request(`${GitHub.endpoint}/gists/${id}`, this.defaultOptions());
   }
 

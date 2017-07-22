@@ -3,16 +3,18 @@ import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import Gists from '../../../models/Gists';
+import GistsResponse from '../../../models/GistsResponse';
+import { RESOLVED } from '../../../models/PromiseResponse';
 
 import { fetchPublicGists } from '../../../state/gists/actionCreators';
 
 import GistList from './GistList';
+import LoadingIndicator from '../../LoadingIndicator';
 
 class PublicGistListContainer extends React.Component {
   static propTypes = {
     currentUser: PropTypes.object,
-    gists: PropTypes.instanceOf(Gists).isRequired,
+    gistsResponse: PropTypes.instanceOf(GistsResponse).isRequired,
   }
 
   componentDidMount() {
@@ -20,7 +22,6 @@ class PublicGistListContainer extends React.Component {
   }
 
   render() {
-    const { gists } = this.props;
     return (
       <div>
         <ul className="nav nav-pills">
@@ -28,14 +29,26 @@ class PublicGistListContainer extends React.Component {
             <a href="#public-gists" onClick={null}>Public Gists</a>
           </li>
         </ul>
-        <GistList gists={gists}/>
+        <div className="list-group gn-gists-list">
+          {this.renderList()}
+        </div>
       </div>
     );
+  }
+
+  renderList() {
+    const { gistsResponse } = this.props;
+    switch (gistsResponse.state) {
+      case RESOLVED:
+        return <GistList gists={gistsResponse.data}/>;
+      default:
+        return <li className="list-group-item"><LoadingIndicator/></li>;
+    }
   }
 }
 
 const mapStateToProps = state => ({
-  gists: state.gists,
+  gistsResponse: state.gistsResponse,
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({

@@ -1,14 +1,19 @@
 import * as actionTypes from './actionTypes';
+import { createReducer } from '../../infrastructure/PromiseHelper';
 
-import Gists from '../../models/Gists';
+import GistsResponse from '../../models/GistsResponse';
+import GistContentResponse from '../../models/GistContentResponse';
 
-export function gists(state = Gists.loading(), action) {
-  switch (action.type) {
-    case actionTypes.FETCH_PUBLIC_GISTS:
-      return Gists.loading();
-    case actionTypes.RECEIVE_PUBLIC_GISTS:
-      return action.gists;
-    default:
-      return state;
-  }
-}
+export const gistsResponse = createReducer(
+  GistsResponse,
+  actionTypes.FETCH_GISTS,
+  actionTypes.RESOLVE_GISTS,
+  actionTypes.REJECT_GISTS,
+)
+
+export const gistContentResponse = createReducer(
+  GistContentResponse,
+  actionTypes.FETCH_GIST_CONTENT,
+  actionTypes.RESOLVE_GIST_CONTENT,
+  actionTypes.REJECT_GIST_CONTENT,
+)
