@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 import ListContainer from './list';
 import MainContainer from './main';
@@ -11,7 +12,7 @@ export default () => (
         <nav className="navbar navbar-default">
           <div className="container-fluid">
             <div className="navbar-header">
-              <a className="navbar-brand" href="/">Gistnote</a>
+              <Link className="navbar-brand" to="/">Gistnote</Link>
             </div>
           </div>
         </nav>

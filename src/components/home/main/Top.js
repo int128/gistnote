@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 export default () => (
   <div>
@@ -7,7 +8,7 @@ export default () => (
       <img src="/logo.png" alt="logo"/>
       <h1>Gistnote</h1>
       <p>Evernote like Gist client app</p>
-      <p><a href="/login" className="btn btn-primary">Sign in with GitHub</a></p>
+      <p><Link to="/login" className="btn btn-primary">Sign in with GitHub</Link></p>
       <p>gist-top-stars</p>
     </div>
     <div className="row">
