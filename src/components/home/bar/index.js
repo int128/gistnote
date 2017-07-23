@@ -1,7 +1,9 @@
 import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { preventDefaultEvent } from '../../../infrastructure/DispatchUtil';
+
+import { login, logout } from '../../../state/user/actionCreators';
 
 class BarContainer extends React.Component {
   static propTypes = {}
@@ -19,7 +21,7 @@ class BarContainer extends React.Component {
             <ul className="dropdown-menu" role="menu">
               <li className="dropdown-header">@{user.login}</li>
               <li><a href={user.html_url}>Your Profile</a></li>
-              <li><Link to="/logout">Logout</Link></li>
+              <li><a href="#logout" onClick={preventDefaultEvent(this.props.logout)}>Logout</a></li>
               <li className="divider"></li>
               <li className="dropdown-header">Gistnote</li>
               <li><a href="https://github.com/gistnote/gistnote.github.io">Send Feedback</a></li>
@@ -31,9 +33,9 @@ class BarContainer extends React.Component {
       return (
         <ul className="nav nav-pills">
           <li>
-            <Link to="/login">
+            <a href="#login" onClick={preventDefaultEvent(this.props.login)}>
               <span className="glyphicon glyphicon-user"></span> Sign in with GitHub
-            </Link>
+            </a>
           </li>
         </ul>
       );
@@ -46,6 +48,8 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({
+  login,
+  logout,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(BarContainer);
