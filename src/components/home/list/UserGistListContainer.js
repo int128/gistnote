@@ -5,21 +5,22 @@ import { connect } from 'react-redux';
 
 import GistsResponse from '../../../models/GistsResponse';
 import GistContentResponse from '../../../models/GistContentResponse';
-import { RESOLVED } from '../../../models/PromiseResponse';
+import PromiseResponse, { RESOLVED } from '../../../models/PromiseResponse';
 
-import { fetchPublicGists } from '../../../state/gists/actionCreators';
+import { fetchUserGists } from '../../../state/gists/actionCreators';
 
 import GistList from './GistList';
 import LoadingIndicator from '../../LoadingIndicator';
 
-class PublicGistListContainer extends React.Component {
+class UserGistListContainer extends React.Component {
   static propTypes = {
+    userResponse: PropTypes.instanceOf(PromiseResponse).isRequired,
     gistsResponse: PropTypes.instanceOf(GistsResponse).isRequired,
     gistContentResponse: PropTypes.instanceOf(GistContentResponse).isRequired,
   }
 
   componentDidMount() {
-    this.props.fetchPublicGists();
+    this.props.fetchUserGists();
   }
 
   render() {
@@ -27,7 +28,7 @@ class PublicGistListContainer extends React.Component {
       <div>
         <ul className="nav nav-pills">
           <li className="active">
-            <a href="#public-gists" onClick={null}>Public Gists</a>
+            <a href="#public-gists" onClick={null}>User Gists</a>
           </li>
         </ul>
         <div className="list-group gn-gists-list">
@@ -54,7 +55,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-  fetchPublicGists,
+  fetchUserGists,
 }, dispatch)
 
-export default connect(mapStateToProps, mapDispatchToProps)(PublicGistListContainer);
+export default connect(mapStateToProps, mapDispatchToProps)(UserGistListContainer);

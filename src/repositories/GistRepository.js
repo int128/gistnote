@@ -1,7 +1,10 @@
 import GitHub from '../infrastructure/GitHub';
 
+import OAuthTokenRepository from './OAuthTokenRepository';
+
 export default class GistRepository {
-  gitHub = new GitHub();
+  oauthTokenRepository = new OAuthTokenRepository();
+  gitHub = new GitHub(this.oauthTokenRepository.getOrNull().token);
 
   findPublicGists() {
     return this.gitHub.findPublicGists();

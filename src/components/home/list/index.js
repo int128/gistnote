@@ -4,18 +4,16 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 import PublicGistListContainer from './PublicGistListContainer';
+import UserGistListContainer from './UserGistListContainer';
 
 class ListContainer extends React.Component {
   static propTypes = {
-    currentUser: PropTypes.object,
+    authenticated: PropTypes.bool.isRequired,
   }
 
   render() {
-    const { currentUser } = this.props;
-    if (currentUser) {
-      return (
-        <div>TODO</div>
-      );
+    if (this.props.authenticated) {
+      return <UserGistListContainer/>;
     } else {
       return <PublicGistListContainer/>;
     }
@@ -23,7 +21,7 @@ class ListContainer extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  currentUser: state.currentUser,
+  authenticated: state.authenticated,
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({

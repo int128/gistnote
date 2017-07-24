@@ -10,7 +10,7 @@ function* fetchGists({isPublic}) {
     if (isPublic) {
       yield put({type: actionTypes.RESOLVE_GISTS, data: yield repository.findPublicGists()});
     } else {
-      //TODO
+      yield put({type: actionTypes.RESOLVE_GISTS, data: yield repository.findUserGists()});
     }
   } catch (error) {
     yield put({type: actionTypes.REJECT_GISTS, error});
