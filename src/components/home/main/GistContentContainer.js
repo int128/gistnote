@@ -6,15 +6,14 @@ import { Seq, is } from 'immutable';
 
 import { fetchGistContent } from '../../../state/gists/actionCreators';
 
-import GistContentResponse from '../../../models/GistContentResponse';
-import { RESOLVED } from '../../../models/PromiseResponse';
+import PromiseResponse, { LOADING, RESOLVED } from '../../../models/PromiseResponse';
 
 import GistContent from './GistContent';
 import LoadingIndicator from '../../LoadingIndicator';
 
 class GistContentContainer extends React.Component {
   static propTypes = {
-    gistContentResponse: PropTypes.instanceOf(GistContentResponse).isRequired,
+    gistContentResponse: PropTypes.instanceOf(PromiseResponse).isRequired,
   }
 
   componentDidMount() {
@@ -30,10 +29,12 @@ class GistContentContainer extends React.Component {
   render() {
     const { gistContentResponse } = this.props;
     switch (gistContentResponse.state) {
+      case LOADING:
+        return <LoadingIndicator/>;
       case RESOLVED:
         return <GistContent gist={gistContentResponse.data}/>;
       default:
-        return <LoadingIndicator/>;
+        return null;
     }
   }
 }

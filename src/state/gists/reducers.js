@@ -1,18 +1,13 @@
 import * as actionTypes from './actionTypes';
-import { createReducer } from '../../infrastructure/PromiseHelper';
+import { createPromiseReducer } from '../../infrastructure/PromiseHelper';
 
-import GistsResponse from '../../models/GistsResponse';
-import GistContentResponse from '../../models/GistContentResponse';
-
-export const gistsResponse = createReducer(
-  GistsResponse,
+export const gistsResponse = createPromiseReducer(
   actionTypes.FETCH_GISTS,
   actionTypes.RESOLVE_GISTS,
   actionTypes.REJECT_GISTS,
 )
 
-export const gistContentResponse = createReducer(
-  GistContentResponse,
+export const gistContentResponse = createPromiseReducer(
   actionTypes.FETCH_GIST_CONTENT,
   actionTypes.RESOLVE_GIST_CONTENT,
   actionTypes.REJECT_GIST_CONTENT,

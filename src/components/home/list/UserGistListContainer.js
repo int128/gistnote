@@ -3,9 +3,7 @@ import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import GistsResponse from '../../../models/GistsResponse';
-import GistContentResponse from '../../../models/GistContentResponse';
-import PromiseResponse, { RESOLVED } from '../../../models/PromiseResponse';
+import PromiseResponse, { LOADING, RESOLVED } from '../../../models/PromiseResponse';
 
 import { fetchUserGists } from '../../../state/gists/actionCreators';
 
@@ -15,8 +13,8 @@ import LoadingIndicator from '../../LoadingIndicator';
 class UserGistListContainer extends React.Component {
   static propTypes = {
     userResponse: PropTypes.instanceOf(PromiseResponse).isRequired,
-    gistsResponse: PropTypes.instanceOf(GistsResponse).isRequired,
-    gistContentResponse: PropTypes.instanceOf(GistContentResponse).isRequired,
+    gistsResponse: PropTypes.instanceOf(PromiseResponse).isRequired,
+    gistContentResponse: PropTypes.instanceOf(PromiseResponse).isRequired,
   }
 
   componentDidMount() {
@@ -41,10 +39,12 @@ class UserGistListContainer extends React.Component {
   renderList() {
     const { gistsResponse, gistContentResponse } = this.props;
     switch (gistsResponse.state) {
+      case LOADING:
+        return <li className="list-group-item"><LoadingIndicator/></li>;
       case RESOLVED:
         return <GistList gists={gistsResponse.data} activeGist={gistContentResponse.data}/>;
       default:
-        return <li className="list-group-item"><LoadingIndicator/></li>;
+        return null;
     }
   }
 }

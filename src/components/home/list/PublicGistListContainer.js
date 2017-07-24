@@ -3,9 +3,7 @@ import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import GistsResponse from '../../../models/GistsResponse';
-import GistContentResponse from '../../../models/GistContentResponse';
-import { RESOLVED } from '../../../models/PromiseResponse';
+import PromiseResponse, { RESOLVED } from '../../../models/PromiseResponse';
 
 import { fetchPublicGists } from '../../../state/gists/actionCreators';
 
@@ -14,8 +12,8 @@ import LoadingIndicator from '../../LoadingIndicator';
 
 class PublicGistListContainer extends React.Component {
   static propTypes = {
-    gistsResponse: PropTypes.instanceOf(GistsResponse).isRequired,
-    gistContentResponse: PropTypes.instanceOf(GistContentResponse).isRequired,
+    gistsResponse: PropTypes.instanceOf(PromiseResponse).isRequired,
+    gistContentResponse: PropTypes.instanceOf(PromiseResponse).isRequired,
   }
 
   componentDidMount() {

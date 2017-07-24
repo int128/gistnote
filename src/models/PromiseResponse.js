@@ -9,4 +9,5 @@ export default class PromiseResponse extends Record({
   state: LOADING,
   data: null,
 }) {
+  static LOADING = new PromiseResponse();
 }

@@ -1,7 +1,5 @@
 import * as actionTypes from './actionTypes';
-import { createReducer } from '../../infrastructure/PromiseHelper';
-
-import PromiseResponse from '../../models/PromiseResponse';
+import { createPromiseReducer } from '../../infrastructure/PromiseHelper';
 
 export function authenticated(state = false, action) {
   switch (action.type) {
@@ -14,8 +12,7 @@ export function authenticated(state = false, action) {
   }
 }
 
-export const userResponse = createReducer(
-  PromiseResponse,
+export const userResponse = createPromiseReducer(
   actionTypes.FETCH_USER,
   actionTypes.RESOLVE_USER,
   actionTypes.REJECT_USER,
