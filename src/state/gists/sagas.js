@@ -1,16 +1,17 @@
 import { takeEvery, put } from 'redux-saga/effects';
-
-import GistRepository from '../../repositories/GistRepository';
+import GitHub from '../../infrastructure/GitHub';
+import OAuthTokenRepository from '../../repositories/OAuthTokenRepository';
 
 import * as actionTypes from './actionTypes';
 
 function* fetchGists({isPublic}) {
-  const repository = new GistRepository();
+  const oauthTokenRepository = new OAuthTokenRepository();
+  const github = new GitHub(oauthTokenRepository.getOrNull().token);
   try {
     if (isPublic) {
-      yield put({type: actionTypes.RESOLVE_GISTS, data: yield repository.findPublicGists()});
+      yield put({type: actionTypes.RESOLVE_GISTS, data: yield github.findPublicGists()});
     } else {
-      yield put({type: actionTypes.RESOLVE_GISTS, data: yield repository.findUserGists()});
+      yield put({type: actionTypes.RESOLVE_GISTS, data: yield github.findUserGists()});
     }
   } catch (error) {
     yield put({type: actionTypes.REJECT_GISTS, error});
@@ -18,9 +19,10 @@ function* fetchGists({isPublic}) {
 }
 
 function* fetchGistContent({id}) {
-  const repository = new GistRepository();
+  const oauthTokenRepository = new OAuthTokenRepository();
+  const github = new GitHub(oauthTokenRepository.getOrNull().token);
   try {
-    yield put({type: actionTypes.RESOLVE_GIST_CONTENT, data: yield repository.getGistContent(id)});
+    yield put({type: actionTypes.RESOLVE_GIST_CONTENT, data: yield github.getGistContent(id)});
   } catch (error) {
     yield put({type: actionTypes.REJECT_GIST_CONTENT, error});
   }
