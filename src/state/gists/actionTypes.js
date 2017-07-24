@@ -1,3 +1,5 @@
+export const SELECT_GISTS_OWNER = 'SELECT_GISTS_OWNER'
+
 export const FETCH_GISTS = 'FETCH_GISTS'
 export const RESOLVE_GISTS = 'RESOLVE_GISTS'
 export const REJECT_GISTS = 'REJECT_GISTS'

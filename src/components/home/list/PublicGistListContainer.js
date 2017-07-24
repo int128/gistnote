@@ -21,21 +21,6 @@ class PublicGistListContainer extends React.Component {
   }
 
   render() {
-    return (
-      <div>
-        <ul className="nav nav-pills">
-          <li className="active">
-            <a href="#public-gists" onClick={null}>Public Gists</a>
-          </li>
-        </ul>
-        <div className="list-group gn-gists-list">
-          {this.renderList()}
-        </div>
-      </div>
-    );
-  }
-
-  renderList() {
     const { gistsResponse, gistContentResponse } = this.props;
     switch (gistsResponse.state) {
       case RESOLVED:

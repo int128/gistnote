@@ -30,8 +30,12 @@ export default class GitHub {
     return request(`${GitHub.endpoint}/user`, this.defaultOptions());
   }
 
-  findUserGists() {
+  findMyGists() {
     return request(`${GitHub.endpoint}/gists`, this.defaultOptions());
+  }
+
+  findUserGists(username) {
+    return request(`${GitHub.endpoint}/users/${username}/gists`, this.defaultOptions());
   }
 
   findPublicGists() {

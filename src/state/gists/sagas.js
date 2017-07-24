@@ -2,16 +2,23 @@ import { takeEvery, put } from 'redux-saga/effects';
 import GitHub from '../../infrastructure/GitHub';
 import OAuthTokenRepository from '../../repositories/OAuthTokenRepository';
 
+import * as ownerTypes from '../../models/GistOwner';
+
 import * as actionTypes from './actionTypes';
 
-function* fetchGists({isPublic}) {
+function* fetchGists({owner}) {
   const oauthTokenRepository = new OAuthTokenRepository();
   const github = new GitHub(oauthTokenRepository.getOrNull().token);
   try {
-    if (isPublic) {
-      yield put({type: actionTypes.RESOLVE_GISTS, data: yield github.findPublicGists()});
-    } else {
-      yield put({type: actionTypes.RESOLVE_GISTS, data: yield github.findUserGists()});
+    switch (owner.type) {
+      case ownerTypes.PUBLIC:
+        yield put({type: actionTypes.RESOLVE_GISTS, data: yield github.findPublicGists()});
+        break;
+      case ownerTypes.MY:
+        yield put({type: actionTypes.RESOLVE_GISTS, data: yield github.findMyGists()});
+        break;
+      default:
+        throw new Error(`Unknown owner type: ${owner.type}`);
     }
   } catch (error) {
     yield put({type: actionTypes.REJECT_GISTS, error});

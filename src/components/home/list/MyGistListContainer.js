@@ -5,38 +5,22 @@ import { connect } from 'react-redux';
 
 import PromiseResponse, { LOADING, RESOLVED } from '../../../models/PromiseResponse';
 
-import { fetchUserGists } from '../../../state/gists/actionCreators';
+import { fetchMyGists } from '../../../state/gists/actionCreators';
 
 import GistList from './GistList';
 import LoadingIndicator from '../../LoadingIndicator';
 
-class UserGistListContainer extends React.Component {
+class MyGistListContainer extends React.Component {
   static propTypes = {
-    userResponse: PropTypes.instanceOf(PromiseResponse).isRequired,
     gistsResponse: PropTypes.instanceOf(PromiseResponse).isRequired,
     gistContentResponse: PropTypes.instanceOf(PromiseResponse).isRequired,
   }
 
   componentDidMount() {
-    this.props.fetchUserGists();
+    this.props.fetchMyGists();
   }
 
   render() {
-    return (
-      <div>
-        <ul className="nav nav-pills">
-          <li className="active">
-            <a href="#public-gists" onClick={null}>User Gists</a>
-          </li>
-        </ul>
-        <div className="list-group gn-gists-list">
-          {this.renderList()}
-        </div>
-      </div>
-    );
-  }
-
-  renderList() {
     const { gistsResponse, gistContentResponse } = this.props;
     switch (gistsResponse.state) {
       case LOADING:
@@ -55,7 +39,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-  fetchUserGists,
+  fetchMyGists,
 }, dispatch)
 
-export default connect(mapStateToProps, mapDispatchToProps)(UserGistListContainer);
+export default connect(mapStateToProps, mapDispatchToProps)(MyGistListContainer);

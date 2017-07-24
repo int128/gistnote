@@ -1,8 +1,12 @@
 import * as actionTypes from './actionTypes'
 
-export const fetchPublicGists = () => ({type: actionTypes.FETCH_GISTS, isPublic: true})
+import GistOwner from '../../models/GistOwner';
 
-export const fetchUserGists = () => ({type: actionTypes.FETCH_GISTS, isPublic: false})
+export const selectPublicGists = () => ({type: actionTypes.SELECT_GISTS_OWNER, owner: GistOwner.PUBLIC})
+export const selectMyGists = () => ({type: actionTypes.SELECT_GISTS_OWNER, owner: GistOwner.MY})
+
+export const fetchPublicGists = () => ({type: actionTypes.FETCH_GISTS, owner: GistOwner.PUBLIC})
+export const fetchMyGists = () => ({type: actionTypes.FETCH_GISTS, owner: GistOwner.MY})
 
 export const fetchGistContent = id => ({type: actionTypes.FETCH_GIST_CONTENT, id})
 export const destroyGistContent = () => ({type: actionTypes.DESTROY_GIST_CONTENT})
