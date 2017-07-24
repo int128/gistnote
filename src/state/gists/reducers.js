@@ -11,4 +11,5 @@ export const gistContentResponse = createPromiseReducer(
   actionTypes.FETCH_GIST_CONTENT,
   actionTypes.RESOLVE_GIST_CONTENT,
   actionTypes.REJECT_GIST_CONTENT,
+  actionTypes.DESTROY_GIST_CONTENT,
 )

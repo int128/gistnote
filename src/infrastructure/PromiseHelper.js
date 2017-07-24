@@ -1,14 +1,16 @@
 import PromiseResponse, { RESOLVED, REJECTED } from '../models/PromiseResponse';
 
-export function createPromiseReducer(actionLoading, actionResolved, actionRejected) {
+export function createPromiseReducer(loading, resolved, rejected, destroy) {
   return function (state = PromiseResponse.LOADING, action) {
     switch (action.type) {
-      case actionLoading:
+      case loading:
         return PromiseResponse.LOADING;
-      case actionResolved:
+      case resolved:
         return new PromiseResponse({state: RESOLVED, data: action.data});
-      case actionRejected:
+      case rejected:
         return new PromiseResponse({state: REJECTED, error: action.error});
+      case destroy:
+        return PromiseResponse.LOADING;
       default:
         return state;
     }

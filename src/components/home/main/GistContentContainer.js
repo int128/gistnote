@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Seq, is } from 'immutable';
 
-import { fetchGistContent } from '../../../state/gists/actionCreators';
+import { fetchGistContent, destroyGistContent } from '../../../state/gists/actionCreators';
 
 import PromiseResponse, { LOADING, RESOLVED } from '../../../models/PromiseResponse';
 
@@ -26,6 +26,10 @@ class GistContentContainer extends React.Component {
     }
   }
 
+  componentWillUnmount() {
+    this.props.destroyGistContent();
+  }
+
   render() {
     const { gistContentResponse } = this.props;
     switch (gistContentResponse.state) {
@@ -45,6 +49,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => bindActionCreators({
   fetchGistContent,
+  destroyGistContent,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(GistContentContainer);
