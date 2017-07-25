@@ -11,4 +11,6 @@ export const fetchMyGists = () => ({type: actionTypes.FETCH_GISTS, owner: GistOw
 export const fetchGistContent = id => ({type: actionTypes.FETCH_GIST_CONTENT, id})
 export const destroyGistContent = () => ({type: actionTypes.DESTROY_GIST_CONTENT})
 
-export const fetchGistContentForUpdate = id => ({type: actionTypes.FETCH_GIST_CONTENT_FOR_UPDATE, id})
+export const changeEditingGistContent =
+  value => ({type: actionTypes.CHANGE_EDITING_GIST_CONTENT, value})
+export const updateGistContent = request => ({type: actionTypes.UPDATE_GIST_CONTENT, request})

@@ -4,18 +4,21 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Seq, is } from 'immutable';
 
-import { fetchGistContent, destroyGistContent } from '../../../state/gists/actionCreators';
+import {
+  fetchGistContent,
+  destroyGistContent,
+  changeEditingGistContent,
+  updateGistContent,
+} from '../../../state/gists/actionCreators';
 
 import PromiseResponse, { LOADING, RESOLVED } from '../../../models/PromiseResponse';
-import EditingGistContent from '../../../models/EditingGistContent';
 
 import GistEditor from './GistEditor';
 import LoadingIndicator from '../../LoadingIndicator';
 
 class GistEditorContainer extends React.Component {
   static propTypes = {
-    gistContentResponse: PropTypes.instanceOf(PromiseResponse).isRequired,
-    editingGistContent: PropTypes.instanceOf(EditingGistContent),
+    editingGistContent: PropTypes.instanceOf(PromiseResponse).isRequired,
   }
 
   componentDidMount() {
@@ -33,12 +36,18 @@ class GistEditorContainer extends React.Component {
   }
 
   render() {
-    const { gistContentResponse, editingGistContent } = this.props;
-    switch (gistContentResponse.state) {
+    const {
+      editingGistContent,
+      changeEditingGistContent,
+      updateGistContent,
+    } = this.props;
+    switch (editingGistContent.state) {
       case LOADING:
         return <LoadingIndicator/>;
       case RESOLVED:
-        return <GistEditor gist={gistContentResponse.data} editingGistContent={editingGistContent}/>;
+        return <GistEditor editingGistContent={editingGistContent.data}
+          onChange={value => changeEditingGistContent(value)}
+          onSave={updateGistContent}/>;
       default:
         return null;
     }
@@ -46,13 +55,14 @@ class GistEditorContainer extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  gistContentResponse: state.gistContentResponse,
   editingGistContent: state.editingGistContent,
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({
   fetchGistContent,
   destroyGistContent,
+  changeEditingGistContent,
+  updateGistContent,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(GistEditorContainer);
