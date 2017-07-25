@@ -2,6 +2,7 @@ import * as actionTypes from './actionTypes';
 import { createPromiseReducer } from '../../infrastructure/PromiseHelper';
 
 import GistOwner from '../../models/GistOwner';
+import EditingGistContent from '../../models/EditingGistContent';
 
 export function gistsOwner(state = GistOwner.PUBLIC, action) {
   switch (action.type) {
@@ -24,3 +25,12 @@ export const gistContentResponse = createPromiseReducer(
   actionTypes.REJECT_GIST_CONTENT,
   actionTypes.DESTROY_GIST_CONTENT,
 )
+
+export function editingGistContent(state = null, action) {
+  switch (action.type) {
+    case actionTypes.RESOLVE_GIST_CONTENT:
+      return EditingGistContent.createFromGistContent(action.data);
+    default:
+      return state;
+  }
+}

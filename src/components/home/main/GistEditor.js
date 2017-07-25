@@ -1,17 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import { Seq } from 'immutable';
+
+import EditingGistContent from '../../../models/EditingGistContent';
 
 import GistMetadata from './GistMetadata';
 
-const GistEditor = ({gist}) => (
+const GistEditor = ({gist, editingGistContent}) => (
   <div>
     <input type="text" className="form-control input-lg h2"
-      placeholder={`gist:${gist.id}`} defaultValue={gist.description}/>
+      placeholder={`gist:${gist.id}`} value={editingGistContent.description}/>
     <GistMetadata gist={gist}/>
     <div className="clearfix"></div>
-    {Seq(gist.files).map((file, key) => <GistFile key={key} file={file}/>).toList()}
+    {editingGistContent.files.map((file, key) => <GistFile key={key} file={file}/>).toList()}
     <form className="gn-gist-edit-form">
       <div className="pull-left">
         <button type="button" className="btn btn-link">
@@ -37,6 +38,7 @@ const GistEditor = ({gist}) => (
 
 GistEditor.propTypes = {
   gist: PropTypes.object.isRequired,
+  editingGistContent: PropTypes.instanceOf(EditingGistContent).isRequired,
 }
 
 export default GistEditor

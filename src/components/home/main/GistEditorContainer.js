@@ -7,6 +7,7 @@ import { Seq, is } from 'immutable';
 import { fetchGistContent, destroyGistContent } from '../../../state/gists/actionCreators';
 
 import PromiseResponse, { LOADING, RESOLVED } from '../../../models/PromiseResponse';
+import EditingGistContent from '../../../models/EditingGistContent';
 
 import GistEditor from './GistEditor';
 import LoadingIndicator from '../../LoadingIndicator';
@@ -14,6 +15,7 @@ import LoadingIndicator from '../../LoadingIndicator';
 class GistEditorContainer extends React.Component {
   static propTypes = {
     gistContentResponse: PropTypes.instanceOf(PromiseResponse).isRequired,
+    editingGistContent: PropTypes.instanceOf(EditingGistContent),
   }
 
   componentDidMount() {
@@ -31,12 +33,12 @@ class GistEditorContainer extends React.Component {
   }
 
   render() {
-    const { gistContentResponse } = this.props;
+    const { gistContentResponse, editingGistContent } = this.props;
     switch (gistContentResponse.state) {
       case LOADING:
         return <LoadingIndicator/>;
       case RESOLVED:
-        return <GistEditor gist={gistContentResponse.data}/>;
+        return <GistEditor gist={gistContentResponse.data} editingGistContent={editingGistContent}/>;
       default:
         return null;
     }
@@ -45,6 +47,7 @@ class GistEditorContainer extends React.Component {
 
 const mapStateToProps = state => ({
   gistContentResponse: state.gistContentResponse,
+  editingGistContent: state.editingGistContent,
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({
