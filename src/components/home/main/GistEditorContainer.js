@@ -6,9 +6,10 @@ import { Seq, is } from 'immutable';
 
 import {
   fetchGist,
-  destroyFetchedGist,
+  destroyEditingGist,
   changeEditingGist,
   updateGist,
+  destroyUpdatedGist,
 } from '../../../state/gists/actionCreators';
 
 import PromiseResponse, { LOADING, RESOLVED } from '../../../models/PromiseResponse';
@@ -33,7 +34,8 @@ class GistEditorContainer extends React.Component {
   }
 
   componentWillUnmount() {
-    this.props.destroyFetchedGist();
+    this.props.destroyEditingGist();
+    this.props.destroyUpdatedGist();
   }
 
   render() {
@@ -65,9 +67,10 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => bindActionCreators({
   fetchGist,
-  destroyFetchedGist,
+  destroyEditingGist,
   changeEditingGist,
   updateGist,
+  destroyUpdatedGist,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(GistEditorContainer);

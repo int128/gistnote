@@ -2,57 +2,68 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Seq, is } from 'immutable';
 
 import {
-  createEditingGistContent,
-  changeEditingGistContent,
-  destroyEditingGistContent,
-  requestCreateGist,
+  createEditingGist,
+  changeEditingGist,
+  destroyEditingGist,
+  createGist,
+  destroyCreatedGist,
 } from '../../../state/gists/actionCreators';
 
 import PromiseResponse, { LOADING, RESOLVED } from '../../../models/PromiseResponse';
 
 import GistEditor from './GistEditor';
+import LoadingIndicator from '../../LoadingIndicator';
 
 class NewGistContainer extends React.Component {
   static propTypes = {
-    editingGistContent: PropTypes.instanceOf(PromiseResponse).isRequired,
-    responseCreateGist: PropTypes.instanceOf(PromiseResponse).isRequired,
+    editingGist: PropTypes.instanceOf(PromiseResponse).isRequired,
+    createdGist: PropTypes.instanceOf(PromiseResponse).isRequired,
   }
 
   componentDidMount() {
-    this.props.createEditingGistContent();
+    this.props.createEditingGist();
   }
 
   componentWillUnmount() {
-    this.props.destroyEditingGistContent();
+    this.props.destroyEditingGist();
+    this.props.destroyCreatedGist();
   }
 
   render() {
     const {
-      editingGistContent,
-      responseCreateGist,
-      changeEditingGistContent,
-      updateGistContent,
+      editingGist,
+      createdGist,
+      changeEditingGist,
+      createGist,
     } = this.props;
-    return <GistEditor editingGistContent={editingGistContent.data}
-      changeEditingGistContent={changeEditingGistContent}
-      updateGistContent={updateGistContent}
-      updating={responseCreateGist.state === LOADING}/>;
+    switch (editingGist.state) {
+      case LOADING:
+        return <LoadingIndicator/>;
+      case RESOLVED:
+        return <GistEditor
+          editingGist={editingGist.data}
+          changeEditingGist={changeEditingGist}
+          updateGist={createGist}
+          updating={createdGist.state === LOADING}/>;
+      default:
+        return null;
+    }
   }
 }
 
 const mapStateToProps = state => ({
-  editingGistContent: state.editingGistContent,
-  responseCreateGist: state.responseCreateGist,
+  editingGist: state.editingGist,
+  createdGist: state.createdGist,
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-  createEditingGistContent,
-  changeEditingGistContent,
-  destroyEditingGistContent,
-  sendCreateGist,
+  createEditingGist,
+  changeEditingGist,
+  destroyEditingGist,
+  createGist,
+  destroyCreatedGist,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(NewGistContainer);

@@ -11,6 +11,12 @@ export const fetchMyGists = () => ({type: actionTypes.FETCH_GISTS, owner: GistOw
 export const fetchGist = id => ({type: actionTypes.FETCH_GIST, id})
 export const destroyFetchedGist = () => ({type: actionTypes.DESTROY_FETCHED_GIST})
 
+export const createEditingGist = () => ({type: actionTypes.CREATE_EDITING_GIST})
 export const changeEditingGist = value => ({type: actionTypes.CHANGE_EDITING_GIST, value})
 export const destroyEditingGist = () => ({type: actionTypes.DESTROY_EDITING_GIST})
+
+export const createGist = gist => ({type: actionTypes.CREATE_GIST, gist})
+export const destroyCreatedGist = () => ({type: actionTypes.DESTROY_CREATED_GIST})
+
 export const updateGist = (id, gist) => ({type: actionTypes.UPDATE_GIST, id, gist})
+export const destroyUpdatedGist = () => ({type: actionTypes.DESTROY_UPDATED_GIST})

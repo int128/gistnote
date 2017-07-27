@@ -6,8 +6,8 @@ import EditingGistFile from './EditingGistFile';
  * @see https://developer.github.com/v3/gists/#edit-a-gist
  */
 export default class EditingGist extends Record({
-  gist: null,
-  description: null,
+  gist: {},
+  description: '',
   files: Seq(),
 }) {
   static createFromGistContent(gist) {
@@ -17,6 +17,10 @@ export default class EditingGist extends Record({
       files: Seq(gist.files).valueSeq().map((file, index) =>
         EditingGistFile.createFromGistContentFile(index, file)),
     });
+  }
+
+  static createNew() {
+    return new EditingGist();
   }
 
   setDescription(value) {

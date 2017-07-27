@@ -18,7 +18,7 @@ export function gistsOwner(state = GistOwner.PUBLIC, action) {
   }
 }
 
-export function fetchedGists(state = PromiseResponse.LOADING, action) {
+export function fetchedGists(state = PromiseResponse.INVALID, action) {
   switch (action.type) {
     case actionTypes.FETCH_GISTS:
       return PromiseResponse.LOADING;
@@ -31,46 +31,65 @@ export function fetchedGists(state = PromiseResponse.LOADING, action) {
   }
 }
 
-export function fetchedGist(state = PromiseResponse.LOADING, action) {
+export function fetchedGist(state = PromiseResponse.INVALID, action) {
   switch (action.type) {
     case actionTypes.FETCH_GIST:
-    case actionTypes.DESTROY_FETCHED_GIST:
       return PromiseResponse.LOADING;
     case actionTypes.FETCH_GIST_RESOLVED:
       return PromiseResponse.createResolved(action.data);
     case actionTypes.FETCH_GIST_REJECTED:
       return PromiseResponse.createRejected(action.error);
+    case actionTypes.DESTROY_FETCHED_GIST:
+      return PromiseResponse.INVALID;
     default:
       return state;
   }
 }
 
-export function editingGist(state = PromiseResponse.LOADING, action) {
+export function editingGist(state = PromiseResponse.INVALID, action) {
   switch (action.type) {
     case actionTypes.FETCH_GIST:
-    case actionTypes.DESTROY_FETCHED_GIST:
       return PromiseResponse.LOADING;
     case actionTypes.FETCH_GIST_RESOLVED:
       return PromiseResponse.createResolved(EditingGist.createFromGistContent(action.data));
     case actionTypes.FETCH_GIST_REJECTED:
       return PromiseResponse.createRejected(action.error);
+    case actionTypes.CREATE_EDITING_GIST:
+      return PromiseResponse.createResolved(EditingGist.createNew());
     case actionTypes.CHANGE_EDITING_GIST:
       return PromiseResponse.createResolved(action.value);
+    case actionTypes.DESTROY_EDITING_GIST:
+      return PromiseResponse.INVALID;
     default:
       return state;
   }
 }
 
-export function updatedGist(state = PromiseResponse.LOADING, action) {
+export function createdGist(state = PromiseResponse.INVALID, action) {
   switch (action.type) {
-    case actionTypes.FETCH_GIST_RESOLVED:
+    case actionTypes.CREATE_GIST:
+      return PromiseResponse.LOADING;
+    case actionTypes.CREATE_GIST_RESOLVED:
       return PromiseResponse.createResolved();
+    case actionTypes.CREATE_GIST_REJECTED:
+      return PromiseResponse.createRejected(action.error);
+    case actionTypes.DESTROY_CREATED_GIST:
+      return PromiseResponse.INVALID;
+    default:
+      return state;
+  }
+}
+
+export function updatedGist(state = PromiseResponse.INVALID, action) {
+  switch (action.type) {
     case actionTypes.UPDATE_GIST:
       return PromiseResponse.LOADING;
     case actionTypes.UPDATE_GIST_RESOLVED:
       return PromiseResponse.createResolved();
     case actionTypes.UPDATE_GIST_REJECTED:
       return PromiseResponse.createRejected(action.error);
+    case actionTypes.DESTROY_UPDATED_GIST:
+      return PromiseResponse.INVALID;
     default:
       return state;
   }

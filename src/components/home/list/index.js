@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { preventDefaultEvent } from '../../../infrastructure/DispatchUtil';
 
 import GistOwner, * as ownerTypes from '../../../models/GistOwner';
@@ -57,6 +58,9 @@ class ListContainer extends React.Component {
           </li>
         </ul>
         <div className="list-group gn-gists-list">
+          <Link to="/new" className="list-group-item gn-gists-list-item">
+            <span className="glyphicon glyphicon-file"></span> New Gist
+          </Link>
           {(() => {
             switch (gistsOwner.type) {
               case ownerTypes.PUBLIC:
