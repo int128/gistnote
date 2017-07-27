@@ -17,7 +17,7 @@ import PromiseResponse, { LOADING, RESOLVED } from '../../../models/PromiseRespo
 import GistEditor from './GistEditor';
 import LoadingIndicator from '../../LoadingIndicator';
 
-class GistEditorContainer extends React.Component {
+class EditGistContainer extends React.Component {
   static propTypes = {
     editingGist: PropTypes.instanceOf(PromiseResponse).isRequired,
     updatedGist: PropTypes.instanceOf(PromiseResponse).isRequired,
@@ -73,4 +73,4 @@ const mapDispatchToProps = dispatch => bindActionCreators({
   destroyUpdatedGist,
 }, dispatch)
 
-export default connect(mapStateToProps, mapDispatchToProps)(GistEditorContainer);
+export default connect(mapStateToProps, mapDispatchToProps)(EditGistContainer);

@@ -11,7 +11,7 @@ import PromiseResponse, { LOADING, RESOLVED } from '../../../models/PromiseRespo
 import GistView from './GistView';
 import LoadingIndicator from '../../LoadingIndicator';
 
-class GistViewContainer extends React.Component {
+class ViewGistContainer extends React.Component {
   static propTypes = {
     fetchedGist: PropTypes.instanceOf(PromiseResponse).isRequired,
   }
@@ -52,4 +52,4 @@ const mapDispatchToProps = dispatch => bindActionCreators({
   destroyFetchedGist,
 }, dispatch)
 
-export default connect(mapStateToProps, mapDispatchToProps)(GistViewContainer);
+export default connect(mapStateToProps, mapDispatchToProps)(ViewGistContainer);
