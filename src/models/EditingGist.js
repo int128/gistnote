@@ -1,21 +1,21 @@
 import { Record, Seq } from 'immutable';
 
-import EditingGistContentFile from './EditingGistContentFile';
+import EditingGistFile from './EditingGistFile';
 
 /**
  * @see https://developer.github.com/v3/gists/#edit-a-gist
  */
-export default class EditingGistContent extends Record({
+export default class EditingGist extends Record({
   gist: null,
   description: null,
   files: Seq(),
 }) {
   static createFromGistContent(gist) {
-    return new EditingGistContent({
+    return new EditingGist({
       gist,
       description: gist.description,
       files: Seq(gist.files).valueSeq().map((file, index) =>
-        EditingGistContentFile.createFromGistContentFile(index, file)),
+        EditingGistFile.createFromGistContentFile(index, file)),
     });
   }
 
@@ -35,7 +35,7 @@ export default class EditingGistContent extends Record({
 
   addNewFile() {
     return this.set('files',
-      this.files.concat([EditingGistContentFile.createNew(this.files.size)]));
+      this.files.concat([EditingGistFile.createNew(this.files.size)]));
   }
 
   toGitHubRequest() {

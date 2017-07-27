@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Seq, is } from 'immutable';
 
-import { fetchGistContent, destroyGistContent } from '../../../state/gists/actionCreators';
+import { fetchGist, destroyFetchedGist } from '../../../state/gists/actionCreators';
 
 import PromiseResponse, { LOADING, RESOLVED } from '../../../models/PromiseResponse';
 
@@ -13,30 +13,30 @@ import LoadingIndicator from '../../LoadingIndicator';
 
 class GistContentContainer extends React.Component {
   static propTypes = {
-    gistContentResponse: PropTypes.instanceOf(PromiseResponse).isRequired,
+    fetchedGist: PropTypes.instanceOf(PromiseResponse).isRequired,
   }
 
   componentDidMount() {
-    this.props.fetchGistContent(this.props.match.params.id);
+    this.props.fetchGist(this.props.match.params.id);
   }
 
   componentDidUpdate(prevProps) {
     if (!is(Seq(this.props.match.params), Seq(prevProps.match.params))) {
-      this.props.fetchGistContent(this.props.match.params.id);
+      this.props.fetchGist(this.props.match.params.id);
     }
   }
 
   componentWillUnmount() {
-    this.props.destroyGistContent();
+    this.props.destroyFetchedGist();
   }
 
   render() {
-    const { gistContentResponse } = this.props;
-    switch (gistContentResponse.state) {
+    const { fetchedGist } = this.props;
+    switch (fetchedGist.state) {
       case LOADING:
         return <LoadingIndicator/>;
       case RESOLVED:
-        return <GistContent gist={gistContentResponse.data}/>;
+        return <GistContent gist={fetchedGist.data}/>;
       default:
         return null;
     }
@@ -44,12 +44,12 @@ class GistContentContainer extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  gistContentResponse: state.gistContentResponse,
+  fetchedGist: state.fetchedGist,
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-  fetchGistContent,
-  destroyGistContent,
+  fetchGist,
+  destroyFetchedGist,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(GistContentContainer);

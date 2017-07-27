@@ -12,8 +12,8 @@ import LoadingIndicator from '../../LoadingIndicator';
 
 class PublicGistListContainer extends React.Component {
   static propTypes = {
-    gistsResponse: PropTypes.instanceOf(PromiseResponse).isRequired,
-    gistContentResponse: PropTypes.instanceOf(PromiseResponse).isRequired,
+    fetchedGists: PropTypes.instanceOf(PromiseResponse).isRequired,
+    fetchedGist: PropTypes.instanceOf(PromiseResponse).isRequired,
   }
 
   componentDidMount() {
@@ -21,10 +21,10 @@ class PublicGistListContainer extends React.Component {
   }
 
   render() {
-    const { gistsResponse, gistContentResponse } = this.props;
-    switch (gistsResponse.state) {
+    const { fetchedGists, fetchedGist } = this.props;
+    switch (fetchedGists.state) {
       case RESOLVED:
-        return <GistList gists={gistsResponse.data} activeGist={gistContentResponse.data}/>;
+        return <GistList gists={fetchedGists.data} activeGist={fetchedGist.data}/>;
       default:
         return <li className="list-group-item"><LoadingIndicator/></li>;
     }
@@ -32,8 +32,8 @@ class PublicGistListContainer extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  gistsResponse: state.gistsResponse,
-  gistContentResponse: state.gistContentResponse,
+  fetchedGists: state.fetchedGists,
+  fetchedGist: state.fetchedGist,
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({

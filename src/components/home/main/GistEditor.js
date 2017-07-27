@@ -2,32 +2,32 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 
-import EditingGistContent from '../../../models/EditingGistContent';
+import EditingGist from '../../../models/EditingGist';
 
 import GistMetadata from './GistMetadata';
 import LoadingIndicator from '../../LoadingIndicator';
 
 const GistEditor = ({
-  editingGistContent,
-  changeEditingGistContent,
-  updateGistContent,
+  editingGist,
+  changeEditingGist,
+  updateGist,
   updating,
 }) => (
   <div>
     <GistDescription disabled={updating}
-      editingGistContent={editingGistContent}
-      changeEditingGistContent={changeEditingGistContent}/>
-    <GistMetadata gist={editingGistContent.gist}/>
-    {editingGistContent.files.map(file =>
+      editingGist={editingGist}
+      changeEditingGist={changeEditingGist}/>
+    <GistMetadata gist={editingGist.gist}/>
+    {editingGist.files.map(file =>
       <GistFile key={file.id} file={file}
         disabled={updating}
-        onChange={file => changeEditingGistContent(editingGistContent.setFile(file))}/>
+        onChange={file => changeEditingGist(editingGist.setFile(file))}/>
     ).toList()}
     <form className="gn-gist-edit-form">
       <div className="pull-left">
         <button type="button" className="btn btn-link"
           disabled={updating}
-          onClick={e => changeEditingGistContent(editingGistContent.addNewFile())}>
+          onClick={e => changeEditingGist(editingGist.addNewFile())}>
           <span className="glyphicon glyphicon-plus-sign"></span>
           &nbsp;
           Add File
@@ -38,11 +38,11 @@ const GistEditor = ({
         &nbsp;
         <button type="button" className="btn btn-primary"
           disabled={updating}
-          onClick={() => updateGistContent(editingGistContent.gist.id, editingGistContent.toGitHubRequest())}>
+          onClick={() => updateGist(editingGist.gist.id, editingGist.toGitHubRequest())}>
           Update Gist
         </button>
         &nbsp;
-        <Link to={`/${editingGistContent.gist.id}`} className="btn btn-default"
+        <Link to={`/${editingGist.gist.id}`} className="btn btn-default"
           disabled={updating}>
           Cancel
         </Link>
@@ -58,17 +58,17 @@ const GistEditor = ({
 )
 
 GistEditor.propTypes = {
-  editingGistContent: PropTypes.instanceOf(EditingGistContent).isRequired,
+  editingGist: PropTypes.instanceOf(EditingGist).isRequired,
 }
 
 export default GistEditor
 
-const GistDescription = ({disabled, editingGistContent, changeEditingGistContent}) => (
+const GistDescription = ({disabled, editingGist, changeEditingGist}) => (
   <input type="text" className="form-control input-lg h2"
     disabled={disabled}
-    placeholder={editingGistContent.gist.id}
-    value={editingGistContent.description}
-    onChange={e => changeEditingGistContent(editingGistContent.setDescription(e.target.value))}/>
+    placeholder={editingGist.gist.id}
+    value={editingGist.description}
+    onChange={e => changeEditingGist(editingGist.setDescription(e.target.value))}/>
 )
 
 const GistFile = ({file, onChange, disabled}) => (

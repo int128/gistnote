@@ -11,44 +11,48 @@ function* fetchGists({owner}) {
   const oauthTokenRepository = new OAuthTokenRepository();
   const github = new GitHub(oauthTokenRepository.getOrNull().token);
   try {
+    let data;
     switch (owner.type) {
       case ownerTypes.PUBLIC:
-        yield put({type: actionTypes.RESOLVE_GISTS, data: yield github.findPublicGists()});
+        data = yield github.findPublicGists();
         break;
       case ownerTypes.MY:
-        yield put({type: actionTypes.RESOLVE_GISTS, data: yield github.findMyGists()});
+        data = yield github.findMyGists();
         break;
       default:
-        throw new Error(`Unknown owner type: ${owner.type}`);
+        throw new Error(`owner.type must be one of ${ownerTypes} but ${owner.type}`);
     }
+    yield put({type: actionTypes.FETCH_GISTS_RESOLVED, data});
   } catch (error) {
-    yield put({type: actionTypes.REJECT_GISTS, error});
+    yield put({type: actionTypes.FETCH_GISTS_REJECTED, error});
   }
 }
 
-function* fetchGistContent({id}) {
+function* fetchGist({id}) {
   const oauthTokenRepository = new OAuthTokenRepository();
   const github = new GitHub(oauthTokenRepository.getOrNull().token);
   try {
-    yield put({type: actionTypes.RESOLVE_GIST_CONTENT, data: yield github.getGistContent(id)});
+    const data = yield github.getGistContent(id);
+    yield put({type: actionTypes.FETCH_GIST_RESOLVED, data});
   } catch (error) {
-    yield put({type: actionTypes.REJECT_GIST_CONTENT, error});
+    yield put({type: actionTypes.FETCH_GIST_REJECTED, error});
   }
 }
 
-function* updateGistContent({id, gist}) {
+function* updateGist({id, gist}) {
   const oauthTokenRepository = new OAuthTokenRepository();
   const github = new GitHub(oauthTokenRepository.getOrNull().token);
   try {
-    yield put({type: actionTypes.RESOLVE_UPDATE_GIST_CONTENT, data: yield github.updateGist(id, gist)});
+    const data = yield github.updateGist(id, gist);
+    yield put({type: actionTypes.UPDATE_GIST_RESOLVED, data});
     yield put(push(`/${id}`));
   } catch (error) {
-    yield put({type: actionTypes.REJECT_UPDATE_GIST_CONTENT, error});
+    yield put({type: actionTypes.UPDATE_GIST_REJECTED, error});
   }
 }
 
 export default function* () {
   yield takeEvery(actionTypes.FETCH_GISTS, fetchGists);
-  yield takeEvery(actionTypes.FETCH_GIST_CONTENT, fetchGistContent);
-  yield takeEvery(actionTypes.UPDATE_GIST_CONTENT, updateGistContent);
+  yield takeEvery(actionTypes.FETCH_GIST, fetchGist);
+  yield takeEvery(actionTypes.UPDATE_GIST, updateGist);
 }

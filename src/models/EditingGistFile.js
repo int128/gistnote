@@ -3,7 +3,7 @@ import { Record } from 'immutable';
 /**
  * @see https://developer.github.com/v3/gists/#edit-a-gist
  */
-export default class EditingGistContentFile extends Record({
+export default class EditingGistFile extends Record({
   id: null,
   originalFilename: null,
   filename: null,
@@ -11,7 +11,7 @@ export default class EditingGistContentFile extends Record({
   remove: false,
 }) {
   static createFromGistContentFile(id, {filename, content}) {
-    return new EditingGistContentFile({
+    return new EditingGistFile({
       id,
       originalFilename: filename,
       filename,
@@ -20,7 +20,7 @@ export default class EditingGistContentFile extends Record({
   }
 
   static createNew(id) {
-    return new EditingGistContentFile({
+    return new EditingGistFile({
       id,
       filename: `gistfile${id}.txt`,
       content: '',

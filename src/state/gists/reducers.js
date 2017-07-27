@@ -2,7 +2,7 @@ import * as actionTypes from './actionTypes';
 import { RESOLVE_USER, REJECT_USER } from '../user/actionTypes';
 
 import GistOwner from '../../models/GistOwner';
-import EditingGistContent from '../../models/EditingGistContent';
+import EditingGist from '../../models/EditingGist';
 import PromiseResponse from '../../models/PromiseResponse';
 
 export function gistsOwner(state = GistOwner.PUBLIC, action) {
@@ -18,60 +18,58 @@ export function gistsOwner(state = GistOwner.PUBLIC, action) {
   }
 }
 
-export function gistsResponse(state = PromiseResponse.LOADING, action) {
+export function fetchedGists(state = PromiseResponse.LOADING, action) {
   switch (action.type) {
     case actionTypes.FETCH_GISTS:
       return PromiseResponse.LOADING;
-    case actionTypes.RESOLVE_GISTS:
+    case actionTypes.FETCH_GISTS_RESOLVED:
       return PromiseResponse.createResolved(action.data);
-    case actionTypes.REJECT_GISTS:
+    case actionTypes.FETCH_GISTS_REJECTED:
       return PromiseResponse.createRejected(action.error);
     default:
       return state;
   }
 }
 
-export function gistContentResponse(state = PromiseResponse.LOADING, action) {
+export function fetchedGist(state = PromiseResponse.LOADING, action) {
   switch (action.type) {
-    case actionTypes.FETCH_GIST_CONTENT:
+    case actionTypes.FETCH_GIST:
+    case actionTypes.DESTROY_FETCHED_GIST:
       return PromiseResponse.LOADING;
-    case actionTypes.RESOLVE_GIST_CONTENT:
+    case actionTypes.FETCH_GIST_RESOLVED:
       return PromiseResponse.createResolved(action.data);
-    case actionTypes.REJECT_GIST_CONTENT:
+    case actionTypes.FETCH_GIST_REJECTED:
       return PromiseResponse.createRejected(action.error);
-    case actionTypes.DESTROY_GIST_CONTENT:
-      return PromiseResponse.LOADING;
     default:
       return state;
   }
 }
 
-export function editingGistContent(state = PromiseResponse.LOADING, action) {
+export function editingGist(state = PromiseResponse.LOADING, action) {
   switch (action.type) {
-    case actionTypes.FETCH_GIST_CONTENT:
+    case actionTypes.FETCH_GIST:
+    case actionTypes.DESTROY_FETCHED_GIST:
       return PromiseResponse.LOADING;
-    case actionTypes.RESOLVE_GIST_CONTENT:
-      return PromiseResponse.createResolved(EditingGistContent.createFromGistContent(action.data));
-    case actionTypes.REJECT_GIST_CONTENT:
+    case actionTypes.FETCH_GIST_RESOLVED:
+      return PromiseResponse.createResolved(EditingGist.createFromGistContent(action.data));
+    case actionTypes.FETCH_GIST_REJECTED:
       return PromiseResponse.createRejected(action.error);
-    case actionTypes.DESTROY_GIST_CONTENT:
-      return PromiseResponse.LOADING;
-    case actionTypes.CHANGE_EDITING_GIST_CONTENT:
+    case actionTypes.CHANGE_EDITING_GIST:
       return PromiseResponse.createResolved(action.value);
     default:
       return state;
   }
 }
 
-export function updateGistContentResponse(state = PromiseResponse.LOADING, action) {
+export function updatedGist(state = PromiseResponse.LOADING, action) {
   switch (action.type) {
-    case actionTypes.RESOLVE_GIST_CONTENT:
+    case actionTypes.FETCH_GIST_RESOLVED:
       return PromiseResponse.createResolved();
-    case actionTypes.UPDATE_GIST_CONTENT:
+    case actionTypes.UPDATE_GIST:
       return PromiseResponse.LOADING;
-    case actionTypes.RESOLVE_UPDATE_GIST_CONTENT:
+    case actionTypes.UPDATE_GIST_RESOLVED:
       return PromiseResponse.createResolved();
-    case actionTypes.REJECT_UPDATE_GIST_CONTENT:
+    case actionTypes.UPDATE_GIST_REJECTED:
       return PromiseResponse.createRejected(action.error);
     default:
       return state;
