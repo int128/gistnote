@@ -13,4 +13,4 @@ export const destroyGistContent = () => ({type: actionTypes.DESTROY_GIST_CONTENT
 
 export const changeEditingGistContent =
   value => ({type: actionTypes.CHANGE_EDITING_GIST_CONTENT, value})
-export const updateGistContent = request => ({type: actionTypes.UPDATE_GIST_CONTENT, request})
+export const updateGistContent = (id, gist) => ({type: actionTypes.UPDATE_GIST_CONTENT, id, gist})

@@ -54,8 +54,8 @@ export default class GitHub {
     });
   }
 
-  updateGist(gist) {
-    return request(`${GitHub.endpoint}/gists`, {
+  updateGist(id, gist) {
+    return request(`${GitHub.endpoint}/gists/${id}`, {
       ...this.defaultOptions(),
       method: 'PATCH',
       body: gist,

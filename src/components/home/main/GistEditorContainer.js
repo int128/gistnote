@@ -19,6 +19,7 @@ import LoadingIndicator from '../../LoadingIndicator';
 class GistEditorContainer extends React.Component {
   static propTypes = {
     editingGistContent: PropTypes.instanceOf(PromiseResponse).isRequired,
+    updateGistContentResponse: PropTypes.instanceOf(PromiseResponse).isRequired,
   }
 
   componentDidMount() {
@@ -38,6 +39,7 @@ class GistEditorContainer extends React.Component {
   render() {
     const {
       editingGistContent,
+      updateGistContentResponse,
       changeEditingGistContent,
       updateGistContent,
     } = this.props;
@@ -46,8 +48,9 @@ class GistEditorContainer extends React.Component {
         return <LoadingIndicator/>;
       case RESOLVED:
         return <GistEditor editingGistContent={editingGistContent.data}
-          onChange={value => changeEditingGistContent(value)}
-          onSave={updateGistContent}/>;
+          changeEditingGistContent={changeEditingGistContent}
+          updateGistContent={updateGistContent}
+          updating={updateGistContentResponse.state === LOADING}/>;
       default:
         return null;
     }
@@ -56,6 +59,7 @@ class GistEditorContainer extends React.Component {
 
 const mapStateToProps = state => ({
   editingGistContent: state.editingGistContent,
+  updateGistContentResponse: state.updateGistContentResponse,
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({

@@ -57,3 +57,18 @@ export function editingGistContent(state = PromiseResponse.LOADING, action) {
       return state;
   }
 }
+
+export function updateGistContentResponse(state = PromiseResponse.LOADING, action) {
+  switch (action.type) {
+    case actionTypes.RESOLVE_GIST_CONTENT:
+      return PromiseResponse.createResolved();
+    case actionTypes.UPDATE_GIST_CONTENT:
+      return PromiseResponse.LOADING;
+    case actionTypes.RESOLVE_UPDATE_GIST_CONTENT:
+      return PromiseResponse.createResolved();
+    case actionTypes.REJECT_UPDATE_GIST_CONTENT:
+      return PromiseResponse.createRejected(action.error);
+    default:
+      return state;
+  }
+}
