@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 const GistMetadata = ({gist}) => (
-  <ul className="list-inline pull-left">
+  <ul className="list-inline">
     <li>
       {gist.owner ? (
         <a href={gist.owner.html_url} target="_blank">

@@ -45,12 +45,12 @@ class ListContainer extends React.Component {
     return (
       <div>
         <ul className="nav nav-pills">
-          <li className={gistsOwner.type === ownerTypes.MY ? 'active' : null}>
+          <li className={activeIf(gistsOwner.type === ownerTypes.MY)}>
             <a href="#my-gists" onClick={preventDefaultEvent(selectMyGists)}>
               My
             </a>
           </li>
-          <li className={gistsOwner.type === ownerTypes.PUBLIC ? 'active' : null}>
+          <li className={activeIf(gistsOwner.type === ownerTypes.PUBLIC)}>
             <a href="#public-gists" onClick={preventDefaultEvent(selectPublicGists)}>
               Public
             </a>
@@ -72,6 +72,8 @@ class ListContainer extends React.Component {
     );
   }
 }
+
+const activeIf = condition => condition ? 'active' : null;
 
 const mapStateToProps = state => ({
   authenticated: state.authenticated,

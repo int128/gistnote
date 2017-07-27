@@ -14,13 +14,10 @@ const GistEditor = ({
   updating,
 }) => (
   <div>
-    <input type="text" className="form-control input-lg h2"
-      disabled={updating}
-      placeholder={editingGistContent.gist.id}
-      value={editingGistContent.description}
-      onChange={e => changeEditingGistContent(editingGistContent.setDescription(e.target.value))}/>
+    <GistDescription disabled={updating}
+      editingGistContent={editingGistContent}
+      changeEditingGistContent={changeEditingGistContent}/>
     <GistMetadata gist={editingGistContent.gist}/>
-    <div className="clearfix"></div>
     {editingGistContent.files.map(file =>
       <GistFile key={file.id} file={file}
         disabled={updating}
@@ -65,6 +62,14 @@ GistEditor.propTypes = {
 }
 
 export default GistEditor
+
+const GistDescription = ({disabled, editingGistContent, changeEditingGistContent}) => (
+  <input type="text" className="form-control input-lg h2"
+    disabled={disabled}
+    placeholder={editingGistContent.gist.id}
+    value={editingGistContent.description}
+    onChange={e => changeEditingGistContent(editingGistContent.setDescription(e.target.value))}/>
+)
 
 const GistFile = ({file, onChange, disabled}) => (
   <div>

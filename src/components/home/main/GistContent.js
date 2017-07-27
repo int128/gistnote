@@ -8,8 +8,12 @@ import GistMetadata from './GistMetadata';
 const GistContent = ({gist}) => (
   <div>
     <div className="page-header"><h2>{gist.description || gist.id}</h2></div>
-    <GistMetadata gist={gist}/>
-    <GistNavigation gist={gist}/>
+    <div className="pull-left">
+      <GistMetadata gist={gist}/>
+    </div>
+    <div className="pull-right">
+      <GistNavigation gist={gist}/>
+    </div>
     <div className="clearfix"></div>
     {Seq(gist.files).map((file, key) => <GistFile key={key} file={file}/>).toList()}
   </div>
@@ -22,7 +26,7 @@ GistContent.propTypes = {
 export default GistContent
 
 const GistNavigation = ({gist}) => (
-  <ul className="nav nav-pills pull-right">
+  <ul className="nav nav-pills">
     <li>
       <Link to={`/slide/${gist.id}`}>
         <span className="glyphicon glyphicon-film"></span>&nbsp;Slideshow
