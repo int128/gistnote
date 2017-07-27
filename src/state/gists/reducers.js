@@ -51,7 +51,7 @@ export function editingGist(state = PromiseResponse.INVALID, action) {
     case actionTypes.FETCH_GIST:
       return PromiseResponse.LOADING;
     case actionTypes.FETCH_GIST_RESOLVED:
-      return PromiseResponse.createResolved(EditingGist.createFromGistContent(action.data));
+      return PromiseResponse.createResolved(EditingGist.createFromExistentGist(action.data));
     case actionTypes.FETCH_GIST_REJECTED:
       return PromiseResponse.createRejected(action.error);
     case actionTypes.CREATE_EDITING_GIST:

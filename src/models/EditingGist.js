@@ -10,7 +10,7 @@ export default class EditingGist extends Record({
   description: '',
   files: Seq(),
 }) {
-  static createFromGistContent(gist) {
+  static createFromExistentGist(gist) {
     return new EditingGist({
       gist,
       description: gist.description,
