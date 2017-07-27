@@ -8,10 +8,10 @@ import { fetchGist, destroyFetchedGist } from '../../../state/gists/actionCreato
 
 import PromiseResponse, { LOADING, RESOLVED } from '../../../models/PromiseResponse';
 
-import GistContent from './GistContent';
+import GistView from './GistView';
 import LoadingIndicator from '../../LoadingIndicator';
 
-class GistContentContainer extends React.Component {
+class GistViewContainer extends React.Component {
   static propTypes = {
     fetchedGist: PropTypes.instanceOf(PromiseResponse).isRequired,
   }
@@ -36,7 +36,7 @@ class GistContentContainer extends React.Component {
       case LOADING:
         return <LoadingIndicator/>;
       case RESOLVED:
-        return <GistContent gist={fetchedGist.data}/>;
+        return <GistView gist={fetchedGist.data}/>;
       default:
         return null;
     }
@@ -52,4 +52,4 @@ const mapDispatchToProps = dispatch => bindActionCreators({
   destroyFetchedGist,
 }, dispatch)
 
-export default connect(mapStateToProps, mapDispatchToProps)(GistContentContainer);
+export default connect(mapStateToProps, mapDispatchToProps)(GistViewContainer);
