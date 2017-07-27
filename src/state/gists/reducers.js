@@ -1,4 +1,5 @@
 import * as actionTypes from './actionTypes';
+import { RESOLVE_USER, REJECT_USER } from '../user/actionTypes';
 
 import GistOwner from '../../models/GistOwner';
 import EditingGistContent from '../../models/EditingGistContent';
@@ -8,6 +9,10 @@ export function gistsOwner(state = GistOwner.PUBLIC, action) {
   switch (action.type) {
     case actionTypes.SELECT_GISTS_OWNER:
       return action.owner;
+    case RESOLVE_USER:
+      return GistOwner.MY;
+    case REJECT_USER:
+      return GistOwner.PUBLIC;
     default:
       return state;
   }
