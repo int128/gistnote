@@ -6,15 +6,15 @@ import EditingGistFile from './EditingGistFile';
  * @see https://developer.github.com/v3/gists/#edit-a-gist
  */
 export default class EditingGist extends Record({
-  gist: {},
+  originalGist: null,
   description: '',
-  files: Seq(),
+  files: Seq.of(EditingGistFile.createNew()),
 }) {
-  static createFromExistentGist(gist) {
+  static createFromExistentGist(originalGist) {
     return new EditingGist({
-      gist,
-      description: gist.description,
-      files: Seq(gist.files).valueSeq().map((file, index) =>
+      originalGist,
+      description: originalGist.description,
+      files: Seq(originalGist.files).valueSeq().map((file, index) =>
         EditingGistFile.createFromGistContentFile(index, file)),
     });
   }
@@ -42,13 +42,14 @@ export default class EditingGist extends Record({
       this.files.concat([EditingGistFile.createNew(this.files.size)]));
   }
 
-  toGitHubRequest() {
+  toGitHubRequest(overrides) {
     return {
       description: this.description,
       files: this.files
         .map(file => Seq(file.toGitHubRequest()))
         .reduce((r, file) => Seq(r).concat(file))
         .toJS(),
+      ...overrides,
     };
   }
 }

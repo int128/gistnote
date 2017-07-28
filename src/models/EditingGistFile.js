@@ -19,7 +19,7 @@ export default class EditingGistFile extends Record({
     });
   }
 
-  static createNew(id) {
+  static createNew(id = 0) {
     return new EditingGistFile({
       id,
       filename: `gistfile${id}.txt`,
@@ -45,7 +45,11 @@ export default class EditingGistFile extends Record({
       if (this.remove) {
         return {};
       } else {
-        return {[this.originalFilename]: null};
+        return {
+          [this.filename]: {
+            content: this.content,
+          }
+        };
       }
     } else {
       if (this.remove) {

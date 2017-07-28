@@ -6,10 +6,11 @@ import { Seq, is } from 'immutable';
 
 import { fetchGist, destroyFetchedGist } from '../../../state/gists/actionCreators';
 
-import PromiseResponse, { LOADING, RESOLVED } from '../../../models/PromiseResponse';
+import PromiseResponse, { LOADING, RESOLVED, REJECTED } from '../../../models/PromiseResponse';
 
 import GistView from './GistView';
 import LoadingIndicator from '../../LoadingIndicator';
+import ErrorIndicator from '../../ErrorIndicator';
 
 class ViewGistContainer extends React.Component {
   static propTypes = {
@@ -37,6 +38,8 @@ class ViewGistContainer extends React.Component {
         return <LoadingIndicator/>;
       case RESOLVED:
         return <GistView gist={fetchedGist.data}/>;
+      case REJECTED:
+        return <ErrorIndicator error={fetchedGist.error}/>;
       default:
         return null;
     }

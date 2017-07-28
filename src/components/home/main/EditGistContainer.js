@@ -12,10 +12,11 @@ import {
   destroyUpdatedGist,
 } from '../../../state/gists/actionCreators';
 
-import PromiseResponse, { LOADING, RESOLVED } from '../../../models/PromiseResponse';
+import PromiseResponse, { LOADING, RESOLVED, REJECTED } from '../../../models/PromiseResponse';
 
 import GistEditor from './GistEditor';
 import LoadingIndicator from '../../LoadingIndicator';
+import ErrorIndicator from '../../ErrorIndicator';
 
 class EditGistContainer extends React.Component {
   static propTypes = {
@@ -52,8 +53,10 @@ class EditGistContainer extends React.Component {
         return <GistEditor
           editingGist={editingGist.data}
           changeEditingGist={changeEditingGist}
-          updateGist={updateGist}
-          updating={updatedGist.state === LOADING}/>;
+          action={updateGist}
+          actionResponse={updatedGist}/>;
+      case REJECTED:
+        return <ErrorIndicator error={editingGist.error}/>;
       default:
         return null;
     }

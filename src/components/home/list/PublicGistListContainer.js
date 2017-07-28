@@ -3,12 +3,13 @@ import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import PromiseResponse, { RESOLVED } from '../../../models/PromiseResponse';
+import PromiseResponse, { LOADING, RESOLVED, REJECTED } from '../../../models/PromiseResponse';
 
 import { fetchPublicGists } from '../../../state/gists/actionCreators';
 
 import GistList from './GistList';
 import LoadingIndicator from '../../LoadingIndicator';
+import ErrorIndicator from '../../ErrorIndicator';
 
 class PublicGistListContainer extends React.Component {
   static propTypes = {
@@ -23,10 +24,14 @@ class PublicGistListContainer extends React.Component {
   render() {
     const { fetchedGists, fetchedGist } = this.props;
     switch (fetchedGists.state) {
+      case LOADING:
+        return <li className="list-group-item"><LoadingIndicator/></li>;
       case RESOLVED:
         return <GistList gists={fetchedGists.data} activeGist={fetchedGist.data}/>;
+      case REJECTED:
+        return <ErrorIndicator error={fetchedGists.error}/>;
       default:
-        return <li className="list-group-item"><LoadingIndicator/></li>;
+        return null;
     }
   }
 }

@@ -39,13 +39,25 @@ function* fetchGist({id}) {
   }
 }
 
+function* createGist({gist}) {
+  const oauthTokenRepository = new OAuthTokenRepository();
+  const github = new GitHub(oauthTokenRepository.getOrNull().token);
+  try {
+    const data = yield github.createGist(gist);
+    yield put({type: actionTypes.CREATE_GIST_RESOLVED, data});
+    yield put(push(`/${data.id}`));
+  } catch (error) {
+    yield put({type: actionTypes.CREATE_GIST_REJECTED, error});
+  }
+}
+
 function* updateGist({id, gist}) {
   const oauthTokenRepository = new OAuthTokenRepository();
   const github = new GitHub(oauthTokenRepository.getOrNull().token);
   try {
     const data = yield github.updateGist(id, gist);
     yield put({type: actionTypes.UPDATE_GIST_RESOLVED, data});
-    yield put(push(`/${id}`));
+    yield put(push(`/${data.id}`));
   } catch (error) {
     yield put({type: actionTypes.UPDATE_GIST_REJECTED, error});
   }
@@ -54,5 +66,6 @@ function* updateGist({id, gist}) {
 export default function* () {
   yield takeEvery(actionTypes.FETCH_GISTS, fetchGists);
   yield takeEvery(actionTypes.FETCH_GIST, fetchGist);
+  yield takeEvery(actionTypes.CREATE_GIST, createGist);
   yield takeEvery(actionTypes.UPDATE_GIST, updateGist);
 }
