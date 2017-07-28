@@ -23,6 +23,10 @@ export default class EditingGist extends Record({
     return new EditingGist();
   }
 
+  isNew() {
+    return this.originalGist === null;
+  }
+
   setDescription(value) {
     return this.set('description', value);
   }
