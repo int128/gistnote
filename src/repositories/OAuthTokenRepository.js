@@ -11,12 +11,12 @@ export default class OAuthTokenRepository {
     return this.storage.get() !== null;
   }
 
-  getOrNull() {
+  get() {
     const json = this.storage.get();
     if (json !== null) {
       return new OAuthToken(json);
     } else {
-      return null;
+      return OAuthToken.NONE;
     }
   }
 

@@ -32,7 +32,7 @@ function* fetchAccessToken({code, state}) {
 
 function* fetchUser() {
   const oauthTokenRepository = new OAuthTokenRepository();
-  const github = new GitHub(oauthTokenRepository.getOrNull().token);
+  const github = new GitHub(oauthTokenRepository.get());
   try {
     const data = yield github.getUser();
     yield put({type: actionTypes.RESOLVE_USER, data});

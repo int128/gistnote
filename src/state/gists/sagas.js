@@ -9,7 +9,7 @@ import * as actionTypes from './actionTypes';
 
 function* fetchGists({owner}) {
   const oauthTokenRepository = new OAuthTokenRepository();
-  const github = new GitHub(oauthTokenRepository.getOrNull().token);
+  const github = new GitHub(oauthTokenRepository.get());
   try {
     let data;
     switch (owner.type) {
@@ -30,7 +30,7 @@ function* fetchGists({owner}) {
 
 function* fetchGist({id}) {
   const oauthTokenRepository = new OAuthTokenRepository();
-  const github = new GitHub(oauthTokenRepository.getOrNull().token);
+  const github = new GitHub(oauthTokenRepository.get());
   try {
     const data = yield github.getGistContent(id);
     yield put({type: actionTypes.FETCH_GIST_RESOLVED, data});
@@ -41,7 +41,7 @@ function* fetchGist({id}) {
 
 function* createGist({gist}) {
   const oauthTokenRepository = new OAuthTokenRepository();
-  const github = new GitHub(oauthTokenRepository.getOrNull().token);
+  const github = new GitHub(oauthTokenRepository.get());
   try {
     const data = yield github.createGist(gist);
     yield put({type: actionTypes.CREATE_GIST_RESOLVED, data});
@@ -53,7 +53,7 @@ function* createGist({gist}) {
 
 function* updateGist({id, gist}) {
   const oauthTokenRepository = new OAuthTokenRepository();
-  const github = new GitHub(oauthTokenRepository.getOrNull().token);
+  const github = new GitHub(oauthTokenRepository.get());
   try {
     const data = yield github.updateGist(id, gist);
     yield put({type: actionTypes.UPDATE_GIST_RESOLVED, data});

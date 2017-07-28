@@ -31,7 +31,7 @@ class ListContainer extends React.Component {
       <div>
         <ul className="nav nav-pills">
           <li className="active">
-            Public Gists
+            <a href="#public-gists" onClick={preventDefaultEvent()}>Public Gists</a>
           </li>
         </ul>
         <div className="list-group gn-gists-list">

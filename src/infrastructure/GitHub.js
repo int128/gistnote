@@ -1,15 +1,17 @@
 import request from 'request-promise-native';
 
+import OAuthToken from '../models/OAuthToken';
+
 export default class GitHub {
   static endpoint = 'https://api.github.com'
   static scope = 'gist,public_repo'
 
-  constructor(token = null) {
+  constructor(token = OAuthToken.NONE) {
     this.token = token;
   }
 
   defaultOptions() {
-    const authorization = this.token ? `token ${this.token}` : undefined;
+    const authorization = this.token.getAuthorizationHeader();
     return {
       json: true,
       headers: {authorization},

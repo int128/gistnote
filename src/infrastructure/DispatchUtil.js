@@ -1,4 +1,6 @@
 export const preventDefaultEvent = f => e => {
   e.preventDefault();
-  return f();
+  if (f) {
+    return f();
+  }
 }
