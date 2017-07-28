@@ -35,7 +35,11 @@ class ViewGistContainer extends React.Component {
     const { fetchedGist } = this.props;
     switch (fetchedGist.state) {
       case LOADING:
-        return <LoadingIndicator/>;
+        return (
+          <div className="page-header">
+            <h2><LoadingIndicator/></h2>
+          </div>
+        );
       case RESOLVED:
         return <GistView gist={fetchedGist.data}/>;
       case REJECTED:
