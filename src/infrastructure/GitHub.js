@@ -18,14 +18,22 @@ export default class GitHub {
       transform: (body, response) => {
         const link = response.headers['link'];
         if (link) {
-          const matches = link.match(/<.+?page=(.+?)>; rel="next"/);
+          const matches = link.match(/<(.+?)>; rel="next"/);
           if (matches) {
-            body.nextPage = matches[1];
+            body.header_link_rel = {next: matches[1]};
           }
         }
         return body;
       },
     };
+  }
+
+  fetchNext(current) {
+    return request(current.header_link_rel.next, this.defaultOptions()).then(next => {
+      const concated = [...current, ...next];
+      concated.header_link_rel = next.header_link_rel;
+      return concated;
+    });
   }
 
   getUser() {

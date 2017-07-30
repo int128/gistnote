@@ -1,8 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
+import { preventDefaultEvent } from '../../../infrastructure/DispatchUtil';
 
-const GistList = ({gists, activeGist}) => (
+const GistList = ({gists, activeGist, nextAction}) => (
   <div>
     {gists.map(gist => (
       <GistListItem
@@ -10,7 +11,7 @@ const GistList = ({gists, activeGist}) => (
         gist={gist}
         active={activeGist !== null && gist.id === activeGist.id}/>
     ))}
-    <a href="#more" className="list-group-item">
+    <a href="#next" className="list-group-item" onClick={preventDefaultEvent(nextAction)}>
       <span className="glyphicon glyphicon-chevron-down"></span> more...
     </a>
   </div>

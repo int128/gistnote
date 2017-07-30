@@ -1,4 +1,4 @@
-import { takeEvery, put } from 'redux-saga/effects';
+import { takeEvery, put, select } from 'redux-saga/effects';
 import { push } from 'react-router-redux';
 import GitHub from '../../infrastructure/GitHub';
 import OAuthTokenRepository from '../../repositories/OAuthTokenRepository';
@@ -25,6 +25,17 @@ function* fetchGists({owner}) {
     yield put({type: actionTypes.FETCH_GISTS_RESOLVED, data});
   } catch (error) {
     yield put({type: actionTypes.FETCH_GISTS_REJECTED, error});
+  }
+}
+
+function* fetchNextGists({current}) {
+  const oauthTokenRepository = new OAuthTokenRepository();
+  const github = new GitHub(oauthTokenRepository.get());
+  try {
+    const data = yield github.fetchNext(current);
+    yield put({type: actionTypes.FETCH_NEXT_GISTS_RESOLVED, data});
+  } catch (error) {
+    yield put({type: actionTypes.FETCH_NEXT_GISTS_REJECTED, error});
   }
 }
 
@@ -65,6 +76,7 @@ function* updateGist({id, gist}) {
 
 export default function* () {
   yield takeEvery(actionTypes.FETCH_GISTS, fetchGists);
+  yield takeEvery(actionTypes.FETCH_NEXT_GISTS, fetchNextGists);
   yield takeEvery(actionTypes.FETCH_GIST, fetchGist);
   yield takeEvery(actionTypes.CREATE_GIST, createGist);
   yield takeEvery(actionTypes.UPDATE_GIST, updateGist);

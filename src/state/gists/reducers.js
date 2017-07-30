@@ -26,6 +26,10 @@ export function fetchedGists(state = PromiseResponse.INVALID, action) {
       return PromiseResponse.createResolved(action.data);
     case actionTypes.FETCH_GISTS_REJECTED:
       return PromiseResponse.createRejected(action.error);
+    case actionTypes.FETCH_NEXT_GISTS_RESOLVED:
+      return PromiseResponse.createResolved(action.data);
+    case actionTypes.FETCH_NEXT_GISTS_REJECTED:
+      return state;
     default:
       return state;
   }

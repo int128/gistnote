@@ -7,6 +7,7 @@ export const selectMyGists = () => ({type: actionTypes.SELECT_GISTS_OWNER, owner
 
 export const fetchPublicGists = () => ({type: actionTypes.FETCH_GISTS, owner: GistOwner.PUBLIC})
 export const fetchMyGists = () => ({type: actionTypes.FETCH_GISTS, owner: GistOwner.MY})
+export const fetchNextGists = current => ({type: actionTypes.FETCH_NEXT_GISTS, current})
 
 export const fetchGist = id => ({type: actionTypes.FETCH_GIST, id})
 export const destroyFetchedGist = () => ({type: actionTypes.DESTROY_FETCHED_GIST})

@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 
 import PromiseResponse, { LOADING, RESOLVED, REJECTED } from '../../../models/PromiseResponse';
 
-import { fetchMyGists } from '../../../state/gists/actionCreators';
+import { fetchMyGists, fetchNextGists } from '../../../state/gists/actionCreators';
 
 import GistList from './GistList';
 import LoadingIndicator from '../../LoadingIndicator';
@@ -23,7 +23,7 @@ class MyGistListContainer extends React.Component {
   }
 
   render() {
-    const { fetchedGists, fetchedGist, editingGist } = this.props;
+    const { fetchedGists, fetchedGist, editingGist, fetchNextGists } = this.props;
     switch (fetchedGists.state) {
       case LOADING:
         return <li className="list-group-item"><LoadingIndicator/></li>;
@@ -31,7 +31,9 @@ class MyGistListContainer extends React.Component {
         return (
           <div>
             <NewLink active={editingGist.data && editingGist.data.isNew()}/>
-            <GistList gists={fetchedGists.data} activeGist={fetchedGist.data}/>
+            <GistList gists={fetchedGists.data}
+              activeGist={fetchedGist.data}
+              nextAction={() => fetchNextGists(fetchedGists.data)}/>
           </div>
         );
       case REJECTED:
@@ -57,6 +59,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => bindActionCreators({
   fetchMyGists,
+  fetchNextGists,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(MyGistListContainer);
