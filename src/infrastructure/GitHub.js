@@ -1,6 +1,8 @@
 import request from 'request-promise-native';
 
+import * as ownerTypes from '../models/GistOwner';
 import OAuthToken from '../models/OAuthToken';
+import PromiseResponse from '../models/PromiseResponse';
 
 export default class GitHub {
   static endpoint = 'https://api.github.com'
@@ -33,54 +35,91 @@ export default class GitHub {
       const concated = [...current, ...next];
       concated.header_link_rel = next.header_link_rel;
       return concated;
-    });
+    }).then(data => PromiseResponse.createResolved(data))
+    .catch(error => PromiseResponse.createRejected(error));
   }
 
   getUser() {
     return request(`${GitHub.endpoint}/user`, this.defaultOptions());
   }
 
-  findMyGists() {
-    return request(`${GitHub.endpoint}/gists`, this.defaultOptions());
+  *findGists(owner) {
+    let url;
+    switch (owner.type) {
+      case ownerTypes.PUBLIC:
+        url = `${GitHub.endpoint}/gists/public`;
+        break;
+      case ownerTypes.MY:
+        url = `${GitHub.endpoint}/gists`;
+        break;
+      case ownerTypes.USER:
+        url = `${GitHub.endpoint}/users/${owner.username}/gists`;
+        break;
+      default:
+        throw new Error(`owner.type must be one of ${ownerTypes} but ${owner.type}`);
+    }
+    try {
+      const data = yield request(url, this.defaultOptions());
+      return PromiseResponse.createResolved(data);
+    } catch (error) {
+      return PromiseResponse.createRejected(error);
+    }
   }
 
-  findUserGists(username) {
-    return request(`${GitHub.endpoint}/users/${username}/gists`, this.defaultOptions());
+  *getGistContent(id) {
+    try {
+      const data = yield request(`${GitHub.endpoint}/gists/${id}`, this.defaultOptions());
+      return PromiseResponse.createResolved(data);
+    } catch (error) {
+      return PromiseResponse.createRejected(error);
+    }
   }
 
-  findPublicGists() {
-    return request(`${GitHub.endpoint}/gists/public`, this.defaultOptions());
+  *createGist(gist) {
+    try {
+      const data = yield request(`${GitHub.endpoint}/gists`, {
+        ...this.defaultOptions(),
+        method: 'POST',
+        body: gist,
+      });
+      return PromiseResponse.createResolved(data);
+    } catch (error) {
+      return PromiseResponse.createRejected(error);
+    }
   }
 
-  getGistContent(id) {
-    return request(`${GitHub.endpoint}/gists/${id}`, this.defaultOptions());
+  *updateGist(id, gist) {
+    try {
+      const data = yield request(`${GitHub.endpoint}/gists/${id}`, {
+        ...this.defaultOptions(),
+        method: 'PATCH',
+        body: gist,
+      });
+      return PromiseResponse.createResolved(data);
+    } catch (error) {
+      return PromiseResponse.createRejected(error);
+    }
   }
 
-  createGist(gist) {
-    return request(`${GitHub.endpoint}/gists`, {
-      ...this.defaultOptions(),
-      method: 'POST',
-      body: gist,
-    });
+  *getRepository(owner, repo) {
+    try {
+      const data = yield request(`${GitHub.endpoint}/repos/${owner}/${repo}`, this.defaultOptions());
+      return PromiseResponse.createResolved(data);
+    } catch (error) {
+      return PromiseResponse.createRejected(error);
+    }
   }
 
-  updateGist(id, gist) {
-    return request(`${GitHub.endpoint}/gists/${id}`, {
-      ...this.defaultOptions(),
-      method: 'PATCH',
-      body: gist,
-    });
-  }
-
-  getRepository(owner, repo) {
-    return request(`${GitHub.endpoint}/repos/${owner}/${repo}`, this.defaultOptions());
-  }
-
-  createIssue(owner, repo, issue) {
-    return request(`${GitHub.endpoint}/repos/${owner}/${repo}/issues`, {
-      ...this.defaultOptions(),
-      method: 'POST',
-      body: issue,
-    });
+  *createIssue(owner, repo, issue) {
+    try {
+      const data = yield request(`${GitHub.endpoint}/repos/${owner}/${repo}/issues`, {
+        ...this.defaultOptions(),
+        method: 'POST',
+        body: issue,
+      });
+      return PromiseResponse.createResolved(data);
+    } catch (error) {
+      return PromiseResponse.createRejected(error);
+    }
   }
 }

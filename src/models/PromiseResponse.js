@@ -21,4 +21,12 @@ export default class PromiseResponse extends Record({
   static createRejected(error) {
     return new PromiseResponse({state: REJECTED, error});
   }
+
+  map(transformResolved) {
+    if (this.state === RESOLVED) {
+      return PromiseResponse.createResolved(transformResolved(this.data));
+    } else {
+      return this;
+    }
+  }
 }
