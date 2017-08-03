@@ -3,7 +3,9 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { preventDefaultEvent } from '../../../infrastructure/DispatchUtil';
 
-const GistList = ({gists, activeGist, nextAction}) => (
+import LoadingIndicator from '../../LoadingIndicator';
+
+const GistList = ({gists, activeGist, nextAction, nextActionInProgress}) => (
   <div>
     {gists.map(gist => (
       <GistListItem
@@ -11,15 +13,20 @@ const GistList = ({gists, activeGist, nextAction}) => (
         gist={gist}
         active={activeGist !== null && gist.id === activeGist.id}/>
     ))}
-    <a href="#next" className="list-group-item" onClick={preventDefaultEvent(nextAction)}>
-      <span className="glyphicon glyphicon-chevron-down"></span> more...
-    </a>
+    {nextActionInProgress ? (
+      <li className="list-group-item"><LoadingIndicator/></li>
+    ) : (
+      <a href="#next" className="list-group-item" onClick={preventDefaultEvent(nextAction)}>
+        <span className="glyphicon glyphicon-chevron-down"></span> more...
+      </a>
+    )}
   </div>
 )
 
 GistList.propTypes = {
   gists: PropTypes.array.isRequired,
   activeGist: PropTypes.object,
+  nextActionInProgress: PropTypes.bool.isRequired,
 }
 
 export default GistList

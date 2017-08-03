@@ -1,3 +1,4 @@
+import PromiseAction from '../../infrastructure/PromiseAction';
 import PromiseReducer from '../../infrastructure/PromiseReducer';
 import PromiseState from '../../infrastructure/PromiseState';
 
@@ -15,17 +16,40 @@ export function gistCriteria(state = GistCriteria.PUBLIC, action) {
   }
 }
 
-export const gistList = PromiseReducer(actionTypes.LIST_GISTS)
+export const gistList = PromiseReducer({
+  type: actionTypes.LIST_GISTS,
+  handle: (state, action) => {
+    switch (action.type) {
+      case PromiseAction.resolvedTypeOf(actionTypes.LIST_NEXT_GISTS):
+        return PromiseState.resolved([...state.payload, ...action.payload]);
+      default:
+        return state;
+    }
+  },
+})
 
-export const gist = PromiseReducer(actionTypes.READ_GIST)
+export const gistListPagenation = PromiseReducer({
+  type: actionTypes.LIST_NEXT_GISTS,
+  handle: (state, action) => {
+    switch (action.type) {
+      case PromiseAction.resolvedTypeOf(actionTypes.LIST_GISTS):
+        return PromiseState.resolved(action.payload);
+      default:
+        return state;
+    }
+  },
+})
 
-export const createdGist = PromiseReducer(actionTypes.CREATE_GIST)
+export const gist = PromiseReducer({type: actionTypes.READ_GIST})
 
-export const updatedGist = PromiseReducer(actionTypes.UPDATE_GIST)
+export const createdGist = PromiseReducer({type: actionTypes.CREATE_GIST})
 
-export const editingGist = PromiseReducer(actionTypes.READ_GIST,
-  payload => EditingGist.createFromExistentGist(payload),
-  (state, action) => {
+export const updatedGist = PromiseReducer({type: actionTypes.UPDATE_GIST})
+
+export const editingGist = PromiseReducer({
+  type: actionTypes.READ_GIST,
+  mapResolved: payload => EditingGist.createFromExistentGist(payload),
+  handle: (state, action) => {
     switch (action.type) {
       case actionTypes.NEW_EDITING_GIST:
         return PromiseState.resolved(EditingGist.createNew());
@@ -34,4 +58,5 @@ export const editingGist = PromiseReducer(actionTypes.READ_GIST,
       default:
         return state;
     }
-  })
+  },
+})

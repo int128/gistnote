@@ -1,4 +1,4 @@
-import { takeEvery, put, select } from 'redux-saga/effects';
+import { takeEvery, put } from 'redux-saga/effects';
 import { push } from 'react-router-redux';
 import GitHub from '../../infrastructure/GitHub';
 import PromiseAction from '../../infrastructure/PromiseAction';
@@ -17,11 +17,11 @@ function* listGists({type, owner}) {
   }
 }
 
-function* listNextGists({type, current}) {
+function* listNextGists({type, pagenation}) {
   const oauthTokenRepository = new OAuthTokenRepository();
   const github = new GitHub(oauthTokenRepository.get());
   try {
-    const payload = yield github.fetchNext(current);
+    const payload = yield github.fetchNext(pagenation);
     yield put(PromiseAction.resolved(type, payload));
   } catch (error) {
     yield put(PromiseAction.rejected(type, error));

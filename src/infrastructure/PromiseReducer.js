@@ -1,17 +1,21 @@
 import PromiseState from './PromiseState';
 
-export default (actionType, mapper = payload => payload, lastResort = state => state) =>
+export default ({
+  type,
+  mapResolved = payload => payload,
+  handle = state => state,
+}) =>
   (state = PromiseState.INVALID, action) => {
     switch (action.type) {
-      case actionType:
+      case type:
         return PromiseState.LOADING;
-      case `${actionType}_RESOLVED`:
-        return PromiseState.resolved(mapper(action.payload));
-      case `${actionType}_REJECTED`:
+      case `${type}_RESOLVED`:
+        return PromiseState.resolved(mapResolved(action.payload));
+      case `${type}_REJECTED`:
         return PromiseState.rejected(action.payload);
-      case `${actionType}_INVALIDATE`:
+      case `${type}_INVALIDATE`:
         return PromiseState.INVALID;
       default:
-        return lastResort(state, action);
+        return handle(state, action);
     }
   }

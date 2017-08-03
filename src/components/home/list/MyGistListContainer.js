@@ -16,6 +16,7 @@ import ErrorIndicator from '../../ErrorIndicator';
 class MyGistListContainer extends React.Component {
   static propTypes = {
     gistList: PropTypes.instanceOf(PromiseState).isRequired,
+    gistListPagenation: PropTypes.instanceOf(PromiseState).isRequired,
     gist: PropTypes.instanceOf(PromiseState).isRequired,
   }
 
@@ -24,7 +25,7 @@ class MyGistListContainer extends React.Component {
   }
 
   render() {
-    const { gistList, gist, editingGist, listNextGists } = this.props;
+    const { gistList, gistListPagenation, gist, editingGist, listNextGists } = this.props;
     switch (gistList.state) {
       case PromiseState.stateTypes.LOADING:
         return <li className="list-group-item"><LoadingIndicator/></li>;
@@ -34,7 +35,8 @@ class MyGistListContainer extends React.Component {
             <NewLink active={editingGist.payload && editingGist.payload.isNew()}/>
             <GistList gists={gistList.payload}
               activeGist={gist.payload}
-              nextAction={() => listNextGists(gistList.payload)}/>
+              nextAction={() => listNextGists(gistListPagenation.payload)}
+              nextActionInProgress={gistListPagenation.isLoading()}/>
           </div>
         );
       case PromiseState.stateTypes.REJECTED:
@@ -54,6 +56,7 @@ const NewLink = ({active}) => (
 
 const mapStateToProps = state => ({
   gistList: state.gistList,
+  gistListPagenation: state.gistListPagenation,
   gist: state.gist,
   editingGist: state.editingGist,
 });

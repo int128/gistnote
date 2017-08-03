@@ -15,6 +15,7 @@ import ErrorIndicator from '../../ErrorIndicator';
 class PublicGistListContainer extends React.Component {
   static propTypes = {
     gistList: PropTypes.instanceOf(PromiseState).isRequired,
+    gistListPagenation: PropTypes.instanceOf(PromiseState).isRequired,
     gist: PropTypes.instanceOf(PromiseState).isRequired,
   }
 
@@ -23,13 +24,15 @@ class PublicGistListContainer extends React.Component {
   }
 
   render() {
-    const { gistList, gist, listNextGists } = this.props;
+    const { gistList, gistListPagenation, gist, listNextGists } = this.props;
     switch (gistList.state) {
       case PromiseState.stateTypes.LOADING:
         return <li className="list-group-item"><LoadingIndicator/></li>;
       case PromiseState.stateTypes.RESOLVED:
-        return <GistList gists={gistList.payload} activeGist={gist.payload}
-          nextAction={() => listNextGists(gistList.payload)}/>
+        return <GistList gists={gistList.payload}
+          activeGist={gist.payload}
+          nextAction={() => listNextGists(gistListPagenation.payload)}
+          nextActionInProgress={gistListPagenation.isLoading()}/>
       case PromiseState.stateTypes.REJECTED:
         return <ErrorIndicator error={gistList.payload}/>;
       default:
@@ -40,6 +43,7 @@ class PublicGistListContainer extends React.Component {
 
 const mapStateToProps = state => ({
   gistList: state.gistList,
+  gistListPagenation: state.gistListPagenation,
   gist: state.gist,
 });
 

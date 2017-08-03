@@ -5,7 +5,7 @@ import * as actionTypes from './actionTypes'
 export const changeGistCriteria = payload => ({type: actionTypes.CHANGE_GIST_CRITERIA, payload})
 
 export const listGists = owner => ({type: actionTypes.LIST_GISTS, owner})
-export const listNextGists = current => ({type: actionTypes.LIST_NEXT_GISTS, current})
+export const listNextGists = pagenation => ({type: actionTypes.LIST_NEXT_GISTS, pagenation})
 
 export const readGist = id => ({type: actionTypes.READ_GIST, id})
 export const createGist = payload => ({type: actionTypes.CREATE_GIST, payload})
