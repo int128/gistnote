@@ -1,5 +1,11 @@
 import OAuthTokenRepository from '../repositories/OAuthTokenRepository';
 
-export default () => ({
-  authenticated: new OAuthTokenRepository().isPresent(),
-});
+import GistCriteria from '../models/GistCriteria';
+
+export default () => {
+  const authenticated = new OAuthTokenRepository().isPresent();
+  return {
+    authenticated,
+    gistCriteria: authenticated ? GistCriteria.MY : GistCriteria.PUBLIC,
+  };
+}

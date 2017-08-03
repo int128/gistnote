@@ -2,16 +2,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import PromiseState from '../../../infrastructure/PromiseState';
 
 import {
-  createEditingGist,
+  newEditingGist,
+  invalidateGist,
   changeEditingGist,
-  destroyEditingGist,
   createGist,
-  destroyCreatedGist,
 } from '../../../state/gists/actionCreators';
-
-import PromiseResponse, { LOADING, RESOLVED, REJECTED } from '../../../models/PromiseResponse';
 
 import GistEditor from './GistEditor';
 import LoadingIndicator from '../../LoadingIndicator';
@@ -19,17 +17,16 @@ import ErrorIndicator from '../../ErrorIndicator';
 
 class NewGistContainer extends React.Component {
   static propTypes = {
-    editingGist: PropTypes.instanceOf(PromiseResponse).isRequired,
-    createdGist: PropTypes.instanceOf(PromiseResponse).isRequired,
+    editingGist: PropTypes.instanceOf(PromiseState).isRequired,
+    createdGist: PropTypes.instanceOf(PromiseState).isRequired,
   }
 
   componentDidMount() {
-    this.props.createEditingGist();
+    this.props.newEditingGist();
   }
 
   componentWillUnmount() {
-    this.props.destroyEditingGist();
-    this.props.destroyCreatedGist();
+    this.props.invalidateGist();
   }
 
   render() {
@@ -40,16 +37,33 @@ class NewGistContainer extends React.Component {
       createGist,
     } = this.props;
     switch (editingGist.state) {
-      case LOADING:
+      case PromiseState.stateTypes.LOADING:
         return <LoadingIndicator/>;
-      case RESOLVED:
+      case PromiseState.stateTypes.RESOLVED:
         return <GistEditor
-          editingGist={editingGist.data}
+          editingGist={editingGist.payload}
           changeEditingGist={changeEditingGist}
-          action={createGist}
-          actionResponse={createdGist}/>;
-      case REJECTED:
-        return <ErrorIndicator error={editingGist.error}/>;
+          disabled={createdGist.isLoading()}
+          error={createdGist.isRejected() ? createdGist.payload : null}
+          form={
+            <span>
+              {createdGist.isLoading() ? <LoadingIndicator/> : null}
+              &nbsp;
+              <button type="button" className="btn btn-primary"
+                disabled={createdGist.isLoading()}
+                onClick={() => createGist(editingGist.payload.setAsPrivate())}>
+                Create Private Gist
+              </button>
+              &nbsp;
+              <button type="button" className="btn btn-info"
+                disabled={createdGist.isLoading()}
+                onClick={() => createGist(editingGist.payload.setAsPublic())}>
+                Create Public Gist
+              </button>
+            </span>
+          }/>;
+      case PromiseState.stateTypes.REJECTED:
+        return <ErrorIndicator error={editingGist.payload}/>;
       default:
         return null;
     }
@@ -62,11 +76,10 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-  createEditingGist,
+  newEditingGist,
+  invalidateGist,
   changeEditingGist,
-  destroyEditingGist,
   createGist,
-  destroyCreatedGist,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(NewGistContainer);

@@ -1,23 +1,20 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
 
 import EditingGist from '../../../models/EditingGist';
-import { LOADING, REJECTED } from '../../../models/PromiseResponse';
 
 import GistMetadata from './GistMetadata';
-import LoadingIndicator from '../../LoadingIndicator';
 import ErrorIndicator from '../../ErrorIndicator';
 
 const GistEditor = ({
   editingGist,
   changeEditingGist,
-  action,
-  actionResponse,
-  actionInProgress = actionResponse.state === LOADING,
+  disabled,
+  error,
+  form,
 }) => (
   <div>
-    <GistDescription disabled={actionInProgress}
+    <GistDescription disabled={disabled}
       editingGist={editingGist}
       changeEditingGist={changeEditingGist}/>
     {editingGist.originalGist ? (
@@ -25,14 +22,14 @@ const GistEditor = ({
     ) : null}
     {editingGist.files.map(file =>
       <GistFile key={file.id} file={file}
-        disabled={actionInProgress}
+        disabled={disabled}
         onChange={file => changeEditingGist(editingGist.setFile(file))}/>
     ).toList()}
-    {actionResponse.state === REJECTED ? <ErrorIndicator error={actionResponse.error}/> : null}
+    {error ? <ErrorIndicator error={error}/> : null}
     <form className="gn-gist-edit-form">
       <div className="pull-left">
         <button type="button" className="btn btn-link"
-          disabled={actionInProgress}
+          disabled={disabled}
           onClick={e => changeEditingGist(editingGist.addNewFile())}>
           <span className="glyphicon glyphicon-plus-sign"></span>
           &nbsp;
@@ -40,18 +37,7 @@ const GistEditor = ({
         </button>
       </div>
       <div className="pull-right">
-        {actionInProgress ? <LoadingIndicator/> : null}
-        &nbsp;
-        {editingGist.originalGist ? (
-          <UpdateForm
-            id={editingGist.originalGist.id}
-            action={() => action(editingGist.originalGist.id, editingGist.toGitHubRequest())}
-            actionInProgress={actionInProgress}/>
-        ) : (
-          <CreateForm
-            action={overrides => action(editingGist.toGitHubRequest(overrides))}
-            actionInProgress={actionInProgress}/>
-        )}
+        {form}
       </div>
       <div className="clearfix"></div>
     </form>
@@ -75,36 +61,6 @@ const GistDescription = ({disabled, editingGist, changeEditingGist}) => (
     placeholder={editingGist.originalGist ? editingGist.originalGist.id : 'Description'}
     value={editingGist.description}
     onChange={e => changeEditingGist(editingGist.setDescription(e.target.value))}/>
-)
-
-const CreateForm = ({action, actionInProgress}) => (
-  <span>
-    <button type="button" className="btn btn-primary"
-      disabled={actionInProgress}
-      onClick={() => action({public: false})}>
-      Create Private Gist
-    </button>
-    &nbsp;
-    <button type="button" className="btn btn-info"
-      disabled={actionInProgress}
-      onClick={() => action({public: true})}>
-      Create Public Gist
-    </button>
-  </span>
-)
-
-const UpdateForm = ({id, action, actionInProgress}) => (
-  <span>
-    <button type="button" className="btn btn-primary"
-      disabled={actionInProgress}
-      onClick={action}>
-      Update Gist
-    </button>
-    &nbsp;
-    <Link to={`/${id}`} className="btn btn-default" disabled={actionInProgress}>
-      Cancel
-    </Link>
-  </span>
 )
 
 const GistFile = ({file, onChange, disabled}) => (

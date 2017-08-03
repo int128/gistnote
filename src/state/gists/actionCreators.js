@@ -1,23 +1,16 @@
+import PromiseAction from '../../infrastructure/PromiseAction';
+
 import * as actionTypes from './actionTypes'
 
-import GistOwner from '../../models/GistOwner';
+export const changeGistCriteria = payload => ({type: actionTypes.CHANGE_GIST_CRITERIA, payload})
 
-export const selectPublicGists = () => ({type: actionTypes.SELECT_GISTS_OWNER, owner: GistOwner.PUBLIC})
-export const selectMyGists = () => ({type: actionTypes.SELECT_GISTS_OWNER, owner: GistOwner.MY})
+export const listGists = owner => ({type: actionTypes.LIST_GISTS, owner})
+export const listNextGists = current => ({type: actionTypes.LIST_NEXT_GISTS, current})
 
-export const fetchPublicGists = () => ({type: actionTypes.FETCH_GISTS, owner: GistOwner.PUBLIC})
-export const fetchMyGists = () => ({type: actionTypes.FETCH_GISTS, owner: GistOwner.MY})
-export const fetchNextGists = current => ({type: actionTypes.FETCH_NEXT_GISTS, current})
+export const readGist = id => ({type: actionTypes.READ_GIST, id})
+export const createGist = payload => ({type: actionTypes.CREATE_GIST, payload})
+export const updateGist = payload => ({type: actionTypes.UPDATE_GIST, payload})
+export const invalidateGist = () => PromiseAction.invalidate(actionTypes.READ_GIST)
 
-export const fetchGist = id => ({type: actionTypes.FETCH_GIST, id})
-export const destroyFetchedGist = () => ({type: actionTypes.DESTROY_FETCHED_GIST})
-
-export const createEditingGist = () => ({type: actionTypes.CREATE_EDITING_GIST})
-export const changeEditingGist = value => ({type: actionTypes.CHANGE_EDITING_GIST, value})
-export const destroyEditingGist = () => ({type: actionTypes.DESTROY_EDITING_GIST})
-
-export const createGist = gist => ({type: actionTypes.CREATE_GIST, gist})
-export const destroyCreatedGist = () => ({type: actionTypes.DESTROY_CREATED_GIST})
-
-export const updateGist = (id, gist) => ({type: actionTypes.UPDATE_GIST, id, gist})
-export const destroyUpdatedGist = () => ({type: actionTypes.DESTROY_UPDATED_GIST})
+export const newEditingGist = () => ({type: actionTypes.NEW_EDITING_GIST})
+export const changeEditingGist = payload => ({type: actionTypes.CHANGE_EDITING_GIST, payload})

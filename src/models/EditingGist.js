@@ -6,6 +6,7 @@ import EditingGistFile from './EditingGistFile';
  * @see https://developer.github.com/v3/gists/#edit-a-gist
  */
 export default class EditingGist extends Record({
+  public: undefined,
   originalGist: null,
   description: '',
   files: Seq.of(EditingGistFile.createNew()),
@@ -46,14 +47,22 @@ export default class EditingGist extends Record({
       this.files.concat([EditingGistFile.createNew(this.files.size)]));
   }
 
-  toGitHubRequest(overrides) {
+  setAsPublic() {
+    return this.set('public', true);
+  }
+
+  setAsPrivate() {
+    return this.set('public', false);
+  }
+
+  toGitHubRequest() {
     return {
+      public: this.public,
       description: this.description,
       files: this.files
         .map(file => Seq(file.toGitHubRequest()))
         .reduce((r, file) => Seq(r).concat(file))
         .toJS(),
-      ...overrides,
     };
   }
 }

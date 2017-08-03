@@ -1,88 +1,37 @@
+import PromiseReducer from '../../infrastructure/PromiseReducer';
+import PromiseState from '../../infrastructure/PromiseState';
+
 import * as actionTypes from './actionTypes';
-import { RESOLVE_USER, REJECT_USER } from '../user/actionTypes';
 
-import GistOwner from '../../models/GistOwner';
+import GistCriteria from '../../models/GistCriteria';
 import EditingGist from '../../models/EditingGist';
-import PromiseResponse from '../../models/PromiseResponse';
 
-export function gistsOwner(state = GistOwner.PUBLIC, action) {
+export function gistCriteria(state = GistCriteria.PUBLIC, action) {
   switch (action.type) {
-    case actionTypes.SELECT_GISTS_OWNER:
-      return action.owner;
-    case RESOLVE_USER:
-      return GistOwner.MY;
-    case REJECT_USER:
-      return GistOwner.PUBLIC;
+    case actionTypes.CHANGE_GIST_CRITERIA:
+      return action.payload;
     default:
       return state;
   }
 }
 
-export function fetchedGists(state = PromiseResponse.INVALID, action) {
-  switch (action.type) {
-    case actionTypes.FETCH_GISTS:
-      return PromiseResponse.LOADING;
-    case actionTypes.FETCH_GISTS_DONE:
-      return action.response;
-    case actionTypes.FETCH_NEXT_GISTS_DONE:
-      return action.response;
-    default:
-      return state;
-  }
-}
+export const gistList = PromiseReducer(actionTypes.LIST_GISTS)
 
-export function fetchedGist(state = PromiseResponse.INVALID, action) {
-  switch (action.type) {
-    case actionTypes.FETCH_GIST:
-      return PromiseResponse.LOADING;
-    case actionTypes.FETCH_GIST_DONE:
-      return action.response;
-    case actionTypes.DESTROY_FETCHED_GIST:
-      return PromiseResponse.INVALID;
-    default:
-      return state;
-  }
-}
+export const gist = PromiseReducer(actionTypes.READ_GIST)
 
-export function editingGist(state = PromiseResponse.INVALID, action) {
-  switch (action.type) {
-    case actionTypes.FETCH_GIST:
-      return PromiseResponse.LOADING;
-    case actionTypes.FETCH_GIST_DONE:
-      return action.response.map(data => EditingGist.createFromExistentGist(data));
-    case actionTypes.CREATE_EDITING_GIST:
-      return PromiseResponse.createResolved(EditingGist.createNew());
-    case actionTypes.CHANGE_EDITING_GIST:
-      return PromiseResponse.createResolved(action.value);
-    case actionTypes.DESTROY_EDITING_GIST:
-      return PromiseResponse.INVALID;
-    default:
-      return state;
-  }
-}
+export const createdGist = PromiseReducer(actionTypes.CREATE_GIST)
 
-export function createdGist(state = PromiseResponse.INVALID, action) {
-  switch (action.type) {
-    case actionTypes.CREATE_GIST:
-      return PromiseResponse.LOADING;
-    case actionTypes.CREATE_GIST_DONE:
-      return action.response;
-    case actionTypes.DESTROY_CREATED_GIST:
-      return PromiseResponse.INVALID;
-    default:
-      return state;
-  }
-}
+export const updatedGist = PromiseReducer(actionTypes.UPDATE_GIST)
 
-export function updatedGist(state = PromiseResponse.INVALID, action) {
-  switch (action.type) {
-    case actionTypes.UPDATE_GIST:
-      return PromiseResponse.LOADING;
-    case actionTypes.UPDATE_GIST_DONE:
-      return action.response;
-    case actionTypes.DESTROY_UPDATED_GIST:
-      return PromiseResponse.INVALID;
-    default:
-      return state;
-  }
-}
+export const editingGist = PromiseReducer(actionTypes.READ_GIST,
+  payload => EditingGist.createFromExistentGist(payload),
+  (state, action) => {
+    switch (action.type) {
+      case actionTypes.NEW_EDITING_GIST:
+        return PromiseState.resolved(EditingGist.createNew());
+      case actionTypes.CHANGE_EDITING_GIST:
+        return PromiseState.resolved(action.payload);
+      default:
+        return state;
+    }
+  })

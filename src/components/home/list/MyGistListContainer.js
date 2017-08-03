@@ -3,10 +3,11 @@ import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
+import PromiseState from '../../../infrastructure/PromiseState';
 
-import PromiseResponse, { LOADING, RESOLVED, REJECTED } from '../../../models/PromiseResponse';
+import GistCriteria from '../../../models/GistCriteria';
 
-import { fetchMyGists, fetchNextGists } from '../../../state/gists/actionCreators';
+import { listGists, listNextGists } from '../../../state/gists/actionCreators';
 
 import GistList from './GistList';
 import LoadingIndicator from '../../LoadingIndicator';
@@ -14,30 +15,30 @@ import ErrorIndicator from '../../ErrorIndicator';
 
 class MyGistListContainer extends React.Component {
   static propTypes = {
-    fetchedGists: PropTypes.instanceOf(PromiseResponse).isRequired,
-    fetchedGist: PropTypes.instanceOf(PromiseResponse).isRequired,
+    gistList: PropTypes.instanceOf(PromiseState).isRequired,
+    gist: PropTypes.instanceOf(PromiseState).isRequired,
   }
 
   componentDidMount() {
-    this.props.fetchMyGists();
+    this.props.listGists(GistCriteria.MY);
   }
 
   render() {
-    const { fetchedGists, fetchedGist, editingGist, fetchNextGists } = this.props;
-    switch (fetchedGists.state) {
-      case LOADING:
+    const { gistList, gist, editingGist, listNextGists } = this.props;
+    switch (gistList.state) {
+      case PromiseState.stateTypes.LOADING:
         return <li className="list-group-item"><LoadingIndicator/></li>;
-      case RESOLVED:
+      case PromiseState.stateTypes.RESOLVED:
         return (
           <div>
-            <NewLink active={editingGist.data && editingGist.data.isNew()}/>
-            <GistList gists={fetchedGists.data}
-              activeGist={fetchedGist.data}
-              nextAction={() => fetchNextGists(fetchedGists.data)}/>
+            <NewLink active={editingGist.payload && editingGist.payload.isNew()}/>
+            <GistList gists={gistList.payload}
+              activeGist={gist.payload}
+              nextAction={() => listNextGists(gistList.payload)}/>
           </div>
         );
-      case REJECTED:
-        return <ErrorIndicator error={fetchedGists.error}/>;
+      case PromiseState.stateTypes.REJECTED:
+        return <ErrorIndicator error={gistList.payload}/>;
       default:
         return null;
     }
@@ -52,14 +53,14 @@ const NewLink = ({active}) => (
 );
 
 const mapStateToProps = state => ({
-  fetchedGists: state.fetchedGists,
-  fetchedGist: state.fetchedGist,
+  gistList: state.gistList,
+  gist: state.gist,
   editingGist: state.editingGist,
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-  fetchMyGists,
-  fetchNextGists,
+  listGists,
+  listNextGists,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(MyGistListContainer);

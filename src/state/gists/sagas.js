@@ -1,59 +1,73 @@
-import { takeEvery, put } from 'redux-saga/effects';
+import { takeEvery, put, select } from 'redux-saga/effects';
 import { push } from 'react-router-redux';
 import GitHub from '../../infrastructure/GitHub';
+import PromiseAction from '../../infrastructure/PromiseAction';
 import OAuthTokenRepository from '../../repositories/OAuthTokenRepository';
 
 import * as actionTypes from './actionTypes';
 
-import { RESOLVED } from '../../models/PromiseResponse';
-
-function* fetchGists({owner}) {
+function* listGists({type, owner}) {
   const oauthTokenRepository = new OAuthTokenRepository();
   const github = new GitHub(oauthTokenRepository.get());
-  const response = yield github.findGists(owner);
-  yield put({type: actionTypes.FETCH_GISTS_DONE, response});
-}
-
-function* fetchNextGists({current}) {
-  const oauthTokenRepository = new OAuthTokenRepository();
-  const github = new GitHub(oauthTokenRepository.get());
-  const response = yield github.fetchNext(current);
-  yield put({type: actionTypes.FETCH_NEXT_GISTS_DONE, response});
-}
-
-function* fetchGist({id}) {
-  const oauthTokenRepository = new OAuthTokenRepository();
-  const github = new GitHub(oauthTokenRepository.get());
-  const response = yield github.getGistContent(id);
-  yield put({type: actionTypes.FETCH_GIST_DONE, response});
-}
-
-function* createGist({gist}) {
-  const oauthTokenRepository = new OAuthTokenRepository();
-  const github = new GitHub(oauthTokenRepository.get());
-  const response = yield github.createGist(gist);
-  yield put({type: actionTypes.CREATE_GIST_DONE, response});
-
-  if (response.state === RESOLVED) {
-    yield put(push(`/${response.data.id}`));
+  try {
+    const payload = yield github.listGists(owner);
+    yield put(PromiseAction.resolved(type, payload));
+  } catch (error) {
+    yield put(PromiseAction.rejected(type, error));
   }
 }
 
-function* updateGist({id, gist}) {
+function* listNextGists({type, current}) {
   const oauthTokenRepository = new OAuthTokenRepository();
   const github = new GitHub(oauthTokenRepository.get());
-  const response = yield github.updateGist(id, gist);
-  yield put({type: actionTypes.UPDATE_GIST_DONE, response});
+  try {
+    const payload = yield github.fetchNext(current);
+    yield put(PromiseAction.resolved(type, payload));
+  } catch (error) {
+    yield put(PromiseAction.rejected(type, error));
+  }
+}
 
-  if (response.state === RESOLVED) {
-    yield put(push(`/${response.data.id}`));
+function* readGist({type, id}) {
+  const oauthTokenRepository = new OAuthTokenRepository();
+  const github = new GitHub(oauthTokenRepository.get());
+  try {
+    const payload = yield github.getGistContent(id);
+    yield put(PromiseAction.resolved(type, payload));
+  } catch (error) {
+    yield put(PromiseAction.rejected(type, error));
+  }
+}
+
+function* createGist({type, payload}) {
+  const oauthTokenRepository = new OAuthTokenRepository();
+  const github = new GitHub(oauthTokenRepository.get());
+  try {
+    const created = yield github.createGist(payload.toGitHubRequest());
+    yield put(PromiseAction.resolved(type, created));
+    yield put(push(`/${created.id}`));
+  } catch (error) {
+    yield put(PromiseAction.rejected(type, error));
+  }
+}
+
+function* updateGist({type, payload}) {
+  const oauthTokenRepository = new OAuthTokenRepository();
+  const github = new GitHub(oauthTokenRepository.get());
+  try {
+    const { id } = payload.originalGist;
+    const updated = yield github.updateGist(id, payload.toGitHubRequest());
+    yield put(PromiseAction.resolved(type, updated));
+    yield put(push(`/${id}`));
+  } catch (error) {
+    yield put(PromiseAction.rejected(type, error));
   }
 }
 
 export default function* () {
-  yield takeEvery(actionTypes.FETCH_GISTS, fetchGists);
-  yield takeEvery(actionTypes.FETCH_NEXT_GISTS, fetchNextGists);
-  yield takeEvery(actionTypes.FETCH_GIST, fetchGist);
+  yield takeEvery(actionTypes.LIST_GISTS, listGists);
+  yield takeEvery(actionTypes.LIST_NEXT_GISTS, listNextGists);
+  yield takeEvery(actionTypes.READ_GIST, readGist);
   yield takeEvery(actionTypes.CREATE_GIST, createGist);
   yield takeEvery(actionTypes.UPDATE_GIST, updateGist);
 }

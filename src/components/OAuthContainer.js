@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import { fetchAccessToken } from '../state/user/actionCreators';
+import { exchangeAccessToken } from '../state/user/actionCreators';
 
 import LoadingIndicator from './LoadingIndicator';
 
@@ -32,7 +32,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-  fetchAccessToken,
+  exchangeAccessToken,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(OAuthContainer);

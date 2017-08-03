@@ -2,10 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import PromiseState from '../../../infrastructure/PromiseState';
 
-import PromiseResponse, { LOADING, RESOLVED, REJECTED } from '../../../models/PromiseResponse';
+import GistCriteria from '../../../models/GistCriteria';
 
-import { fetchPublicGists } from '../../../state/gists/actionCreators';
+import { listGists, listNextGists } from '../../../state/gists/actionCreators';
 
 import GistList from './GistList';
 import LoadingIndicator from '../../LoadingIndicator';
@@ -13,23 +14,24 @@ import ErrorIndicator from '../../ErrorIndicator';
 
 class PublicGistListContainer extends React.Component {
   static propTypes = {
-    fetchedGists: PropTypes.instanceOf(PromiseResponse).isRequired,
-    fetchedGist: PropTypes.instanceOf(PromiseResponse).isRequired,
+    gistList: PropTypes.instanceOf(PromiseState).isRequired,
+    gist: PropTypes.instanceOf(PromiseState).isRequired,
   }
 
   componentDidMount() {
-    this.props.fetchPublicGists();
+    this.props.listGists(GistCriteria.PUBLIC);
   }
 
   render() {
-    const { fetchedGists, fetchedGist } = this.props;
-    switch (fetchedGists.state) {
-      case LOADING:
+    const { gistList, gist, listNextGists } = this.props;
+    switch (gistList.state) {
+      case PromiseState.stateTypes.LOADING:
         return <li className="list-group-item"><LoadingIndicator/></li>;
-      case RESOLVED:
-        return <GistList gists={fetchedGists.data} activeGist={fetchedGist.data}/>;
-      case REJECTED:
-        return <ErrorIndicator error={fetchedGists.error}/>;
+      case PromiseState.stateTypes.RESOLVED:
+        return <GistList gists={gistList.payload} activeGist={gist.payload}
+          nextAction={() => listNextGists(gistList.payload)}/>
+      case PromiseState.stateTypes.REJECTED:
+        return <ErrorIndicator error={gistList.payload}/>;
       default:
         return null;
     }
@@ -37,12 +39,13 @@ class PublicGistListContainer extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  fetchedGists: state.fetchedGists,
-  fetchedGist: state.fetchedGist,
+  gistList: state.gistList,
+  gist: state.gist,
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-  fetchPublicGists,
+  listGists,
+  listNextGists,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(PublicGistListContainer);

@@ -4,9 +4,9 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { preventDefaultEvent } from '../../../infrastructure/DispatchUtil';
 
-import GistOwner, * as ownerTypes from '../../../models/GistOwner';
+import GistCriteria from '../../../models/GistCriteria';
 
-import { selectPublicGists, selectMyGists } from '../../../state/gists/actionCreators';
+import { changeGistCriteria } from '../../../state/gists/actionCreators';
 
 import PublicGistListContainer from './PublicGistListContainer';
 import MyGistListContainer from './MyGistListContainer';
@@ -14,7 +14,7 @@ import MyGistListContainer from './MyGistListContainer';
 class ListContainer extends React.Component {
   static propTypes = {
     authenticated: PropTypes.bool.isRequired,
-    gistsOwner: PropTypes.instanceOf(GistOwner).isRequired,
+    gistCriteria: PropTypes.instanceOf(GistCriteria).isRequired,
   }
 
   render() {
@@ -41,27 +41,29 @@ class ListContainer extends React.Component {
   }
 
   renderAuthenticated() {
-    const { gistsOwner, selectPublicGists, selectMyGists } = this.props;
+    const { gistCriteria, changeGistCriteria } = this.props;
     return (
       <div>
         <ul className="nav nav-pills">
-          <li className={activeIf(gistsOwner.type === ownerTypes.MY)}>
-            <a href="#my-gists" onClick={preventDefaultEvent(selectMyGists)}>
+          <li className={activeIf(gistCriteria.type === GistCriteria.types.MY)}>
+            <a href="#my-gists"
+              onClick={preventDefaultEvent(() => changeGistCriteria(GistCriteria.MY))}>
               My
             </a>
           </li>
-          <li className={activeIf(gistsOwner.type === ownerTypes.PUBLIC)}>
-            <a href="#public-gists" onClick={preventDefaultEvent(selectPublicGists)}>
+          <li className={activeIf(gistCriteria.type === GistCriteria.types.PUBLIC)}>
+            <a href="#public-gists"
+              onClick={preventDefaultEvent(() => changeGistCriteria(GistCriteria.PUBLIC))}>
               Public
             </a>
           </li>
         </ul>
         <div className="list-group gn-gists-list">
           {(() => {
-            switch (gistsOwner.type) {
-              case ownerTypes.PUBLIC:
+            switch (gistCriteria.type) {
+              case GistCriteria.types.PUBLIC:
                 return <PublicGistListContainer/>;
-              case ownerTypes.MY:
+              case GistCriteria.types.MY:
                 return <MyGistListContainer/>;
               default:
                 return null;
@@ -77,12 +79,11 @@ const activeIf = condition => condition ? 'active' : null;
 
 const mapStateToProps = state => ({
   authenticated: state.authenticated,
-  gistsOwner: state.gistsOwner,
+  gistCriteria: state.gistCriteria,
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-  selectPublicGists,
-  selectMyGists,
+  changeGistCriteria,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(ListContainer);
