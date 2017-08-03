@@ -29,15 +29,7 @@ export const gistList = PromiseReducer({
 })
 
 export const gistListPagenation = PromiseReducer({
-  type: actionTypes.LIST_NEXT_GISTS,
-  handle: (state, action) => {
-    switch (action.type) {
-      case PromiseAction.resolvedTypeOf(actionTypes.LIST_GISTS):
-        return PromiseState.resolved(action.payload);
-      default:
-        return state;
-    }
-  },
+  types: [actionTypes.LIST_GISTS, actionTypes.LIST_NEXT_GISTS],
 })
 
 export const gist = PromiseReducer({type: actionTypes.READ_GIST})
