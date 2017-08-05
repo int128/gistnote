@@ -8,14 +8,16 @@ export default class EditingGistFile extends Record({
   originalFilename: null,
   filename: null,
   content: null,
+  language: null,
   remove: false,
 }) {
-  static createFromGistContentFile(id, {filename, content}) {
+  static createFromGistContentFile(id, {filename, content, language}) {
     return new EditingGistFile({
       id,
       originalFilename: filename,
       filename,
       content,
+      language,
     });
   }
 

@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { Seq } from 'immutable';
+import remark from 'remark';
+import remarkReact from 'remark-react';
 
 import GistMetadata from './GistMetadata';
 
@@ -52,11 +54,10 @@ const GistFile = ({file}) => (
   </div>
 )
 
-//TODO
 const Markdown = ({content}) => (
   <div className="panel panel-default">
     <div className="panel-body">
-      {content}
+      {remark().use(remarkReact).processSync(content).contents}
     </div>
   </div>
 )

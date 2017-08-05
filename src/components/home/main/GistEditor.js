@@ -1,5 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import remark from 'remark';
+import remarkReact from 'remark-react';
 
 import EditingGist from '../../../models/EditingGist';
 
@@ -88,6 +90,7 @@ const GistFile = ({file, onChange, disabled}) => (
           </div>
         </div>
         <div className="panel-body">
+          <span className="label label-primary">{file.language}</span>
           <div className="container-fluid">
             <div className="row autosize-textarea">
               <textarea className="form-control"
@@ -119,11 +122,10 @@ const ToBeRemoved = ({file, onChange}) => (
   </div>
 )
 
-//TODO
 const Markdown = ({content}) => (
   <div className="panel panel-default">
     <div className="panel-body">
-      {content}
+      {remark().use(remarkReact).processSync(content).contents}
     </div>
   </div>
 )
