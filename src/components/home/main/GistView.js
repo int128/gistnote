@@ -4,6 +4,9 @@ import { Link } from 'react-router-dom';
 import { Seq } from 'immutable';
 import remark from 'remark';
 import remarkReact from 'remark-react';
+import SyntaxHighlighter from 'react-syntax-highlighter';
+import { githubGist } from 'react-syntax-highlighter/dist/styles';
+import lowlight from 'lowlight';
 
 import GistMetadata from './GistMetadata';
 
@@ -49,7 +52,7 @@ const GistFile = ({file}) => (
     {file.language === 'Markdown' ? (
       <Markdown content={file.content}/>
     ) : (
-      <Highlight content={file.content}/>
+      <Highlight content={file.content} language={file.language}/>
     )}
   </div>
 )
@@ -62,9 +65,18 @@ const Markdown = ({content}) => (
   </div>
 )
 
-//TODO
-const Highlight = ({content}) => (
-  <pre>
-    <code>{content}</code>
-  </pre>
-)
+const Highlight = ({content, language}) => {
+  let effectiveLanguage;
+  if (language && lowlight.getLanguage(language)) {
+    effectiveLanguage = language;
+  }
+  return (
+    <div className="panel panel-default">
+      <div className="panel-body">
+        <SyntaxHighlighter language={effectiveLanguage} style={githubGist}>
+          {content}
+        </SyntaxHighlighter>
+      </div>
+    </div>
+  );
+}

@@ -41,6 +41,10 @@ export default class EditingGistFile extends Record({
     return this.set('remove', !this.remove);
   }
 
+  isMarkdown() {
+    return this.language === 'Markdown' || (this.filename && this.filename.match(/\.md$/));
+  }
+
   toGitHubRequest() {
     const createNewFile = this.originalFilename === null;
     if (createNewFile) {

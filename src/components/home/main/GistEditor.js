@@ -2,6 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import remark from 'remark';
 import remarkReact from 'remark-react';
+import SyntaxHighlighter from 'react-syntax-highlighter';
+import { githubGist } from 'react-syntax-highlighter/dist/styles';
+import lowlight from 'lowlight';
 
 import EditingGist from '../../../models/EditingGist';
 
@@ -98,10 +101,10 @@ const GistFile = ({file, onChange, disabled}) => (
                 value={file.content}
                 onChange={e => onChange(file.setContent(e.target.value))}></textarea>
               <div className="col-sm-6 col-md-6 col-lg-6 col-sm-offset-6 col-md-offset-6 col-lg-offset-6">
-                {file.language === 'Markdown' ? (
+                {file && file.isMarkdown() ? (
                   <Markdown content={file.content}/>
                 ) : (
-                  <Highlight content={file.content}/>
+                  <Highlight content={file.content} language={file.language}/>
                 )}
               </div>
             </div>
@@ -130,9 +133,18 @@ const Markdown = ({content}) => (
   </div>
 )
 
-//TODO
-const Highlight = ({content}) => (
-  <pre>
-    <code>{content}</code>
-  </pre>
-)
+const Highlight = ({content, language}) => {
+  let effectiveLanguage;
+  if (language && lowlight.getLanguage(language)) {
+    effectiveLanguage = language;
+  }
+  return (
+    <div className="panel panel-default">
+      <div className="panel-body">
+        <SyntaxHighlighter language={effectiveLanguage} style={githubGist}>
+          {content}
+        </SyntaxHighlighter>
+      </div>
+    </div>
+  );
+}
