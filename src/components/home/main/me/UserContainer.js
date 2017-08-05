@@ -2,12 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
-import PromiseState from '../../../infrastructure/PromiseState';
+import PromiseState from '../../../../infrastructure/PromiseState';
 
-import { readUserProfile } from '../../../state/user/actionCreators';
+import { readUserProfile } from '../../../../state/user/actionCreators';
 
-import LoadingIndicator from '../../LoadingIndicator';
+import LoadingIndicator from '../../../LoadingIndicator';
 
 class UserContainer extends React.Component {
   static propTypes = {
@@ -27,14 +26,20 @@ class UserContainer extends React.Component {
 }
 
 const User = ({userProfile}) => (
-  <ul className="nav nav-pills">
-    <li>
-      <Link to="/me">
-        {userProfile.name}
-        <img className="gn-user-avatar" src={userProfile.avatar_url} alt="avatar"/>
-      </Link>
-    </li>
-  </ul>
+  <div className="text-center">
+    <div className="jumbotron text-center">
+      <img className="img-circle" src={userProfile.avatar_url}
+        width="128" height="128" alt="avatar"/>
+      <h1>{userProfile.name}</h1>
+      <p>{userProfile.bio}</p>
+      <p>@{userProfile.login}</p>
+      <div>
+        <span className="label label-primary">{userProfile.location}</span>
+        &nbsp;
+        <span className="label label-primary">{userProfile.public_gists} Public Gists</span>
+      </div>
+    </div>
+  </div>
 );
 
 const mapStateToProps = state => ({
