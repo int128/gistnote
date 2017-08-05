@@ -25,19 +25,17 @@ class PublicGistListContainer extends React.Component {
 
   render() {
     const { gistList, gistListPagenation, gist, listNextGists } = this.props;
-    switch (gistList.state) {
-      case PromiseState.stateTypes.LOADING:
-        return <li className="list-group-item"><LoadingIndicator/></li>;
-      case PromiseState.stateTypes.RESOLVED:
-        return <GistList gists={gistList.payload}
-          activeGist={gist.payload}
-          nextAction={() => listNextGists(gistListPagenation.payload)}
-          nextActionInProgress={gistListPagenation.isLoading()}/>
-      case PromiseState.stateTypes.REJECTED:
-        return <ErrorIndicator error={gistList.payload}/>;
-      default:
-        return null;
-    }
+    return gistList.mapIf({
+      loading: () => <li className="list-group-item"><LoadingIndicator/></li>,
+      rejected: payload => <ErrorIndicator error={payload}/>,
+      resolved: payload =>
+        <div>
+          <GistList gists={payload}
+            activeGist={gist.mapIfResolved()}
+            nextAction={() => listNextGists(gistListPagenation.mapIfResolved())}
+            nextActionInProgress={gistListPagenation.isLoading()}/>
+        </div>,
+    });
   }
 }
 

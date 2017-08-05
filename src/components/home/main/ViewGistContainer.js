@@ -31,17 +31,11 @@ class ViewGistContainer extends React.Component {
   }
 
   render() {
-    const { gist } = this.props;
-    switch (gist.state) {
-      case PromiseState.stateTypes.LOADING:
-        return <div className="page-header"><h2><LoadingIndicator/></h2></div>;
-      case PromiseState.stateTypes.RESOLVED:
-        return <GistView gist={gist.payload}/>;
-      case PromiseState.stateTypes.REJECTED:
-        return <ErrorIndicator error={gist.payload}/>;
-      default:
-        return null;
-    }
+    return this.props.gist.mapIf({
+      loading: () => <div className="page-header"><h2><LoadingIndicator/></h2></div>,
+      resolved: payload => <GistView gist={payload}/>,
+      rejected: payload => <ErrorIndicator error={payload}/>,
+    });
   }
 }
 

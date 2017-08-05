@@ -18,15 +18,10 @@ class UserContainer extends React.Component {
   }
 
   render() {
-    const { userProfile } = this.props;
-    switch (userProfile.state) {
-      case PromiseState.stateTypes.LOADING:
-        return <LoadingIndicator/>;
-      case PromiseState.stateTypes.RESOLVED:
-        return <User userProfile={userProfile.payload}/>;
-      default:
-        return null;
-    }
+    return this.props.userProfile.mapIf({
+      loading: () => <LoadingIndicator/>,
+      resolved: payload => <User userProfile={payload}/>,
+    });
   }
 }
 

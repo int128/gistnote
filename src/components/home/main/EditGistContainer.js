@@ -44,36 +44,32 @@ class EditGistContainer extends React.Component {
       changeEditingGist,
       updateGist,
     } = this.props;
-    switch (editingGist.state) {
-      case PromiseState.stateTypes.LOADING:
-        return <LoadingIndicator/>;
-      case PromiseState.stateTypes.RESOLVED:
-        return <GistEditor
-          editingGist={editingGist.payload}
+    return editingGist.mapIf({
+      loading: () => <LoadingIndicator/>,
+      rejected: payload => <ErrorIndicator error={payload}/>,
+      resolved: payload =>
+        <GistEditor
+          editingGist={payload}
           changeEditingGist={changeEditingGist}
           disabled={updatedGist.isLoading()}
-          error={updatedGist.isRejected() ? updatedGist.payload : null}
+          error={updatedGist.mapIfRejected()}
           form={
             <span>
               {updatedGist.isLoading() ? <LoadingIndicator/> : null}
               &nbsp;
               <button type="button" className="btn btn-primary"
                 disabled={updatedGist.isLoading()}
-                onClick={() => updateGist(editingGist.payload)}>
+                onClick={() => updateGist(payload)}>
                 Update Gist
               </button>
               &nbsp;
-              <Link to={`/${editingGist.payload.originalGist.id}`}
+              <Link to={`/${payload.originalGist.id}`}
                 className="btn btn-default" disabled={updatedGist.isLoading()}>
                 Cancel
               </Link>
             </span>
-          }/>;
-      case PromiseState.stateTypes.REJECTED:
-        return <ErrorIndicator error={editingGist.payload}/>;
-      default:
-        return null;
-    }
+          }/>,
+    });
   }
 }
 

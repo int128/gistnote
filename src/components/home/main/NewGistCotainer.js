@@ -36,37 +36,33 @@ class NewGistContainer extends React.Component {
       changeEditingGist,
       createGist,
     } = this.props;
-    switch (editingGist.state) {
-      case PromiseState.stateTypes.LOADING:
-        return <LoadingIndicator/>;
-      case PromiseState.stateTypes.RESOLVED:
-        return <GistEditor
-          editingGist={editingGist.payload}
+    return editingGist.mapIf({
+      loading: () => <LoadingIndicator/>,
+      rejected: payload => <ErrorIndicator error={payload}/>,
+      resolved: payload =>
+        <GistEditor
+          editingGist={payload}
           changeEditingGist={changeEditingGist}
           disabled={createdGist.isLoading()}
-          error={createdGist.isRejected() ? createdGist.payload : null}
+          error={createdGist.mapIfRejected()}
           form={
             <span>
               {createdGist.isLoading() ? <LoadingIndicator/> : null}
               &nbsp;
               <button type="button" className="btn btn-primary"
                 disabled={createdGist.isLoading()}
-                onClick={() => createGist(editingGist.payload.setAsPrivate())}>
+                onClick={() => createGist(payload.setAsPrivate())}>
                 Create Private Gist
               </button>
               &nbsp;
               <button type="button" className="btn btn-info"
                 disabled={createdGist.isLoading()}
-                onClick={() => createGist(editingGist.payload.setAsPublic())}>
+                onClick={() => createGist(payload.setAsPublic())}>
                 Create Public Gist
               </button>
             </span>
-          }/>;
-      case PromiseState.stateTypes.REJECTED:
-        return <ErrorIndicator error={editingGist.payload}/>;
-      default:
-        return null;
-    }
+          }/>,
+    });
   }
 }
 
