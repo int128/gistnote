@@ -19,8 +19,9 @@ class OAuthContainer extends React.Component {
   render() {
     return (
       <div className="container">
-        <div className="page-header">
-          <h2><LoadingIndicator/>&nbsp;Authorization in Progress</h2>
+        <div className="jumbotron text-center">
+          <LoadingIndicator/>
+          <p>Authorization in Progress</p>
         </div>
       </div>
     );
