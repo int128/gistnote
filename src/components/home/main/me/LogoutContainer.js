@@ -3,7 +3,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { preventDefaultEvent } from '../../../../infrastructure/DispatchUtil';
 
-import { logout } from '../../../../state/user/actionCreators';
+import { logout } from '../../../../state/oauth/actionCreators';
 
 class LogoutContainer extends React.Component {
   render() {

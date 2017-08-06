@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import { exchangeAccessToken } from '../state/user/actionCreators';
+import { handleOAuthRedirect } from '../state/oauth/actionCreators';
 
 import LoadingIndicator from './LoadingIndicator';
 
@@ -13,8 +13,7 @@ class OAuthContainer extends React.Component {
   }
 
   componentDidMount() {
-    const [, code, state] = this.props.location.search.match(/\?code=(.+)&state=(.+)/);
-    this.props.fetchAccessToken(code, state);
+    this.props.handleOAuthRedirect();
   }
 
   render() {
@@ -32,7 +31,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-  exchangeAccessToken,
+  handleOAuthRedirect,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(OAuthContainer);

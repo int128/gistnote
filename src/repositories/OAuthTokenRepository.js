@@ -24,6 +24,10 @@ export default class OAuthTokenRepository {
     return this.storage.save(oauthToken.toJS());
   }
 
+  remove() {
+    this.storage.remove();
+  }
+
   poll() {
     return this.storage.poll();
   }

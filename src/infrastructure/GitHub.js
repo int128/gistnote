@@ -1,4 +1,5 @@
 import request from 'request-promise-native';
+import queryString from 'query-string';
 
 import GistCriteria from '../models/GistCriteria';
 import OAuthToken from '../models/OAuthToken';
@@ -85,5 +86,12 @@ export default class GitHub {
       method: 'POST',
       body: issue,
     });
+  }
+
+  static authorizeUrl({client_id, redirect_uri, scope, state}) {
+    const params = queryString.stringify({
+      client_id, redirect_uri, scope, state,
+    });
+    return `https://github.com/login/oauth/authorize?${params}`;
   }
 }

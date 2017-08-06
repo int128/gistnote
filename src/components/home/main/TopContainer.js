@@ -2,7 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
+
+import { login } from '../../../state/oauth/actionCreators';
 
 class ViewGistContainer extends React.Component {
   static propTypes = {
@@ -19,7 +20,11 @@ class ViewGistContainer extends React.Component {
           <h1>Gistnote</h1>
           <p>Evernote like Gist client app</p>
           {authenticated ? null : (
-            <p><Link to="/login" className="btn btn-primary">Sign in with GitHub</Link></p>
+            <p>
+              <button className="btn btn-primary" onClick={this.props.login}>
+                <span className="glyphicon glyphicon-user"></span> Sign in with GitHub
+              </button>
+            </p>
           )}
         </div>
         <div className="text-center gn-copyright">
@@ -36,6 +41,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({
+  login,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(ViewGistContainer);

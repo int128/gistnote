@@ -1,5 +1,1 @@
-export const LOGIN = 'LOGIN'
-export const LOGOUT = 'LOGOUT'
-export const EXCHANGE_ACCESS_TOKEN = 'EXCHANGE_ACCESS_TOKEN'
-
 export const READ_USER_PROFILE = 'READ_USER_PROFILE'
