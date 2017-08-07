@@ -1,0 +1,18 @@
+machine:
+  node:
+    version: 6
+
+deployment:
+  github-pages:
+    branch: master
+    commands:
+      - npm run build
+      - |
+        cd build
+        git init .
+        git config user.name circle
+        git config user.email circle@example.com
+        git commit -m Release
+        echo "$NETRC" > "$HOME/.netrc"
+        git remote add origin "$GITHUB_ORIGIN"
+        git push origin master -f
