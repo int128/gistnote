@@ -8,8 +8,11 @@ import OAuthTokenRepository from '../../repositories/OAuthTokenRepository';
 import OAuthStateRepository from '../../repositories/OAuthStateRepository';
 
 import OAuthState from '../../models/OAuthState';
+import GistCriteria from '../../models/GistCriteria';
 
 import * as actionTypes from './actionTypes';
+import { changeAuthenticated } from './actionCreators';
+import { changeGistCriteria } from '../gists/actionCreators';
 
 function login() {
   const oauthState = OAuthState.backPath(window.location.pathname);
@@ -35,11 +38,15 @@ function* handleOAuthRedirect() {
       const oauthToken = yield oauthTokenService.requestAccessToken(code);
       const oauthTokenRepository = new OAuthTokenRepository();
       oauthTokenRepository.save(oauthToken);
+      yield put(changeAuthenticated(true));
+      yield put(changeGistCriteria(GistCriteria.MY));
       yield put(replace(oauthState.backPath));
     } else {
+      yield put(changeAuthenticated(false));
       console.error('Invalid state', params);
     }
   } else {
+    yield put(changeAuthenticated(false));
     console.error('No code and state', params);
   }
 }
@@ -47,6 +54,7 @@ function* handleOAuthRedirect() {
 function* logout() {
   const oauthTokenRepository = new OAuthTokenRepository();
   oauthTokenRepository.remove();
+  yield put(changeAuthenticated(false));
   yield put(push('/'));
 }
 
