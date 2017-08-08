@@ -1,4 +1,4 @@
-import { takeEvery, put } from 'redux-saga/effects';
+import { takeEvery, put, fork } from 'redux-saga/effects';
 import { push, replace } from 'react-router-redux';
 import PromiseAction from '../../infrastructure/PromiseAction';
 import GitHub from '../../infrastructure/GitHub';
@@ -44,6 +44,19 @@ function* acquireSession({type, code, state}) {
   }
 }
 
+function* pollSession() {
+  const oauthTokenRepository = new OAuthTokenRepository();
+  while (true) {
+    yield oauthTokenRepository.poll();
+    const oauthToken = oauthTokenRepository.get();
+    if (oauthToken.isValid()) {
+      yield put(PromiseAction.resolved(actionTypes.ACQUIRE_SESSION, oauthToken));
+    } else {
+      yield put(invalidateSession());
+    }
+  }
+}
+
 function* logout() {
   const oauthTokenRepository = new OAuthTokenRepository();
   oauthTokenRepository.remove();
@@ -55,4 +68,6 @@ export default function* () {
   yield takeEvery(actionTypes.LOGIN, login);
   yield takeEvery(actionTypes.ACQUIRE_SESSION, acquireSession);
   yield takeEvery(actionTypes.LOGOUT, logout);
+
+  yield fork(pollSession);
 }

@@ -6,8 +6,12 @@ export default class OAuthToken extends Record({
 }) {
   static NONE = new OAuthToken()
 
+  isValid() {
+    return this.access_token !== null;
+  }
+
   getAuthorizationHeader() {
-    if (this.access_token) {
+    if (this.isValid()) {
       return `token ${this.access_token}`;
     }
   }

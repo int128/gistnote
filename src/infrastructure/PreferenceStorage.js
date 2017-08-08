@@ -23,7 +23,7 @@ export default class PreferenceStorage {
   poll() {
     return new Promise(resolve => {
       const callback = e => {
-        if (e.storageArea === localStorage && e.key === this.key && e.newValue !== null) {
+        if (e.storageArea === localStorage && e.key === this.key) {
           window.removeEventListener('storage', callback);
           resolve();
         }
