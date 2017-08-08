@@ -5,6 +5,13 @@ import OAuthToken from '../models/OAuthToken';
 export default class OAuthTokenService {
   static endpoint = 'https://us-central1-gistnote.cloudfunctions.net';
 
+  fetchAuthorizationRequest() {
+    return request({
+      url: `${OAuthTokenService.endpoint}/access_token`,
+      json: true,
+    });
+  }
+
   requestAccessToken(code) {
     return request({
       url: `${OAuthTokenService.endpoint}/access_token`,

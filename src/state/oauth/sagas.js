@@ -12,13 +12,16 @@ import OAuthState from '../../models/OAuthState';
 import * as actionTypes from './actionTypes';
 import { invalidateSession } from './actionCreators';
 
-function login() {
+function* login() {
   const oauthState = OAuthState.backPath(window.location.pathname);
   const oauthStateRepository = new OAuthStateRepository();
   oauthStateRepository.save(oauthState);
 
+  const oauthTokenService = new OAuthTokenService();
+  const authorizationRequest = yield oauthTokenService.fetchAuthorizationRequest();
+
   window.location.href = GitHub.authorizeUrl({
-    client_id: 'e1d2b601cc9c4eea4f5f',
+    client_id: authorizationRequest.client_id,
     redirect_uri: `${window.location.origin}/oauth`,
     scope: 'gist,public_repo',
     state: oauthState.state,
