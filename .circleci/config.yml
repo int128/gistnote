@@ -1,0 +1,35 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/node:6
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package.json" }}
+            - v1-dependencies-
+
+      - run: yarn install
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}
+
+      - run: yarn test
+
+      - deploy:
+          name: GitHub Pages
+          command: |
+            if [ "$CIRCLE_TAG" ]; then
+              yarn run build
+              cd build
+              git init .
+              git config user.name circle
+              git config user.email circle@example.com
+              git commit -m Release
+              echo "$NETRC" > "$HOME/.netrc"
+              git remote add origin "$GITHUB_ORIGIN"
+              git push origin master -f
+            fi
