@@ -18,12 +18,12 @@ jobs:
           key: v1-dependencies-{{ checksum "package.json" }}
 
       - run: yarn test
+      - run: yarn run build
 
       - deploy:
           name: GitHub Pages
           command: |
             if [ "$CIRCLE_TAG" ]; then
-              yarn run build
               cd build
               git init .
               git config user.name circle
