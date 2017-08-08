@@ -17,7 +17,7 @@ function login() {
   oauthStateRepository.save(oauthState);
 
   window.location.href = GitHub.authorizeUrl({
-    client_id: '741e291348ea3f2305bd',
+    client_id: 'e1d2b601cc9c4eea4f5f',
     redirect_uri: `${window.location.origin}/oauth`,
     scope: 'gist,public_repo',
     state: oauthState.state,
@@ -32,7 +32,7 @@ function* handleOAuthRedirect() {
     const oauthState = oauthStateRepository.get();
     if (oauthState.verifyState(state)) {
       const oauthTokenService = new OAuthTokenService();
-      const oauthToken = yield oauthTokenService.authorize(code);
+      const oauthToken = yield oauthTokenService.requestAccessToken(code);
       const oauthTokenRepository = new OAuthTokenRepository();
       oauthTokenRepository.save(oauthToken);
       yield put(replace(oauthState.backPath));
