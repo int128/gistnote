@@ -7,7 +7,7 @@ import * as actionTypes from './actionTypes';
 import GistCriteria from '../../models/GistCriteria';
 import EditingGist from '../../models/EditingGist';
 
-export function gistCriteria(state = GistCriteria.PUBLIC, action) {
+export function gistCriteria(state = GistCriteria.MY, action) {
   switch (action.type) {
     case actionTypes.CHANGE_GIST_CRITERIA:
       return action.payload;

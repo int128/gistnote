@@ -1,3 +1,4 @@
+import PromiseState from '../infrastructure/PromiseState';
 import PreferenceStorage from '../infrastructure/PreferenceStorage';
 
 import OAuthToken from '../models/OAuthToken';
@@ -17,6 +18,14 @@ export default class OAuthTokenRepository {
       return new OAuthToken(json);
     } else {
       return OAuthToken.NONE;
+    }
+  }
+
+  getAsPromiseState() {
+    if (this.isPresent()) {
+      return PromiseState.resolved();
+    } else {
+      return PromiseState.INVALID;
     }
   }
 
