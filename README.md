@@ -1,4 +1,4 @@
-Gistnote
+Gistnote [![CircleCI](https://circleci.com/gh/int128/gistnote.svg?style=shield)](https://circleci.com/gh/int128/gistnote)
 ========
 
 Gistnote is a Gist client app based on HTML5 and JavaScript.
