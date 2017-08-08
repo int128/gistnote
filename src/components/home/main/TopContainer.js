@@ -2,16 +2,16 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import PromiseState from '../../../infrastructure/PromiseState';
 
 import { login } from '../../../state/oauth/actionCreators';
 
 class ViewGistContainer extends React.Component {
   static propTypes = {
-    authenticated: PropTypes.bool.isRequired,
+    session: PropTypes.instanceOf(PromiseState).isRequired,
   }
 
   render() {
-    const { authenticated } = this.props;
     return (
       <div>
         <div className="clearfix"></div>
@@ -19,13 +19,10 @@ class ViewGistContainer extends React.Component {
           <img src="/logo.png" alt="logo"/>
           <h1>Gistnote</h1>
           <p>Evernote like Gist client app</p>
-          {authenticated ? null : (
-            <p>
-              <button className="btn btn-primary" onClick={this.props.login}>
-                <span className="glyphicon glyphicon-user"></span> Sign in with GitHub
-              </button>
-            </p>
-          )}
+          {this.props.session.mapIf({
+            invalid: () => <SignIn action={this.props.login}/>,
+            rejected: () => <SignIn action={this.props.login}/>,
+          })}
         </div>
         <div className="text-center gn-copyright">
           <p>Gistnote is a Gist client app based on JavaScript. &copy; Hidetake Iwata, 2015.</p>
@@ -36,8 +33,16 @@ class ViewGistContainer extends React.Component {
   }
 }
 
+const SignIn = ({action}) => (
+  <p>
+    <button className="btn btn-primary" onClick={action}>
+      <span className="glyphicon glyphicon-user"></span> Sign in with GitHub
+    </button>
+  </p>
+);
+
 const mapStateToProps = state => ({
-  authenticated: state.authenticated,
+  session: state.session,
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({

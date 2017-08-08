@@ -11,7 +11,12 @@ export default class OAuthTokenService {
       method: 'POST',
       json: true,
       body: {code},
-      transform: body => new OAuthToken(body),
+    }).then(body => {
+      if (body.error) {
+        throw new Error(body.error_description);
+      } else {
+        return new OAuthToken(body);
+      }
     });
   }
 }

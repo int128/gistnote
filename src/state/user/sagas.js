@@ -4,7 +4,7 @@ import PromiseAction from '../../infrastructure/PromiseAction';
 import OAuthTokenRepository from '../../repositories/OAuthTokenRepository';
 
 import * as actionTypes from './actionTypes';
-import { changeAuthenticated } from '../oauth/actionCreators';
+import { invalidateSession } from '../oauth/actionCreators';
 
 function* readUserProfile({type}) {
   const oauthTokenRepository = new OAuthTokenRepository();
@@ -13,7 +13,7 @@ function* readUserProfile({type}) {
     const payload = yield github.getUser();
     yield put(PromiseAction.resolved(type, payload));
   } catch (error) {
-    yield put(changeAuthenticated(false));
+    yield put(invalidateSession());
     yield put(PromiseAction.rejected(type, error));
   }
 }

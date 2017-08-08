@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { preventDefaultEvent } from '../../../infrastructure/DispatchUtil';
+import PromiseState from '../../../infrastructure/PromiseState';
 
 import GistCriteria from '../../../models/GistCriteria';
 
@@ -13,16 +14,16 @@ import MyGistListContainer from './MyGistListContainer';
 
 class ListContainer extends React.Component {
   static propTypes = {
-    authenticated: PropTypes.bool.isRequired,
+    session: PropTypes.instanceOf(PromiseState).isRequired,
     gistCriteria: PropTypes.instanceOf(GistCriteria).isRequired,
   }
 
   render() {
-    if (this.props.authenticated) {
-      return this.renderAuthenticated();
-    } else {
-      return this.renderNotAuthenticated();
-    }
+    return this.props.session.mapIf({
+      invalid: () => this.renderNotAuthenticated(),
+      rejected: () => this.renderNotAuthenticated(),
+      resolved: () => this.renderAuthenticated(),
+    });
   }
 
   renderNotAuthenticated() {
@@ -78,7 +79,7 @@ class ListContainer extends React.Component {
 const activeIf = condition => condition ? 'active' : null;
 
 const mapStateToProps = state => ({
-  authenticated: state.authenticated,
+  session: state.session,
   gistCriteria: state.gistCriteria,
 });
 

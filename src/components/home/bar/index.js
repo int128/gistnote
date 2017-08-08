@@ -2,26 +2,27 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import PromiseState from '../../../infrastructure/PromiseState';
 
 import UserContainer from './UserContainer';
 import LoginContainer from './LoginContainer';
 
 class BarContainer extends React.Component {
   static propTypes = {
-    authenticated: PropTypes.bool.isRequired,
+    session: PropTypes.instanceOf(PromiseState).isRequired,
   }
 
   render() {
-    if (this.props.authenticated) {
-      return <UserContainer/>;
-    } else {
-      return <LoginContainer/>;
-    }
+    return this.props.session.mapIf({
+      invalid: () => <LoginContainer/>,
+      rejected: () => <LoginContainer/>,
+      resolved: () => <UserContainer/>,
+    });
   }
 }
 
 const mapStateToProps = state => ({
-  authenticated: state.authenticated,
+  session: state.session,
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({

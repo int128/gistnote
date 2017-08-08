@@ -1,6 +1,6 @@
 import { takeEvery, put } from 'redux-saga/effects';
 import { push, replace } from 'react-router-redux';
-import queryString from 'query-string';
+import PromiseAction from '../../infrastructure/PromiseAction';
 import GitHub from '../../infrastructure/GitHub';
 import OAuthTokenService from '../../infrastructure/OAuthTokenService';
 
@@ -8,11 +8,9 @@ import OAuthTokenRepository from '../../repositories/OAuthTokenRepository';
 import OAuthStateRepository from '../../repositories/OAuthStateRepository';
 
 import OAuthState from '../../models/OAuthState';
-import GistCriteria from '../../models/GistCriteria';
 
 import * as actionTypes from './actionTypes';
-import { changeAuthenticated } from './actionCreators';
-import { changeGistCriteria } from '../gists/actionCreators';
+import { invalidateSession } from './actionCreators';
 
 function login() {
   const oauthState = OAuthState.backPath(window.location.pathname);
@@ -27,39 +25,34 @@ function login() {
   });
 }
 
-function* handleOAuthRedirect() {
-  const params = queryString.parse(window.location.search);
-  const { code, state } = params;
-  if (code && state) {
-    const oauthStateRepository = new OAuthStateRepository();
-    const oauthState = oauthStateRepository.get();
-    if (oauthState.verifyState(state)) {
+function* acquireSession({type, code, state}) {
+  const oauthStateRepository = new OAuthStateRepository();
+  const oauthState = oauthStateRepository.get();
+  if (oauthState.verifyState(state)) {
+    try {
       const oauthTokenService = new OAuthTokenService();
       const oauthToken = yield oauthTokenService.requestAccessToken(code);
       const oauthTokenRepository = new OAuthTokenRepository();
       oauthTokenRepository.save(oauthToken);
-      yield put(changeAuthenticated(true));
-      yield put(changeGistCriteria(GistCriteria.MY));
+      yield put(PromiseAction.resolved(type, oauthToken));
       yield put(replace(oauthState.backPath));
-    } else {
-      yield put(changeAuthenticated(false));
-      console.error('Invalid state', params);
+    } catch (error) {
+      yield put(PromiseAction.rejected(type, error));
     }
   } else {
-    yield put(changeAuthenticated(false));
-    console.error('No code and state', params);
+    yield put(PromiseAction.rejected(type, new Error('Invalid state')));
   }
 }
 
 function* logout() {
   const oauthTokenRepository = new OAuthTokenRepository();
   oauthTokenRepository.remove();
-  yield put(changeAuthenticated(false));
+  yield put(invalidateSession());
   yield put(push('/'));
 }
 
 export default function* () {
   yield takeEvery(actionTypes.LOGIN, login);
-  yield takeEvery(actionTypes.HANDLE_OAUTH_REDIRECT, handleOAuthRedirect);
+  yield takeEvery(actionTypes.ACQUIRE_SESSION, acquireSession);
   yield takeEvery(actionTypes.LOGOUT, logout);
 }

@@ -11,7 +11,7 @@ export default class OAuthStateRepository {
       const json = sessionStorage.getItem(OAUTH_STATE);
       return new OAuthState(JSON.parse(json));
     } catch (error) {
-      
+      return OAuthState.NONE;
     }
   }
 
