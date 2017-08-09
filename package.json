@@ -10,7 +10,6 @@
     "react-redux": "^5.0.5",
     "react-router-dom": "^4.1.2",
     "react-router-redux": "^5.0.0-alpha.6",
-    "react-scripts": "1.0.10",
     "react-syntax-highlighter": "^5.6.2",
     "redux": "^3.7.2",
     "redux-logger": "^3.0.6",
@@ -26,6 +25,7 @@
     "eject": "react-scripts eject"
   },
   "devDependencies": {
-    "mock-local-storage": "^1.0.4"
+    "mock-local-storage": "^1.0.4",
+    "react-scripts": "^1.0.10"
   }
 }
