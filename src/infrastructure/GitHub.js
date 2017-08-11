@@ -1,4 +1,3 @@
-import request from 'request-promise-native';
 import queryString from 'query-string';
 
 import GistCriteria from '../models/GistCriteria';
@@ -12,30 +11,42 @@ export default class GitHub {
     this.token = token;
   }
 
-  defaultOptions() {
+  fetch(url, options = {}) {
+    const headers = new Headers(options.headers);
     const authorization = this.token.getAuthorizationHeader();
-    return {
-      json: true,
-      headers: {authorization},
-      transform: (body, response) => {
-        const link = response.headers['link'];
-        if (link) {
-          const matches = link.match(/<(.+?)>; rel="next"/);
-          if (matches) {
-            body._link_next = matches[1];
+    if (authorization) {
+      headers.set('authorization', authorization);
+    }
+    return fetch(url, {
+      mode: 'cors',
+      ...options,
+      headers,
+    }).then(response => {
+      if (response.ok) {
+        return response.json().then(body => {
+          const link = response.headers.get('link');
+          if (link) {
+            const matches = link.match(/<(.+?)>; rel="next"/);
+            if (matches) {
+              body._link_next = matches[1];
+            }
           }
-        }
-        return body;
-      },
-    };
+          return body;
+        });
+      } else {
+        return response.json()
+          .then(body => {throw body})
+          .catch(e => {throw e});
+      }
+    });
   }
 
   fetchNext(current) {
-    return request(current._link_next, this.defaultOptions());
+    return this.fetch(current._link_next);
   }
 
   getUser() {
-    return request(`${GitHub.endpoint}/user`, this.defaultOptions());
+    return this.fetch(`${GitHub.endpoint}/user`);
   }
 
   listGists(owner) {
@@ -53,38 +64,38 @@ export default class GitHub {
       default:
         throw new Error(`owner.type must be one of ${GistCriteria.types} but ${owner.type}`);
     }
-    return request(url, this.defaultOptions());
+    return this.fetch(url);
   }
 
   getGistContent(id) {
-    return request(`${GitHub.endpoint}/gists/${id}`, this.defaultOptions());
+    return this.fetch(`${GitHub.endpoint}/gists/${id}`);
   }
 
   createGist(gist) {
-    return request(`${GitHub.endpoint}/gists`, {
-      ...this.defaultOptions(),
+    return this.fetch(`${GitHub.endpoint}/gists`, {
       method: 'POST',
-      body: gist,
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(gist),
     });
   }
 
   updateGist(id, gist) {
-    return request(`${GitHub.endpoint}/gists/${id}`, {
-      ...this.defaultOptions(),
+    return this.fetch(`${GitHub.endpoint}/gists/${id}`, {
       method: 'PATCH',
-      body: gist,
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(gist),
     });
   }
 
   getRepository(owner, repo) {
-    return request(`${GitHub.endpoint}/repos/${owner}/${repo}`, this.defaultOptions());
+    return this.fetch(`${GitHub.endpoint}/repos/${owner}/${repo}`);
   }
 
   createIssue(owner, repo, issue) {
-    return request(`${GitHub.endpoint}/repos/${owner}/${repo}/issues`, {
-      ...this.defaultOptions(),
+    return this.fetch(`${GitHub.endpoint}/repos/${owner}/${repo}/issues`, {
       method: 'POST',
-      body: issue,
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(issue),
     });
   }
 

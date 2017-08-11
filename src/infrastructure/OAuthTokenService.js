@@ -1,24 +1,23 @@
-import request from 'request-promise-native';
-
 import OAuthToken from '../models/OAuthToken';
 
 export default class OAuthTokenService {
   static endpoint = 'https://us-central1-gistnote.cloudfunctions.net';
 
   fetchAuthorizationRequest() {
-    return request({
-      url: `${OAuthTokenService.endpoint}/access_token`,
-      json: true,
-    });
+    return fetch(`${OAuthTokenService.endpoint}/access_token`, {
+      mode: 'cors',
+    }).then(response => response.json());
   }
 
   requestAccessToken(code) {
-    return request({
-      url: `${OAuthTokenService.endpoint}/access_token`,
+    return fetch(`${OAuthTokenService.endpoint}/access_token`, {
+      mode: 'cors',
       method: 'POST',
-      json: true,
-      body: {code},
-    }).then(body => {
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({code}),
+    })
+    .then(response => response.json())
+    .then(body => {
       if (body.error) {
         throw new Error(body.error_description);
       } else {

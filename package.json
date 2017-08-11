@@ -15,8 +15,7 @@
     "redux-logger": "^3.0.6",
     "redux-saga": "^0.15.4",
     "remark": "^8.0.0",
-    "remark-react": "^4.0.0",
-    "request-promise-native": "^1.0.4"
+    "remark-react": "^4.0.0"
   },
   "scripts": {
     "start": "react-scripts start",
