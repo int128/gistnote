@@ -1,10 +1,12 @@
 import OAuthToken from '../models/OAuthToken';
 
+const env = process.env.NODE_ENV;
+
 export default class OAuthTokenService {
   static endpoint = 'https://us-central1-gistnote.cloudfunctions.net';
 
   fetchAuthorizationRequest() {
-    return fetch(`${OAuthTokenService.endpoint}/access_token`, {
+    return fetch(`${OAuthTokenService.endpoint}/access_token?env=${env}`, {
       mode: 'cors',
     }).then(response => response.json());
   }
@@ -14,7 +16,7 @@ export default class OAuthTokenService {
       mode: 'cors',
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({code}),
+      body: JSON.stringify({code, env}),
     })
     .then(response => response.json())
     .then(body => {
