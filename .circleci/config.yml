@@ -30,7 +30,7 @@ jobs:
     working_directory: ~/gistnote
     steps:
       - attach_workspace:
-          at: build
+          at: .
       - deploy:
           name: GitHub Pages
           command: |
@@ -38,6 +38,7 @@ jobs:
             git init .
             git config user.name circle
             git config user.email circle@example.com
+            git add .
             git commit -m Release
             echo "$NETRC" > "$HOME/.netrc"
             git remote add origin "$GITHUB_ORIGIN"
@@ -52,7 +53,5 @@ workflows:
           requires:
             - build
           filters:
-            tags:
-              only: /.*/
             branches:
-              ignore: /.*/
+              only: /^release\/production$/
