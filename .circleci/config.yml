@@ -35,6 +35,7 @@ jobs:
           name: GitHub Pages
           command: |
             cd build
+            cp -av index.html 404.html
             git init .
             git config user.name circle
             git config user.email circle@example.com
