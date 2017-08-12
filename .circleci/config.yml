@@ -3,14 +3,13 @@ jobs:
   build:
     docker:
       - image: circleci/node:6
-    working_directory: ~/repo
+    working_directory: ~/gistnote
     steps:
       - checkout
       - restore_cache:
           keys:
             - v1-dependencies-{{ checksum "package.json" }}
             - v1-dependencies-
-
       - run: yarn install
       - save_cache:
           paths:
@@ -20,16 +19,40 @@ jobs:
       - run: yarn test
       - run: yarn run build
 
+      - persist_to_workspace:
+          root: .
+          paths:
+            - build
+
+  deploy:
+    docker:
+      - image: circleci/node:6
+    working_directory: ~/gistnote
+    steps:
+      - attach_workspace:
+          at: build
       - deploy:
           name: GitHub Pages
           command: |
-            if [ "$CIRCLE_TAG" ]; then
-              cd build
-              git init .
-              git config user.name circle
-              git config user.email circle@example.com
-              git commit -m Release
-              echo "$NETRC" > "$HOME/.netrc"
-              git remote add origin "$GITHUB_ORIGIN"
-              git push origin master -f
-            fi
+            cd build
+            git init .
+            git config user.name circle
+            git config user.email circle@example.com
+            git commit -m Release
+            echo "$NETRC" > "$HOME/.netrc"
+            git remote add origin "$GITHUB_ORIGIN"
+            git push origin master -f
+
+workflows:
+  version: 2
+  build-and-deploy:
+    jobs:
+      - build
+      - deploy:
+          requires:
+            - build
+          filters:
+            tags:
+              only: /.*/
+            branches:
+              ignore: /.*/
